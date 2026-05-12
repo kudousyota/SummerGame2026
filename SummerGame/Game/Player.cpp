@@ -16,7 +16,7 @@ void Player::Init()
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 }
 
-void Player::Update()
+void Player::Update(const Input& input)
 {
 }
 
