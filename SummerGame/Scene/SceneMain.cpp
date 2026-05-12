@@ -23,19 +23,23 @@ void SceneMain::Init()
 
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
+	m_pCamera = std::make_shared<Camera>();
+	m_pCamera->SetPlayer(m_pPlayer);
 
 }
 
-void SceneMain::Update()
+void SceneMain::Update(Input& input)
 {
 	m_frameCount++;
-	m_pPlayer->Update();
+	m_pPlayer->Update(input);
+	m_pCamera->Update();
 }
 
 void SceneMain::Draw()
 {
 
 	m_pPlayer->Draw();
+
 
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
