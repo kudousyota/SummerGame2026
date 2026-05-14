@@ -18,5 +18,7 @@ public:
 
 private:
 	int m_modelHandle;
+	int m_jumpPower;
+	bool m_isGround;
 };
 

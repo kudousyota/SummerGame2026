@@ -9,7 +9,8 @@ namespace
 }
 
 Player::Player():
-	m_modelHandle(-1)
+	m_modelHandle(-1),
+	m_jumpPower(0)
 {
 }
 
@@ -23,10 +24,13 @@ void Player::Init()
 	Character::Init();
 
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
+	m_hp = 100;
+	m_jumpPower = 6;
 }
 
 void Player::Update(const Input& input)
 {
+	// 移動
 	if (input.IsPressed("up"))
 	{
 		m_pos.z += m_speed;
@@ -43,6 +47,13 @@ void Player::Update(const Input& input)
 	{
 		m_pos.x += m_speed;
 	}
+	// ジャンプ
+	if (input.IsPressed("Jump"))
+	{
+		m_pos.y += m_jumpPower;
+	}
+	m_pos.y -= m_gravity;
+
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
