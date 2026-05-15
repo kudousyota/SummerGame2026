@@ -17,8 +17,19 @@ public:
 	float GetAngle() const { return m_angle; }
 
 private:
+
 	int m_modelHandle;
 	int m_jumpPower;
 	bool m_isGround;
+
+	//アニメーション系
+	float m_currentAnimCount;
+	float m_lastAnimCount;
+	//アニメーションのハンドル
+	int m_cureentAnimHandle;
+	int m_lastAnimHandle;
+	//アニメーション関数
+	void AnimUpdate();
+
 };
 

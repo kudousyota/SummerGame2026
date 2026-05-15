@@ -6,11 +6,20 @@ namespace
 {
 	//プレイヤーからカメラに向かうベクトル
 	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
+	//重力加速度
+	const float kGravity = 0.5f;
+	//アニメーションの名前
+	const char* const kIdleAnimName = "mixamo.com";
 }
 
 Player::Player():
 	m_modelHandle(-1),
-	m_jumpPower(0)
+	m_jumpPower(0),
+	m_isGround(true),
+	m_currentAnimCount(0.0f),
+	m_lastAnimCount(0.0f),
+	m_cureentAnimHandle(-1),
+	m_lastAnimHandle(-1)
 {
 }
 
@@ -25,11 +34,17 @@ void Player::Init()
 
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hp = 100;
-	m_jumpPower = 6;
+	m_jumpPower = 10;
+	int animIndex = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
+
+	m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animIndex);
 }
 
 void Player::Update(const Input& input)
 {
+	// アニメーション更新
+	AnimUpdate();
+
 	// 移動
 	if (input.IsPressed("up"))
 	{
@@ -48,11 +63,33 @@ void Player::Update(const Input& input)
 		m_pos.x += m_speed;
 	}
 	// ジャンプ
-	if (input.IsPressed("Jump"))
+	if (input.IsTriggered("Jump") && m_isGround)
 	{
-		m_pos.y += m_jumpPower;
+		// 上向き速度を与える
+		m_gravity = m_jumpPower;
+
+		m_isGround = false;
 	}
-	m_pos.y -= m_gravity;
+	// ジャンプ中
+	if (!m_isGround)
+	{
+		// 座標更新
+		m_pos.y += m_gravity;
+
+		// 重力を加える
+		m_gravity -= kGravity;
+	}
+	//これ以上下に行かないようにする
+	if (m_pos.y <= 0.0f)
+	{
+		m_pos.y = 0.0f;
+
+		m_gravity = 0.0f;
+
+		m_isGround = true;
+	}
+	
+
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -68,4 +105,27 @@ void Player::Draw()
 Vector3 Player::GetCameraTarget() const
 {
 	return m_pos + kPlayerToTarget;
+}
+
+void Player::AnimUpdate()
+{
+	// アニメ進行
+	m_currentAnimCount += 0.5f;
+	float total = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
+	if (m_currentAnimCount >= total)
+	{
+		m_currentAnimCount -= total;
+	}
+	MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
+
+	if (m_lastAnimHandle != -1)
+	{
+		m_lastAnimCount += 0.5f;
+		float lastTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_lastAnimHandle);
+		if (m_lastAnimCount >= lastTotal)
+		{
+			m_lastAnimCount -= lastTotal;
+		}
+		MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
+	}
 }
