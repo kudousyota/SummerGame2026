@@ -1,7 +1,9 @@
 #pragma once
 #include "../System/Vector3.h"
 #include "Character.h"
+#include <memory> 
 
+class Camera;
 class Input;
 class Player : public Character
 {
@@ -30,6 +32,9 @@ private:
 	int m_lastAnimHandle;
 	//アニメーション関数
 	void AnimUpdate();
+
+	//カメラ
+	std::shared_ptr<Camera> m_pCamera;
 
 };
 

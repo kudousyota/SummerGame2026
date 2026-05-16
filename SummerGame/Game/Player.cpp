@@ -31,6 +31,7 @@ Player::~Player()
 void Player::Init()
 {
 	Character::Init();
+	m_pCamera = std::make_shared<Camera>();
 
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hp = 100;
@@ -44,6 +45,8 @@ void Player::Update(const Input& input)
 {
 	// アニメーション更新
 	AnimUpdate();
+	//カメラ基準のベクトル
+	
 
 	// 移動
 	if (input.IsPressed("up"))
