@@ -23,3 +23,9 @@ void Character::Init()
 	m_pos = VGet(0.0f, 0.0f, 0.0f);
 	m_angle = 0;
 }
+
+void Character::Collision()
+{
+	//当たり判定
+
+}

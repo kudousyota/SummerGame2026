@@ -58,8 +58,6 @@ void Player::Init()
 void Player::Update(const Input& input)
 {
 
-
-
 	Vector3 forwrd = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 
@@ -99,11 +97,11 @@ void Player::Update(const Input& input)
 	}
 	if (input.IsPressed("left"))
 	{
-		moveVec -= right;
+		moveVec += right;
 	}
 	if (input.IsPressed("right"))
 	{
-		moveVec += right;
+		moveVec -= right;
 	}
 
 	if (moveVec.SqMagnitude() > 0.0001f)
@@ -126,6 +124,14 @@ void Player::Update(const Input& input)
 void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
+
+	DrawCapsule3D(m_pos.ToDxLibVector(),
+		VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),
+		30.0f,
+		16,
+		GetColor(0, 255, 0),
+		GetColor(0, 255, 0),
+		false);
 }
 
 Vector3 Player::GetCameraTarget() const
@@ -196,19 +202,19 @@ void Player::AnimUpdate()
 			rate = 1.0f;
 		}
 
-		// 新
+		//新しいアニメーション
 		MV1SetAttachAnimBlendRate(
 			m_modelHandle,
 			m_cureentAnimHandle,
 			rate);
 
-		// 旧
+		//前のアニメーション
 		MV1SetAttachAnimBlendRate(
 			m_modelHandle,
 			m_lastAnimHandle,
 			1.0f - rate);
 
-		// 完了
+		//いらないやつ
 		if (rate >= 1.0f)
 		{
 			MV1DetachAnim(

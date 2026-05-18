@@ -149,7 +149,7 @@ Vector3 Camera::GetRight() const
 {
 	Vector3 forward = GetForward();
 	Vector3 up = VGet(0.0f, 1.0f, 0.0f);
-	Vector3 right = up.Cross(forward);
+	Vector3 right = forward.Cross(up);
 
 	if (right.SqMagnitude() > 0.0001f)
 	{

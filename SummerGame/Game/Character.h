@@ -12,6 +12,8 @@ public:
 	virtual void Init();
 	virtual void Update(const Input& input) = 0;
 	virtual void Draw() = 0;
+	//当たり判定
+	virtual void Collision();
 protected:
 	//共通のデータや関数を入れる
 	float m_speed;
