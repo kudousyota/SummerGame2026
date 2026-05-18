@@ -11,7 +11,10 @@ namespace
 	const float kGravity = 0.5f;
 	//アニメーションの名前
 	const char* const kIdleAnimName = "Player|Idle";
+	
 	const char* const kWalkAnimName = "Player|Walk";
+
+	constexpr int kAnimBlendFrame = 10;
 }
 
 Player::Player():
@@ -25,7 +28,7 @@ Player::Player():
 	m_lastAnimHandle(-1),
 	m_currentAnimIndex(-1),
 	m_animChangeFrame(0),
-	m_isInput(true)
+	m_isInput(false)
 {
 }
 
@@ -38,25 +41,33 @@ void Player::Init()
 {
 	Character::Init();
 	
-
-	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hp = 100;
 	m_jumpPower = 10;
+	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	int animIndex = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
+	m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animIndex,-1,-1);
 
-	m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animIndex);
+	m_currentAnimIndex = animIndex;
+
+	m_lastAnimHandle = -1;
+	m_lastAnimCount = 0.0f;
+
+	m_animChangeFrame = 0;
 }
 
 void Player::Update(const Input& input)
 {
-	// アニメーション更新
-	AnimUpdate();
-	//カメラ基準のベクトル
+
+
+
 	Vector3 forwrd = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 
-	//入力方向を取得
 	Inputdata now = Inputdata::None;
+
+	// 移動処理
+	bool isMoving = false;
+
 	if (input.IsPressed("up"))
 	{
 		now = Inputdata::Up;
@@ -74,11 +85,10 @@ void Player::Update(const Input& input)
 		now = Inputdata::Right;
 	}
 
-	
+	m_isInput = (now != Inputdata::None);
 
 	//通常移動
 	Vector3 moveVec(0.0f, 0.0f, 0.0f);
-
 	if (input.IsPressed("up"))
 	{
 		moveVec += forwrd;
@@ -95,49 +105,22 @@ void Player::Update(const Input& input)
 	{
 		moveVec += right;
 	}
-	//角度変更
+
 	if (moveVec.SqMagnitude() > 0.0001f)
 	{
 		moveVec = moveVec.Normalize();
-		Vector3 nexPos = m_pos + moveVec * m_speed;
+		m_pos += moveVec * m_speed;
 
 		m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
-		m_isInput = true;
+		
 	}
-	
-	// ジャンプ
-	if (input.IsTriggered("Jump") && m_isGround)
-	{
-		// 上向き速度を与える
-		m_gravity = m_jumpPower;
-
-		m_isGround = false;
-	}
-	// ジャンプ中
-	if (!m_isGround)
-	{
-		// 座標更新
-		m_pos.y += m_gravity;
-
-		// 重力を加える
-		m_gravity -= kGravity;
-	}
-	//これ以上下に行かないようにする
-	if (m_pos.y <= 0.0f)
-	{
-		m_pos.y = 0.0f;
-
-		m_gravity = 0.0f;
-
-		m_isGround = true;
-	}
-	
-
-
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
+
+	// アニメーション更新
+	AnimUpdate();
 }
 
 void Player::Draw()
@@ -172,42 +155,74 @@ void Player::AnimUpdate()
 		MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
 	}
 	//アニメーションの切り替え
-	const char* nextAnimName;
-
-	//移動しているときは歩きモーション
-	if(m_pos.x != 0.0f || m_pos.z != 0.0f)
-	{
-		nextAnimName = kWalkAnimName;
-	}
-	else
-	{
-		nextAnimName = kIdleAnimName;
-	}
+	const char* nextAnimName = m_isInput ? kWalkAnimName:kIdleAnimName;
 
 	//再生したいアニメーションのハンドルを取得
 	int animNo = MV1GetAnimIndex(m_modelHandle, nextAnimName);
-
+	
 	//アニメーションの切り替え処理
 	if (animNo != m_currentAnimIndex)
 	{
 		if(m_lastAnimHandle != -1)
 		{
 			MV1DetachAnim(m_modelHandle,m_lastAnimHandle);
+
+			m_lastAnimHandle = -1;
 		}
-		// 現在のアニメを前のアニメとして保存
-	   // ブレンド用にこの後もしばらく再生し続ける
 		m_lastAnimHandle = m_cureentAnimHandle;
 		m_lastAnimCount = m_currentAnimCount;
 
 		// 新しいアニメーションをアタッチ
 		m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+		
 		m_currentAnimIndex = animNo;
-
 		// 新しいアニメーションは最初から再生
 		m_currentAnimCount = 0.0f;
-
+		MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 0.0f);
 		// ブレンド開始フレームをリセット
 		m_animChangeFrame = 0;
 	}
+	//ブレンド
+	if (m_lastAnimHandle != -1)
+	{
+		m_animChangeFrame++;
 
+		float rate =
+			static_cast<float>(m_animChangeFrame) /
+			kAnimBlendFrame;
+
+		if (rate > 1.0f)
+		{
+			rate = 1.0f;
+		}
+
+		// 新
+		MV1SetAttachAnimBlendRate(
+			m_modelHandle,
+			m_cureentAnimHandle,
+			rate);
+
+		// 旧
+		MV1SetAttachAnimBlendRate(
+			m_modelHandle,
+			m_lastAnimHandle,
+			1.0f - rate);
+
+		// 完了
+		if (rate >= 1.0f)
+		{
+			MV1DetachAnim(
+				m_modelHandle,
+				m_lastAnimHandle);
+
+			m_lastAnimHandle = -1;
+		}
+	}
+	else
+	{
+		MV1SetAttachAnimBlendRate(
+			m_modelHandle,
+			m_cureentAnimHandle,
+			1.0f);
+	}
 }

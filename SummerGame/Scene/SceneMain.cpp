@@ -21,15 +21,16 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
 
-	//カメラを作ってプレイヤーをセット
+	// 先にPlayer生成
+	m_pPlayer = std::make_shared<Player>();
+	m_pPlayer->Init();
+
+	// 次にCamera生成
 	m_pCamera = std::make_shared<Camera>();
 	m_pCamera->SetPlayer(m_pPlayer);
 	m_pCamera->Init();
-	
-	m_pPlayer = std::make_shared<Player>();
-	m_pPlayer->Init();
-	//プレイヤーにカメラを渡す
-	m_pPlayer->SetCamera();
+
+	m_pPlayer->SetCamera(m_pCamera);
 
 
 }

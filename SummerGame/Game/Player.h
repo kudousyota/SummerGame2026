@@ -18,7 +18,7 @@ public:
 	Vector3 GetCameraTarget()const;
 	float GetAngle() const { return m_angle; }
 
-	void SetCamera(Camera* camera) { m_pCamera = camera; }
+	void SetCamera(std::shared_ptr<Camera> camera) { m_pCamera = camera; }
 
 private:
 	enum class Inputdata
@@ -52,7 +52,7 @@ private:
 	void AnimUpdate();
 
 	//カメラ
-	Camera* m_pCamera;
+	std::shared_ptr<Camera>m_pCamera;
 
 };
 
