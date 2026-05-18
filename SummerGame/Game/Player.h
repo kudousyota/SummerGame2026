@@ -18,11 +18,25 @@ public:
 	Vector3 GetCameraTarget()const;
 	float GetAngle() const { return m_angle; }
 
+	void SetCamera(Camera* camera) { m_pCamera = camera; }
+
 private:
+	enum class Inputdata
+	{
+		None,
+		Up,
+		Down,
+		Left,
+		Right,
+		Jump,
+	};
 
 	int m_modelHandle;
 	int m_jumpPower;
 	bool m_isGround;
+
+	//入力されているか
+	bool m_isInput;
 
 	//アニメーション系
 	float m_currentAnimCount;
@@ -30,11 +44,15 @@ private:
 	//アニメーションのハンドル
 	int m_cureentAnimHandle;
 	int m_lastAnimHandle;
+	//現在セットしているアニメーションのインデックス
+	int m_currentAnimIndex;
+	//アニメーション切り替えのフレーム数
+	int m_animChangeFrame;
 	//アニメーション関数
 	void AnimUpdate();
 
 	//カメラ
-	std::shared_ptr<Camera> m_pCamera;
+	Camera* m_pCamera;
 
 };
 

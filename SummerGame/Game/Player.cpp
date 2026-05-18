@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "DxLib.h"
 #include "../System/Input.h"
+#include "Camera.h"
 
 namespace
 {
@@ -9,17 +10,22 @@ namespace
 	//重力加速度
 	const float kGravity = 0.5f;
 	//アニメーションの名前
-	const char* const kIdleAnimName = "mixamo.com";
+	const char* const kIdleAnimName = "Player|Idle";
+	const char* const kWalkAnimName = "Player|Walk";
 }
 
 Player::Player():
+	m_pCamera(nullptr),
 	m_modelHandle(-1),
 	m_jumpPower(0),
 	m_isGround(true),
 	m_currentAnimCount(0.0f),
 	m_lastAnimCount(0.0f),
 	m_cureentAnimHandle(-1),
-	m_lastAnimHandle(-1)
+	m_lastAnimHandle(-1),
+	m_currentAnimIndex(-1),
+	m_animChangeFrame(0),
+	m_isInput(true)
 {
 }
 
@@ -31,7 +37,7 @@ Player::~Player()
 void Player::Init()
 {
 	Character::Init();
-	m_pCamera = std::make_shared<Camera>();
+	
 
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hp = 100;
@@ -46,25 +52,59 @@ void Player::Update(const Input& input)
 	// アニメーション更新
 	AnimUpdate();
 	//カメラ基準のベクトル
-	
+	Vector3 forwrd = m_pCamera->GetForward();
+	Vector3 right = m_pCamera->GetRight();
 
-	// 移動
+	//入力方向を取得
+	Inputdata now = Inputdata::None;
 	if (input.IsPressed("up"))
 	{
-		m_pos.z += m_speed;
+		now = Inputdata::Up;
+	}
+	else if (input.IsPressed("down"))
+	{
+		now = Inputdata::Down;
+	}
+	else if (input.IsPressed("left"))
+	{
+		now = Inputdata::Left;
+	}
+	else if (input.IsPressed("right"))
+	{
+		now = Inputdata::Right;
+	}
+
+	
+
+	//通常移動
+	Vector3 moveVec(0.0f, 0.0f, 0.0f);
+
+	if (input.IsPressed("up"))
+	{
+		moveVec += forwrd;
 	}
 	if (input.IsPressed("down"))
 	{
-		m_pos.z -= m_speed;
+		moveVec -= forwrd;
 	}
 	if (input.IsPressed("left"))
 	{
-		m_pos.x -= m_speed;
+		moveVec -= right;
 	}
 	if (input.IsPressed("right"))
 	{
-		m_pos.x += m_speed;
+		moveVec += right;
 	}
+	//角度変更
+	if (moveVec.SqMagnitude() > 0.0001f)
+	{
+		moveVec = moveVec.Normalize();
+		Vector3 nexPos = m_pos + moveVec * m_speed;
+
+		m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
+		m_isInput = true;
+	}
+	
 	// ジャンプ
 	if (input.IsTriggered("Jump") && m_isGround)
 	{
@@ -131,4 +171,43 @@ void Player::AnimUpdate()
 		}
 		MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
 	}
+	//アニメーションの切り替え
+	const char* nextAnimName;
+
+	//移動しているときは歩きモーション
+	if(m_pos.x != 0.0f || m_pos.z != 0.0f)
+	{
+		nextAnimName = kWalkAnimName;
+	}
+	else
+	{
+		nextAnimName = kIdleAnimName;
+	}
+
+	//再生したいアニメーションのハンドルを取得
+	int animNo = MV1GetAnimIndex(m_modelHandle, nextAnimName);
+
+	//アニメーションの切り替え処理
+	if (animNo != m_currentAnimIndex)
+	{
+		if(m_lastAnimHandle != -1)
+		{
+			MV1DetachAnim(m_modelHandle,m_lastAnimHandle);
+		}
+		// 現在のアニメを前のアニメとして保存
+	   // ブレンド用にこの後もしばらく再生し続ける
+		m_lastAnimHandle = m_cureentAnimHandle;
+		m_lastAnimCount = m_currentAnimCount;
+
+		// 新しいアニメーションをアタッチ
+		m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+		m_currentAnimIndex = animNo;
+
+		// 新しいアニメーションは最初から再生
+		m_currentAnimCount = 0.0f;
+
+		// ブレンド開始フレームをリセット
+		m_animChangeFrame = 0;
+	}
+
 }
