@@ -38,8 +38,7 @@ private:
 	int m_jumpPower;
 	bool m_isGround;
 
-	//アタック
-	bool m_isAttack;
+	
 	//入力されているか
 	bool m_isInput;
 
@@ -57,6 +56,10 @@ private:
 	void AnimUpdate();
 	//攻撃処理
 	void AtackUpdate(const Input& input);
+	//アタック
+	bool m_isAttack;
+	//向き
+	Vector3 m_forward;
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;

@@ -33,7 +33,8 @@ Player::Player() :
 	m_animChangeFrame(0),
 	m_isInput(false),
 	m_isAttack(false),
-	m_inputState(Inputdata::None)
+	m_inputState(Inputdata::None),
+	m_forward(VGet(0.0f,0.0f,0.0f))
 {
 }
 
@@ -82,12 +83,6 @@ void Player::Update(const Input& input)
 			m_inputState = Inputdata::Attack;
 			m_isAttack = true;
 		}
-
-
-		if (input.IsTriggered("Attack"))
-		{
-			m_inputState = Inputdata::Attack;
-		}
 		else if (input.IsPressed("up"))
 		{
 			m_inputState = Inputdata::Up;
@@ -135,6 +130,8 @@ void Player::Update(const Input& input)
 	if (moveVec.SqMagnitude() > 0.0001f)
 	{
 		moveVec = moveVec.Normalize();
+		//移動方向を保存
+		m_forward = moveVec;
 		m_pos += moveVec * m_speed;
 
 		m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
@@ -164,7 +161,11 @@ void Player::Draw()
 
 	if (m_isAttack)
 	{
-		DrawSphere3D(m_pos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, true);
+	
+		//前側に表示高さは微調整
+		Vector3 attackpos = m_pos + m_forward * 70.0f + VGet(0.0f,30.0f,0.0f);
+
+		DrawSphere3D(attackpos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
 	}
 }
 
