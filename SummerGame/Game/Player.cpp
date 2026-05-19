@@ -14,10 +14,12 @@ namespace
 	
 	const char* const kWalkAnimName = "Player|Walk";
 
+	const char* const kPunchAnimName = "Player|Punch";
+
 	constexpr int kAnimBlendFrame = 10;
 }
 
-Player::Player():
+Player::Player() :
 	m_pCamera(nullptr),
 	m_modelHandle(-1),
 	m_jumpPower(0),
@@ -28,7 +30,9 @@ Player::Player():
 	m_lastAnimHandle(-1),
 	m_currentAnimIndex(-1),
 	m_animChangeFrame(0),
-	m_isInput(false)
+	m_isInput(false),
+	m_isAttack(false),
+	m_inputState(Inputdata::None)
 {
 }
 
@@ -41,6 +45,7 @@ void Player::Init()
 {
 	Character::Init();
 	
+
 	m_hp = 100;
 	m_jumpPower = 10;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
@@ -53,38 +58,60 @@ void Player::Init()
 	m_lastAnimCount = 0.0f;
 
 	m_animChangeFrame = 0;
+
 }
 
 void Player::Update(const Input& input)
 {
+	AtackUpdate(input);
 
 	Vector3 forwrd = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 
-	Inputdata now = Inputdata::None;
+	m_inputState = Inputdata::None;
 
 	// 移動処理
 	bool isMoving = false;
 
-	if (input.IsPressed("up"))
+	//攻撃中じゃないとき受け付ける
+	if (!m_isAttack)
 	{
-		now = Inputdata::Up;
-	}
-	else if (input.IsPressed("down"))
-	{
-		now = Inputdata::Down;
-	}
-	else if (input.IsPressed("left"))
-	{
-		now = Inputdata::Left;
-	}
-	else if (input.IsPressed("right"))
-	{
-		now = Inputdata::Right;
-	}
+		if (input.IsTriggered("Attack"))
+		{
+			m_inputState = Inputdata::Attack;
+			m_isAttack = true;
+		}
 
-	m_isInput = (now != Inputdata::None);
 
+		if (input.IsTriggered("Attack"))
+		{
+			m_inputState = Inputdata::Attack;
+		}
+		else if (input.IsPressed("up"))
+		{
+			m_inputState = Inputdata::Up;
+		}
+		else if (input.IsPressed("down"))
+		{
+			m_inputState = Inputdata::Down;
+		}
+		else if (input.IsPressed("left"))
+		{
+			m_inputState = Inputdata::Left;
+		}
+		else if (input.IsPressed("right"))
+		{
+			m_inputState = Inputdata::Right;
+		}
+	}
+	else
+	{
+		m_inputState = Inputdata::Attack;
+	}
+	
+
+	m_isInput = (m_inputState != Inputdata::None);
+	
 	//通常移動
 	Vector3 moveVec(0.0f, 0.0f, 0.0f);
 	if (input.IsPressed("up"))
@@ -132,6 +159,11 @@ void Player::Draw()
 		GetColor(0, 255, 0),
 		GetColor(0, 255, 0),
 		false);
+
+	if (m_isAttack)
+	{
+		DrawSphere3D(m_pos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, true);
+	}
 }
 
 Vector3 Player::GetCameraTarget() const
@@ -147,6 +179,8 @@ void Player::AnimUpdate()
 	if (m_currentAnimCount >= total)
 	{
 		m_currentAnimCount -= total;
+
+		m_isAttack = false;
 	}
 	MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
 
@@ -161,7 +195,25 @@ void Player::AnimUpdate()
 		MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
 	}
 	//アニメーションの切り替え
-	const char* nextAnimName = m_isInput ? kWalkAnimName:kIdleAnimName;
+	const char* nextAnimName = kIdleAnimName;
+
+	switch (m_inputState)
+	{
+	case Inputdata::Up:
+	case Inputdata::Down:
+	case Inputdata::Left:
+	case Inputdata::Right:
+		nextAnimName = kWalkAnimName;
+		break;
+	case Inputdata::Attack:
+		nextAnimName = kPunchAnimName;
+		break;
+	case Inputdata::None:
+	default:
+		nextAnimName = kIdleAnimName;
+		break;
+
+	}
 
 	//再生したいアニメーションのハンドルを取得
 	int animNo = MV1GetAnimIndex(m_modelHandle, nextAnimName);
@@ -230,5 +282,13 @@ void Player::AnimUpdate()
 			m_modelHandle,
 			m_cureentAnimHandle,
 			1.0f);
+	}
+}
+
+void Player::AtackUpdate(const Input& input)
+{
+	if (m_isAttack)
+	{
+
 	}
 }

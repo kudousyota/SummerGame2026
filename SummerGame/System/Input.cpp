@@ -24,7 +24,7 @@ void Input::InitializeInputTable()
 	m_inputTable["pause"] = { { PeripheralType::keyboard,KEY_INPUT_P},
 					   { PeripheralType::pad1,PAD_INPUT_START } };	// PADのSTARTボタン
 
-	m_inputTable["Atack"] = { { PeripheralType::keyboard,KEY_INPUT_Z},
+	m_inputTable["Attack"] = { { PeripheralType::keyboard,KEY_INPUT_Z},
 						  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
 	m_inputTable["Jump"] = { { PeripheralType::keyboard,KEY_INPUT_LSHIFT},
 						  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン

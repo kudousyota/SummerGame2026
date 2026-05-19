@@ -29,12 +29,17 @@ private:
 		Left,
 		Right,
 		Jump,
+		Attack
 	};
+
+	Inputdata m_inputState;
 
 	int m_modelHandle;
 	int m_jumpPower;
 	bool m_isGround;
 
+	//アタック
+	bool m_isAttack;
 	//入力されているか
 	bool m_isInput;
 
@@ -50,6 +55,8 @@ private:
 	int m_animChangeFrame;
 	//アニメーション関数
 	void AnimUpdate();
+	//攻撃処理
+	void AtackUpdate(const Input& input);
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
