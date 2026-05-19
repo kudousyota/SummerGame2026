@@ -155,6 +155,8 @@ Vector3 Camera::GetRight() const
 	{
 		right = right.Normalize();
 	}
+	//間違っていたから反転
+	right *= -1;
 
 	return right;
 }

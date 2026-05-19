@@ -8,6 +8,7 @@ namespace
 	//プレイヤーからカメラに向かうベクトル
 	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 	//重力加速度
+
 	const float kGravity = 0.5f;
 	//アニメーションの名前
 	const char* const kIdleAnimName = "Player|Idle";
@@ -122,11 +123,11 @@ void Player::Update(const Input& input)
 	{
 		moveVec -= forwrd;
 	}
-	if (input.IsPressed("left"))
+	if (input.IsPressed("right"))
 	{
 		moveVec += right;
 	}
-	if (input.IsPressed("right"))
+	if (input.IsPressed("left"))
 	{
 		moveVec -= right;
 	}
@@ -138,6 +139,7 @@ void Player::Update(const Input& input)
 
 		m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
 		
+		DrawFormatString(100, 10, GetColor(255, 255, 255), "m_angle:%f", m_angle);
 	}
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);

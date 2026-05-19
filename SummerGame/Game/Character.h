@@ -20,7 +20,7 @@ protected:
 	int m_hp;
 	int m_attackPower;
 	float m_gravity;
-	int m_angle;
+	float m_angle;
 	Vector3 m_pos;
 };
 

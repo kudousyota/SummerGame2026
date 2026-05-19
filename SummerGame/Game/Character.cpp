@@ -21,7 +21,7 @@ void Character::Init()
 	m_attackPower = 10;
 	m_gravity = 0.5f;
 	m_pos = VGet(0.0f, 0.0f, 0.0f);
-	m_angle = 0;
+	m_angle = 0.0f;
 }
 
 void Character::Collision()
