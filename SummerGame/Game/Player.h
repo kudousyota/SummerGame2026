@@ -62,6 +62,12 @@ private:
 	//アタック
 	bool m_isAttack;
 	bool m_isAttackHit;
+	//次に行けるか
+	bool m_isNextAttack;
+	bool m_isPunchRush;
+
+	//攻撃する場所
+	Vector3 m_attackpos;
 	//向き
 	Vector3 m_forward;
 

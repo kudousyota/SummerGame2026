@@ -23,6 +23,10 @@ namespace
 	constexpr float kPunchAnimFrame = 10;
 
 	constexpr int kAnimBlendFrame = 10;
+
+	constexpr float kAttackStartFrame = 10.0f;
+
+	constexpr float kAttackEndFrame = 15.0f;
 }
 
 Player::Player() :
@@ -40,7 +44,11 @@ Player::Player() :
 	m_isAttack(false),
 	m_inputState(Inputdata::None),
 	m_forward(VGet(0.0f,0.0f,0.0f)),
-	m_hakutoHandle(-1)
+	m_hakutoHandle(-1),
+	m_isAttackHit(false),
+	m_isNextAttack(false),
+	m_isPunchRush(false),
+	m_attackpos(VGet(0.0f,0.0f,0.0f))
 {
 }
 
@@ -67,21 +75,18 @@ void Player::Init()
 	m_lastAnimCount = 0.0f;
 
 	m_animChangeFrame = 0;
-
+	
 }
 
 void Player::Update(const Input& input)
 {
-	AtackUpdate(input);
 
-	Vector3 forwrd = m_pCamera->GetForward();
+	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 
 	m_inputState = Inputdata::None;
 
 	// 移動処理
-	bool isMoving = false;
-
 	//攻撃中じゃないとき受け付ける
 	if (!m_isAttack)
 	{
@@ -109,7 +114,15 @@ void Player::Update(const Input& input)
 	}
 	else
 	{
-		m_inputState = Inputdata::Attack;
+		// Punch後半だけ次入力受付
+		if (!m_isPunchRush &&
+			input.IsTriggered("Attack") &&
+			m_currentAnimCount >= kAttackEndFrame)
+		{
+			m_isNextAttack = true;
+		}
+		//ラッシュかどうか
+		m_inputState =m_isPunchRush ?Inputdata::Punchrush :Inputdata::Attack;
 	}
 	
 
@@ -119,11 +132,11 @@ void Player::Update(const Input& input)
 	Vector3 moveVec(0.0f, 0.0f, 0.0f);
 	if (input.IsPressed("up"))
 	{
-		moveVec += forwrd;
+		moveVec += forward;
 	}
 	if (input.IsPressed("down"))
 	{
-		moveVec -= forwrd;
+		moveVec -= forward;
 	}
 	if (input.IsPressed("right"))
 	{
@@ -145,6 +158,9 @@ void Player::Update(const Input& input)
 		
 		DrawFormatString(100, 10, GetColor(255, 255, 255), "m_angle:%f", m_angle);
 	}
+	//前側に表示高さは微調整
+	m_attackpos =m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
@@ -158,22 +174,20 @@ void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
 
-	DrawBillboard3D(m_pos, 0.0f, 0.0f,500, 0.0f, m_hakutoHandle, false);
+	DrawBillboard3D(VGet(50.0f,30.0f,20.0f), 0.0f, 0.0f, 500, 0.0f, m_hakutoHandle, false);
 
-	DrawCapsule3D(m_pos.ToDxLibVector(),
-		VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),
-		30.0f,
-		16,
-		GetColor(0, 255, 0),
-		GetColor(0, 255, 0),
-		false);
+	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
-	if (m_isAttack&&m_currentAnimCount >= kPunchAnimFrame)
+	if (m_isAttack&&m_currentAnimCount >= kAttackStartFrame && m_currentAnimCount <= kAttackEndFrame)
 	{
-		//前側に表示高さは微調整
-		Vector3 attackpos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+		
 
-		DrawSphere3D(attackpos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
+		DrawSphere3D(m_attackpos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
+	}
+	//ラッシュの時にも当たり判定をだす
+	if (m_isPunchRush)
+	{
+		DrawSphere3D(m_attackpos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
 	}
 }
 
@@ -187,12 +201,35 @@ void Player::AnimUpdate()
 	// アニメ進行
 	m_currentAnimCount += 0.5f;
 	float total = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
+	if (m_isAttack && m_currentAnimCount >= total)
+	{
+		m_currentAnimCount = 0.0f;
+
+		// 次段へ
+		if (m_isNextAttack && !m_isPunchRush)
+		{
+			m_isPunchRush = true;
+			m_isNextAttack = false;
+
+			// Punchrush開始なので次フレームで切り替え
+			m_inputState = Inputdata::Punchrush;
+		}
+		else
+		{
+			// Punchrush終了
+			m_isAttack = false;
+			m_isPunchRush = false;
+			m_isNextAttack = false;
+			m_inputState = Inputdata::None;
+		}
+	}
+
+	//ループ処理
 	if (m_currentAnimCount >= total)
 	{
 		m_currentAnimCount -= total;
-
-		m_isAttack = false;
 	}
+
 	MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
 
 	if (m_lastAnimHandle != -1)
@@ -296,18 +333,5 @@ void Player::AnimUpdate()
 			m_modelHandle,
 			m_cureentAnimHandle,
 			1.0f);
-	}
-}
-
-void Player::AtackUpdate(const Input& input)
-{
-	if (m_isAttack&&m_inputState == Inputdata::Attack)
-	{
-
-		if (m_currentAnimCount <= kPunchAnimFrame)
-		{
-			m_isAttack = true;
-		}
-
 	}
 }
