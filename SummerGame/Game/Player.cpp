@@ -17,6 +17,11 @@ namespace
 
 	const char* const kPunchAnimName = "Player|Punch";
 
+	const char* const kPunchrushAnimName = "Player|Punchrush";
+
+	//攻撃中のフレーム
+	constexpr float kPunchAnimFrame = 10;
+
 	constexpr int kAnimBlendFrame = 10;
 }
 
@@ -34,7 +39,8 @@ Player::Player() :
 	m_isInput(false),
 	m_isAttack(false),
 	m_inputState(Inputdata::None),
-	m_forward(VGet(0.0f,0.0f,0.0f))
+	m_forward(VGet(0.0f,0.0f,0.0f)),
+	m_hakutoHandle(-1)
 {
 }
 
@@ -51,6 +57,7 @@ void Player::Init()
 	m_hp = 100;
 	m_jumpPower = 10;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
+	m_hakutoHandle = LoadGraph("data/okirohakuto.jpg");
 	int animIndex = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
 	m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animIndex,-1,-1);
 
@@ -151,6 +158,8 @@ void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
 
+	DrawBillboard3D(m_pos, 0.0f, 0.0f,500, 0.0f, m_hakutoHandle, false);
+
 	DrawCapsule3D(m_pos.ToDxLibVector(),
 		VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),
 		30.0f,
@@ -159,11 +168,10 @@ void Player::Draw()
 		GetColor(0, 255, 0),
 		false);
 
-	if (m_isAttack)
+	if (m_isAttack&&m_currentAnimCount >= kPunchAnimFrame)
 	{
-	
 		//前側に表示高さは微調整
-		Vector3 attackpos = m_pos + m_forward * 70.0f + VGet(0.0f,30.0f,0.0f);
+		Vector3 attackpos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
 
 		DrawSphere3D(attackpos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
 	}
@@ -210,6 +218,9 @@ void Player::AnimUpdate()
 		break;
 	case Inputdata::Attack:
 		nextAnimName = kPunchAnimName;
+		break;
+	case Inputdata::Punchrush:
+		nextAnimName = kPunchrushAnimName;
 		break;
 	case Inputdata::None:
 	default:
@@ -290,8 +301,13 @@ void Player::AnimUpdate()
 
 void Player::AtackUpdate(const Input& input)
 {
-	if (m_isAttack)
+	if (m_isAttack&&m_inputState == Inputdata::Attack)
 	{
+
+		if (m_currentAnimCount <= kPunchAnimFrame)
+		{
+			m_isAttack = true;
+		}
 
 	}
 }

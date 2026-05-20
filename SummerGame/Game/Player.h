@@ -29,7 +29,8 @@ private:
 		Left,
 		Right,
 		Jump,
-		Attack
+		Attack,
+		Punchrush
 	};
 
 	Inputdata m_inputState;
@@ -37,6 +38,8 @@ private:
 	int m_modelHandle;
 	int m_jumpPower;
 	bool m_isGround;
+
+	int m_hakutoHandle;
 
 	
 	//入力されているか
@@ -58,6 +61,7 @@ private:
 	void AtackUpdate(const Input& input);
 	//アタック
 	bool m_isAttack;
+	bool m_isAttackHit;
 	//向き
 	Vector3 m_forward;
 
