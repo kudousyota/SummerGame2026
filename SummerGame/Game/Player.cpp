@@ -65,7 +65,7 @@ void Player::Init()
 	m_hp = 100;
 	m_jumpPower = 10;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
-	m_hakutoHandle = LoadGraph("data/okirohakuto.jpg");
+	m_hakutoHandle = LoadGraph("data/kudonetta.png");
 	int animIndex = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
 	m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animIndex,-1,-1);
 
