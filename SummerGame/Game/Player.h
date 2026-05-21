@@ -58,7 +58,7 @@ private:
 	//アニメーション関数
 	void AnimUpdate();
 	//攻撃処理
-	void AtackUpdate(const Input& input);
+	void AttackUpdate();
 	//アタック
 	bool m_isAttack;
 	bool m_isAttackHit;

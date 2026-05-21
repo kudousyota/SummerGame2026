@@ -2,6 +2,8 @@
 #include "../Game/Player.h"
 #include "../Game/Camera.h"
 #include <memory>
+#include "../Game/Enemy.h"
+#include <vector>
 
 class Input;
 class SceneMain
@@ -21,5 +23,6 @@ private:
 
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
+	std::vector<std::shared_ptr<Enemy>> m_pEnemy;
 };
 

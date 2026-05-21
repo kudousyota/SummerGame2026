@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="System\CollisionManager.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Character.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="System\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="System\CollisionManager.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Character.h" />

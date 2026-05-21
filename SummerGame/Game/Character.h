@@ -14,6 +14,9 @@ public:
 	virtual void Draw() = 0;
 	//当たり判定
 	virtual void Collision();
+
+	virtual Vector3 GetPosition() const { return m_pos; }
+	virtual void ApplyDamage(int dmg) { m_hp -= dmg; }
 protected:
 	//共通のデータや関数を入れる
 	float m_speed;

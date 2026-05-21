@@ -32,6 +32,11 @@ void SceneMain::Init()
 
 	m_pPlayer->SetCamera(m_pCamera);
 
+	auto enemy = std::make_shared<Enemy>();
+	enemy->Init();
+
+	m_pEnemy.push_back(enemy);
+
 
 }
 
@@ -40,6 +45,17 @@ void SceneMain::Update(Input& input)
 	m_frameCount++;
 	m_pPlayer->Update(input);
 	m_pCamera->Update();
+
+	if (!m_pEnemy.empty())
+	{
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+				enemy->Update(input);
+			}
+		}
+	}
 }
 
 void SceneMain::Draw()
@@ -47,6 +63,16 @@ void SceneMain::Draw()
 
 	m_pPlayer->Draw();
 
+	if (!m_pEnemy.empty())
+	{
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+				enemy->Draw();
+			}
+		}
+	}
 
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));

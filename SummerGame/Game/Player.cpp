@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "../System/Input.h"
 #include "Camera.h"
+#include "../System/CollisionManager.h"
 
 namespace
 {
@@ -94,6 +95,7 @@ void Player::Update(const Input& input)
 		{
 			m_inputState = Inputdata::Attack;
 			m_isAttack = true;
+			m_isAttackHit = false;
 		}
 		else if (input.IsPressed("up"))
 		{
@@ -166,6 +168,9 @@ void Player::Update(const Input& input)
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
+	//攻撃判定
+	AttackUpdate();
+
 	// アニメーション更新
 	AnimUpdate();
 }
@@ -174,7 +179,7 @@ void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
 
-	DrawBillboard3D(VGet(50.0f,30.0f,20.0f), 0.0f, 0.0f, 500, 0.0f, m_hakutoHandle, false);
+	//DrawBillboard3D(VGet(50.0f,30.0f,20.0f), 0.0f, 0.0f, 500, 0.0f, m_hakutoHandle, false);
 
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
@@ -195,7 +200,6 @@ Vector3 Player::GetCameraTarget() const
 {
 	return m_pos + kPlayerToTarget;
 }
-
 void Player::AnimUpdate()
 {
 	// アニメ進行
@@ -210,6 +214,7 @@ void Player::AnimUpdate()
 		{
 			m_isPunchRush = true;
 			m_isNextAttack = false;
+			m_isAttackHit = false;
 
 			// Punchrush開始なので次フレームで切り替え
 			m_inputState = Inputdata::Punchrush;
@@ -333,5 +338,27 @@ void Player::AnimUpdate()
 			m_modelHandle,
 			m_cureentAnimHandle,
 			1.0f);
+	}
+}
+void Player::AttackUpdate()
+{
+	if (!m_isAttack) return;
+
+	// 攻撃有効フレームのみ
+	if (m_currentAnimCount >= kAttackStartFrame &&
+		m_currentAnimCount <= kAttackEndFrame)
+	{
+		// まだヒット処理していない時だけ
+		if (!m_isAttackHit)
+		{
+			CollisionManager::Instance().CheckAttackSphere(
+				this,
+				m_attackpos,
+				50.0f,
+				m_attackPower
+			);
+
+			m_isAttackHit = true;
+		}
 	}
 }
