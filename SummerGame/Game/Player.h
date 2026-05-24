@@ -73,6 +73,8 @@ private:
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
+	float GetCollisionRadius() const override { return 30.0f; }
+	float GetCollisionHeight() const override { return 100.0f; }
 
 };
 

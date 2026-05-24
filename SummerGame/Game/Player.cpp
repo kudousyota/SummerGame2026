@@ -44,7 +44,7 @@ Player::Player() :
 	m_isInput(false),
 	m_isAttack(false),
 	m_inputState(Inputdata::None),
-	m_forward(VGet(0.0f,0.0f,0.0f)),
+	m_forward(VGet(0.0f, 0.0f, 1.0f)),
 	m_hakutoHandle(-1),
 	m_isAttackHit(false),
 	m_isNextAttack(false),
@@ -55,7 +55,9 @@ Player::Player() :
 
 Player::~Player()
 {
-	MV1DeleteModel(m_modelHandle);
+	CollisionManager::Instance().Unregister(this);
+
+	MV1DeleteModel(m_modelHandle);	
 }
 
 void Player::Init()
@@ -76,6 +78,8 @@ void Player::Init()
 	m_lastAnimCount = 0.0f;
 
 	m_animChangeFrame = 0;
+
+	CollisionManager::Instance().Register(this);
 	
 }
 
@@ -168,11 +172,13 @@ void Player::Update(const Input& input)
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
+	// アニメーション更新
+	AnimUpdate();
+
 	//攻撃判定
 	AttackUpdate();
 
-	// アニメーション更新
-	AnimUpdate();
+	
 }
 
 void Player::Draw()
@@ -342,6 +348,7 @@ void Player::AnimUpdate()
 }
 void Player::AttackUpdate()
 {
+
 	if (!m_isAttack) return;
 
 	// 攻撃有効フレームのみ

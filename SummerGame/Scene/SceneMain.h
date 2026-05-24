@@ -15,6 +15,8 @@ public:
 	void Init();
 	void Update(Input& input);
 	void Draw();
+
+
 private:
 	void DrawGrid();
 

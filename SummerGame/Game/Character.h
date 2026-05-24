@@ -15,8 +15,14 @@ public:
 	//当たり判定
 	virtual void Collision();
 
+	virtual void ApplyDamage(int damage);
+
 	virtual Vector3 GetPosition() const { return m_pos; }
-	virtual void ApplyDamage(int dmg) { m_hp -= dmg; }
+
+	// カプセルの半径（XZ方向）
+	virtual float GetCollisionRadius() const;
+	// カプセルの高さ（Y方向の長さ）
+	virtual float GetCollisionHeight() const;
 protected:
 	//共通のデータや関数を入れる
 	float m_speed;
@@ -25,5 +31,6 @@ protected:
 	float m_gravity;
 	float m_angle;
 	Vector3 m_pos;
+	
 };
 

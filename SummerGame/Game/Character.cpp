@@ -29,3 +29,23 @@ void Character::Collision()
 	//当たり判定
 
 }
+
+void Character::ApplyDamage(int damage)
+{
+	m_hp -= damage;
+
+	if (m_hp < 0)
+	{
+		m_hp = 0;
+	}
+}
+
+float Character::GetCollisionRadius() const
+{
+	return 30.0f;
+}
+
+float Character::GetCollisionHeight() const
+{
+	return 100.0f;
+}
