@@ -3,7 +3,8 @@
 #include "../System/CollisionManager.h"
 
 Enemy::Enemy():
-	m_modelHandle(-1)
+	m_modelHandle(-1),
+	m_isDead(false)
 {
 }
 
@@ -18,7 +19,7 @@ void Enemy::Init()
 {
 	Character::Init();
 
-	m_hp = 100;
+	m_hp = 50;
 
 	m_pos = VGet(0.0f, 0.0f, 0.0f);
 	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
@@ -28,8 +29,6 @@ void Enemy::Init()
 
 void Enemy::Update(const Input& input)
 {
-	
-
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
@@ -39,6 +38,13 @@ void Enemy::Update(const Input& input)
 
 void Enemy::Draw()
 {
+
+	//HPがゼロになったら
+	if (m_isDead)
+	{
+		return;
+	}
+
 	MV1DrawModel(m_modelHandle);
 
 	DrawCapsule3D(m_pos.ToDxLibVector(),
@@ -62,11 +68,23 @@ void Enemy::Draw()
 
 void Enemy::ApplyDamage(int damage)
 {
+	if (m_isDead)
+	{
+		return;
+	}
+
 	m_hp -= damage;
 
-	if (m_hp < 0)
+	if (m_hp <= 0)
 	{
 		m_hp = 0;
+		//死んだ
+		m_isDead = true;
+
+		//当たり判定を消す
+		CollisionManager::Instance().Unregister(this);
+
+		printfDx("EnemyDead!\n");
 	}
 
 	printfDx("Enemy HP = %d\n",m_hp);

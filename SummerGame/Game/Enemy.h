@@ -19,9 +19,13 @@ public:
 	float GetCollisionRadius() const override { return 70.0f; }
 	float GetCollisionHeight() const override { return 100.0f; }
 
+	bool IsDead()const { return m_isDead; }
+
 private:
 	//ハンドル
 	int m_modelHandle;
+	//しんだか
+	bool m_isDead;
 
 };
 

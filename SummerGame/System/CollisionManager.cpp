@@ -16,8 +16,13 @@ void CollisionManager::Register(Character* character)
 // 登録済みのキャラクターを削除
 void CollisionManager::Unregister(Character* character)
 {
-	auto it = std::find(m_pCharacters.begin(), m_pCharacters.end(), character);
-	if (it != m_pCharacters.end()) m_pCharacters.erase(it);
+	// 登録済みキャラクターの中から対象を探す
+	auto iterator = std::find(m_pCharacters.begin(), m_pCharacters.end(), character);
+	// 見つかったら登録リストから削除
+	if (iterator != m_pCharacters.end())
+	{
+		m_pCharacters.erase(iterator);
+	}
 }
 // 球状の攻撃判定を行う
 void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos, float radius, int damage)
@@ -43,7 +48,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		float t = 0.0f;
 		if (abLen2 > 0.000001f)
 		{
-			// 線分上の最近接点パラメータ t（0..1 にクランプ）
+			// 線分上の最近接点パラメータ t
 			t = ap.Dot(ab) / abLen2;
 			if (t < 0.0f) t = 0.0f;
 			if (t > 1.0f) t = 1.0f;
@@ -53,7 +58,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		Vector3 diff = closest - pos;
 		float dist2 = diff.SqMagnitude();
 
-		// 衝突条件：球の中心とカプセル中心線の最短距離 <= (攻撃半径 + カプセル半径)
+		// 球の中心とカプセル中心線の最短距離 <= (攻撃半径 + カプセル半径)
 		float combined = radius + capsuleRadius;
 		if (dist2 <= combined * combined)
 		{
