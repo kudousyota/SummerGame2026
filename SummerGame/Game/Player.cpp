@@ -128,7 +128,7 @@ void Player::Update(const Input& input)
 			m_isNextAttack = true;
 		}
 		//ラッシュかどうか
-		m_inputState =m_isPunchRush ?Inputdata::Punchrush :Inputdata::Attack;
+		m_inputState = m_isPunchRush ?Inputdata::Punchrush :Inputdata::Attack;
 	}
 	
 
@@ -191,8 +191,6 @@ void Player::Draw()
 
 	if (m_isAttack&&m_currentAnimCount >= kAttackStartFrame && m_currentAnimCount <= kAttackEndFrame)
 	{
-		
-
 		DrawSphere3D(m_attackpos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
 	}
 	//ラッシュの時にも当たり判定をだす
@@ -331,9 +329,7 @@ void Player::AnimUpdate()
 		//いらないやつ
 		if (rate >= 1.0f)
 		{
-			MV1DetachAnim(
-				m_modelHandle,
-				m_lastAnimHandle);
+			MV1DetachAnim(m_modelHandle,m_lastAnimHandle);
 
 			m_lastAnimHandle = -1;
 		}
