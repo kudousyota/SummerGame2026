@@ -150,6 +150,7 @@
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
     <ClCompile Include="System\Vector3.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Scene\SceneMain.h" />
     <ClInclude Include="System\Vector3.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />
