@@ -21,55 +21,43 @@ public:
 	void SetCamera(std::shared_ptr<Camera> camera) { m_pCamera = camera; }
 
 private:
-	enum class Inputdata
+	
+	enum class PlayerState
 	{
-		None,
-		Up,
-		Down,
-		Left,
-		Right,
-		Jump,
+		Idle,
+		Walk,
 		Attack,
-		Punchrush
+		Avoid,
+		Damage
 	};
 
-	Inputdata m_inputState;
+	// 現在の状態
+	PlayerState m_currentState;
 
-	int m_modelHandle;
+	// 前回の状態
+	PlayerState m_prevState;
+
 	int m_jumpPower;
 	bool m_isGround;
 
 	int m_hakutoHandle;
 
 	
-	//入力されているか
-	bool m_isInput;
-
-	//アニメーション系
-	float m_currentAnimCount;
-	float m_lastAnimCount;
-	//アニメーションのハンドル
-	int m_cureentAnimHandle;
-	int m_lastAnimHandle;
-	//現在セットしているアニメーションのインデックス
-	int m_currentAnimIndex;
-	//アニメーション切り替えのフレーム数
-	int m_animChangeFrame;
-	//アニメーション関数
-	void AnimUpdate();
 	//攻撃処理
 	void AttackUpdate();
 	//アタック
-	bool m_isAttack;
 	bool m_isAttackHit;
 	//次に行けるか
 	bool m_isNextAttack;
-	bool m_isPunchRush;
 
 	//攻撃する場所
-	Vector3 m_attackpos;
+	Vector3 m_attackPos;
 	//向き
 	Vector3 m_forward;
+
+	void TransitionTo(PlayerState nextState);
+	void EnterState();
+	void ExitState();
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;

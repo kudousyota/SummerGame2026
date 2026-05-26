@@ -21,7 +21,7 @@ public:
 	//アニメションの進行率を返す//0から１の値を返す
 	float GetAnimRate();
 
-
+	float GetCurrentAnimTime() const{return m_currentAnimCount;}
 
 private:
 	//モデルのハンドル

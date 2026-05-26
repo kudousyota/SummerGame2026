@@ -1,5 +1,6 @@
 #pragma once
 #include "../System/Vector3.h"
+#include "../System/Animation.h"
 
 //プレイヤーとエネミーの基底クラス
 class Input;
@@ -25,6 +26,8 @@ public:
 	virtual float GetCollisionHeight() const;
 protected:
 	//共通のデータや関数を入れる
+	int m_modelHandle;
+	Animation m_animation;
 	float m_speed;
 	int m_hp;
 	int m_attackPower;

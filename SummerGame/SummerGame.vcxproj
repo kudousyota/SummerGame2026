@@ -135,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\CollisionManager.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
@@ -150,10 +150,10 @@
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
     <ClCompile Include="System\Vector3.cpp" />
-    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
+    <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\CollisionManager.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Camera.h" />
@@ -168,7 +168,7 @@
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Scene\SceneMain.h" />
     <ClInclude Include="System\Vector3.h" />
-    <ClInclude Include="Timer.h" />
+    <ClInclude Include="System\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />
