@@ -18,7 +18,7 @@ namespace
 
 	const char* const kPunchAnimName = "Player|Punch";
 
-	const char* const kPunchrushAnimName = "Player|Punchrush";
+	const char* const kPunchRushAnimName = "Player|Punchrush";
 
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame = 10;
@@ -82,8 +82,7 @@ void Player::Update(const Input& input)
 		{
 			TransitionTo(PlayerState::Attack);
 		}
-
-		if (input.IsPressed("up") ||
+		if (input.IsPressed("up")	||
 			input.IsPressed("down") ||
 			input.IsPressed("left") ||
 			input.IsPressed("right"))
@@ -112,15 +111,37 @@ void Player::Update(const Input& input)
 
 	case PlayerState::Attack:
 
-		// 攻撃アニメ終了で戻る
+		//コンボ受け付け
+		if (input.IsTriggered("Attack"))
+		{
+			m_isNextAttack = true;
+		}
+		// 攻撃アニメ終了
 		if (m_animation.GetAnimEndFlag())
 		{
-			TransitionTo(PlayerState::Idle);
+			if (m_isNextAttack)
+			{
+				TransitionTo(PlayerState::Rush);
+				m_isNextAttack = false;
+			}
+			else
+			{
+				TransitionTo(PlayerState::Idle);
+			}
+			
 		}
 
 		break;
+	
+	case PlayerState::Rush:
 
-	default:
+		float rate = m_animation.GetAnimRate();
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Idle);
+
+		}
 		break;
 	}
 	//通常移動
@@ -158,7 +179,7 @@ void Player::Update(const Input& input)
 		}
 	}
 	//前側に表示高さは微調整
-	m_attackPos =m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -185,6 +206,10 @@ void Player::Draw()
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,6,0xffffff,0xffffff,false);
 	}
+	if (m_currentState == PlayerState::Rush)
+	{
+		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
+	}
 }
 
 Vector3 Player::GetCameraTarget() const
@@ -193,7 +218,7 @@ Vector3 Player::GetCameraTarget() const
 }
 void Player::AttackUpdate()
 {
-	if (m_currentState != PlayerState::Attack)
+	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush)
 	{
 		return;
 	}
@@ -207,9 +232,17 @@ void Player::AttackUpdate()
 		{
 			CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 
-				m_isAttackHit = true;
+			m_isAttackHit = true;
 		}
+		if (m_currentState == PlayerState::Rush)
+		{
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+		}
+		
 	}
+	
+	
+
 }
 void Player::TransitionTo(PlayerState nextState)
 {
@@ -236,10 +269,14 @@ void Player::TransitionTo(PlayerState nextState)
 	case PlayerState::Attack:
 
 		m_isAttackHit = false;
+		m_isNextAttack = false;
 
 		m_animation.ChangeAnim(kPunchAnimName,false,0.5f);
 		break;
+	case PlayerState::Rush:
 
+		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.5f);
+		break;
 	default:
 		break;
 	}

@@ -27,6 +27,7 @@ private:
 		Idle,
 		Walk,
 		Attack,
+		Rush,
 		Avoid,
 		Damage
 	};
