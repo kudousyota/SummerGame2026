@@ -80,11 +80,11 @@ void Animation::Update()
 	if (m_prevAnimHandle != -1)
 	{
 		float totalPrevAnimCount = MV1GetAttachAnimTotalTime(m_modelHandle, m_prevAnimHandle);
-		printfDx(
+		/*printfDx(
 			"Handle:%d Time:%f Total:%f\n",
 			m_currentAnimHandle,
 			m_currentAnimCount,
-			totalAnimCount);
+			totalAnimCount);*/
 		
 		if (m_prevAnimCount >= totalPrevAnimCount)
 		{

@@ -124,8 +124,7 @@ void Player::Update(const Input& input)
 		break;
 	}
 	//通常移動
-	if (m_currentState == PlayerState::Idle ||
-		m_currentState == PlayerState::Walk)
+	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk)
 	{
 		Vector3 moveVec(0, 0, 0);
 
@@ -155,9 +154,7 @@ void Player::Update(const Input& input)
 			m_forward = moveVec;
 			m_pos += moveVec * m_speed;
 
-			m_angle =
-				atan2f(moveVec.x, moveVec.z)
-				+ DX_PI_F;
+			m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
 		}
 	}
 	//前側に表示高さは微調整
@@ -168,11 +165,8 @@ void Player::Update(const Input& input)
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
-	
-
 	//攻撃判定
 	AttackUpdate();
-
 	
 }
 
@@ -180,28 +174,16 @@ void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
 
-	DrawCapsule3D(
-		m_pos.ToDxLibVector(),
-		VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),
-		30.0f,
-		16,
-		GetColor(0, 255, 0),
-		GetColor(0, 255, 0),
-		false);
+	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
 	float animTime = m_animation.GetCurrentAnimTime();
 
+	//攻撃判定
 	if (m_currentState == PlayerState::Attack &&
 		animTime >= kAttackStartFrame &&
 		animTime <= kAttackEndFrame)
 	{
-		DrawSphere3D(
-			m_attackPos.ToDxLibVector(),
-			50.0f,
-			6,
-			0xffffff,
-			0xffffff,
-			false);
+		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,6,0xffffff,0xffffff,false);
 	}
 }
 
@@ -216,22 +198,16 @@ void Player::AttackUpdate()
 		return;
 	}
 
-	float animTime =
-		m_animation.GetCurrentAnimTime();
+	float animTime = m_animation.GetCurrentAnimTime();
 
 	if (animTime >= kAttackStartFrame &&
 		animTime <= kAttackEndFrame)
 	{
 		if (!m_isAttackHit)
 		{
-			CollisionManager::Instance()
-				.CheckAttackSphere(
-					this,
-					m_attackPos,
-					50.0f,
-					m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 
-			m_isAttackHit = true;
+				m_isAttackHit = true;
 		}
 	}
 }
@@ -249,28 +225,19 @@ void Player::TransitionTo(PlayerState nextState)
 	{
 	case PlayerState::Idle:
 
-		m_animation.ChangeAnim(
-			kIdleAnimName,
-			true,
-			0.5f);
+		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
 
 	case PlayerState::Walk:
 
-		m_animation.ChangeAnim(
-			kWalkAnimName,
-			true,
-			0.5f);
+		m_animation.ChangeAnim(kWalkAnimName,true,0.5f);
 		break;
 
 	case PlayerState::Attack:
 
 		m_isAttackHit = false;
 
-		m_animation.ChangeAnim(
-			kPunchAnimName,
-			false,
-			0.5f);
+		m_animation.ChangeAnim(kPunchAnimName,false,0.5f);
 		break;
 
 	default:
