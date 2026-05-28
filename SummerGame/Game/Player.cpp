@@ -197,6 +197,8 @@ void Player::Draw()
 
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
+	DrawBillboard3D(VGet(100.0f, 50.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
+
 	float animTime = m_animation.GetCurrentAnimTime();
 
 	//攻撃判定
