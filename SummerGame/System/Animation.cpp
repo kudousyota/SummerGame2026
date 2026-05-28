@@ -13,7 +13,7 @@ Animation::Animation():
 	m_prevAnimHandle(-1),
 	m_currentAnimCount(0.0f),
 	m_prevAnimCount(0.0f),
-	m_animChangeFrame(0),
+	m_animChangeFrame(0.0f),
 	m_isRoop(false),
 	m_prevRoop(false),
 	m_isEndAnim(false),
