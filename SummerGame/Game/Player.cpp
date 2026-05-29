@@ -188,10 +188,10 @@ void Player::Update()
 		}
 	}
 
-	if (CollisionManager::Instance().CheckStageCollision(this, m_pStage->GetModelHandle()))
+	/*if (CollisionManager::Instance().CheckStageCollision(this, m_pStage->GetModelHandle()))
 	{
 		m_pos = oldPos;
-	}
+	}*/
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
 

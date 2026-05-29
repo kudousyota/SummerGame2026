@@ -1,5 +1,6 @@
 #include "SceneMain.h"
 #include "DxLib.h"
+#include "../System/Input.h"
 
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -51,6 +52,8 @@ void SceneMain::Init()
 
 void SceneMain::Update(Input& input)
 {
+	Input::Instance().Update();
+
 	m_frameCount++;
 	m_pPlayer->Update();
 	m_pCamera->Update();
