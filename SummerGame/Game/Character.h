@@ -1,9 +1,11 @@
 #pragma once
 #include "../System/Vector3.h"
 #include "../System/Animation.h"
+#include <memory>
 
 //プレイヤーとエネミーの基底クラス
 class Input;
+class Stage;
 class Character
 {
 public:
@@ -11,7 +13,7 @@ public:
 	virtual ~Character();
 
 	virtual void Init();
-	virtual void Update(const Input& input) = 0;
+	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	//当たり判定
 	virtual void Collision();
@@ -24,6 +26,11 @@ public:
 	virtual float GetCollisionRadius() const;
 	// カプセルの高さ（Y方向の長さ）
 	virtual float GetCollisionHeight() const;
+
+	virtual void SetPosition(const Vector3& pos) { m_pos = pos; }
+
+	void SetStage(std::shared_ptr<Stage> stage);
+
 protected:
 	//共通のデータや関数を入れる
 	int m_modelHandle;
@@ -34,6 +41,9 @@ protected:
 	float m_gravity;
 	float m_angle;
 	Vector3 m_pos;
+	std::shared_ptr<Stage> m_pStage;
+private:
+	
 	
 };
 

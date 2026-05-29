@@ -21,6 +21,8 @@ struct InputState
 class Input
 {
 public:
+	static Input& Instance();
+
 	Input();
 	//これを毎フレーム呼び出す
 	//入力情報を入れる

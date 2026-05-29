@@ -5,13 +5,14 @@
 
 class Camera;
 class Input;
+class Stage; 
 class Player : public Character
 {
 public:
 	Player();
 	~Player() override;
 	void Init()override; 
-	void Update(const Input& input) override;
+	void Update() override;
 	void Draw() override;
 
 	//カメラの注視点を取得する関数
@@ -62,6 +63,7 @@ private:
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
+
 	float GetCollisionRadius() const override { return 30.0f; }
 	float GetCollisionHeight() const override { return 100.0f; }
 

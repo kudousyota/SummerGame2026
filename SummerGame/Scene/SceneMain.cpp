@@ -37,13 +37,22 @@ void SceneMain::Init()
 
 	m_pEnemy.push_back(enemy);
 
+	m_pStage = std::make_shared<Stage>();
+	m_pStage->Init();
+	m_pPlayer->SetStage(m_pStage);
+
+	for (auto& enemy : m_pEnemy)
+	{
+		enemy->SetStage(m_pStage);
+	}
+
 
 }
 
 void SceneMain::Update(Input& input)
 {
 	m_frameCount++;
-	m_pPlayer->Update(input);
+	m_pPlayer->Update();
 	m_pCamera->Update();
 
 	if (!m_pEnemy.empty())
@@ -52,7 +61,7 @@ void SceneMain::Update(Input& input)
 		{
 			if (enemy)
 			{
-				enemy->Update(input);
+				enemy->Update();
 			}
 		}
 	}
@@ -62,6 +71,7 @@ void SceneMain::Draw()
 {
 
 	m_pPlayer->Draw();
+	m_pStage->Draw();
 
 	if (!m_pEnemy.empty())
 	{

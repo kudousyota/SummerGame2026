@@ -10,7 +10,7 @@ public:
 	Enemy();
 	~Enemy()override;
 	void Init()override;
-	void Update(const Input& input)override;
+	void Update() override;
 	void Draw()override;
 
 	//ダメージ

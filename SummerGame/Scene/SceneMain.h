@@ -4,6 +4,7 @@
 #include <memory>
 #include "../Game/Enemy.h"
 #include <vector>
+#include "../Game/Stage.h"
 
 class Input;
 class SceneMain
@@ -16,7 +17,7 @@ public:
 	void Update(Input& input);
 	void Draw();
 
-
+	
 private:
 	void DrawGrid();
 
@@ -25,6 +26,7 @@ private:
 
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
+	std::shared_ptr<Stage> m_pStage;
 	std::vector<std::shared_ptr<Enemy>> m_pEnemy;
 };
 

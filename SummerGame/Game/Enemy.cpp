@@ -27,7 +27,7 @@ void Enemy::Init()
 	CollisionManager::Instance().Register(this);
 }
 
-void Enemy::Update(const Input& input)
+void Enemy::Update()
 {
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);

@@ -22,6 +22,8 @@ void Character::Init()
 	m_gravity = 0.5f;
 	m_pos = VGet(0.0f, 0.0f, 0.0f);
 	m_angle = 0.0f;
+
+	
 }
 
 void Character::Collision()
@@ -48,4 +50,9 @@ float Character::GetCollisionRadius() const
 float Character::GetCollisionHeight() const
 {
 	return 100.0f;
+}
+
+void Character::SetStage(std::shared_ptr<Stage> stage)
+{
+	m_pStage = stage;
 }

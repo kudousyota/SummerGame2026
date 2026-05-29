@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Stage.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\CollisionManager.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Stage.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\CollisionManager.h" />
     <ClInclude Include="Game\Enemy.h" />

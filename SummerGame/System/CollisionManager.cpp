@@ -1,6 +1,7 @@
 #include "CollisionManager.h"
 #include "../Game/Character.h"
 #include <algorithm>
+#include <vector>
 
 // シングルトンのCollisionManagerを取得
 CollisionManager& CollisionManager::Instance()
@@ -65,4 +66,35 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 			character->ApplyDamage(damage);
 		}
 	}
+}
+
+bool CollisionManager::CheckStageCollision(Character* character, int stageHandle)
+{
+	//プレイヤーのカプセル情報を取得
+	float radius = character->GetCollisionRadius();
+	float height = character->GetCollisionHeight();
+
+
+	Vector3 pos = character->GetPosition();
+	//カプセルの足元
+	VECTOR start = pos.ToDxLibVector();
+	//カプセルの頭のほう
+	VECTOR end = VAdd(start, VGet(0.0f, height, 0.0f));
+	
+	// ステージモデルとのカプセル衝突判定
+	auto hit = MV1CollCheck_Capsule(
+		stageHandle, // ステージモデル
+		-1,                 // 全フレーム対象
+		start,
+		end,
+		radius
+	);
+
+	// 当たっていたら
+	if (hit.HitNum > 0)
+	{
+		return true;
+	}
+
+	return false;
 }

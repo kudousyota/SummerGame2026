@@ -17,6 +17,12 @@ namespace
 		//12バイト
 	};
 }
+Input& Input::Instance()
+{
+	static Input input;
+	return input;
+}
+
 void Input::InitializeInputTable()
 {
 	m_inputTable["ok"] = { { PeripheralType::keyboard,KEY_INPUT_RETURN},
@@ -40,6 +46,8 @@ void Input::InitializeInputTable()
 	m_inputTable["right"] = { { PeripheralType::keyboard,KEY_INPUT_RIGHT},
 						  { PeripheralType::pad1,PAD_INPUT_RIGHT } };
 }
+
+
 
 Input::Input() : m_inputData{}, m_lastInputData{}, m_inputTable{}
 {

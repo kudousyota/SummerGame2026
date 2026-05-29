@@ -3,6 +3,7 @@
 #include "../System/Input.h"
 #include "Camera.h"
 #include "../System/CollisionManager.h"
+#include "Stage.h"
 
 namespace
 {
@@ -62,14 +63,17 @@ void Player::Init()
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	CollisionManager::Instance().Register(this);
+
 	
 }
 
-void Player::Update(const Input& input)
+void Player::Update()
 {
 
 	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
+
+	auto& input = Input::Instance();
 
 	// アニメーション更新
 	m_animation.Update();
@@ -144,6 +148,11 @@ void Player::Update(const Input& input)
 		}
 		break;
 	}
+
+	//前の場所
+	Vector3 oldPos = m_pos;
+
+
 	//通常移動
 	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk)
 	{
@@ -177,6 +186,11 @@ void Player::Update(const Input& input)
 
 			m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
 		}
+	}
+
+	if (CollisionManager::Instance().CheckStageCollision(this, m_pStage->GetModelHandle()))
+	{
+		m_pos = oldPos;
 	}
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
