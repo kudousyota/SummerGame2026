@@ -41,6 +41,8 @@ protected:
 	float m_gravity;
 	float m_angle;
 	Vector3 m_pos;
+	Vector3 m_velocity;
+	bool m_isGround;
 	std::shared_ptr<Stage> m_pStage;
 private:
 	

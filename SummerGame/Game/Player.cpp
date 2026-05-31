@@ -34,7 +34,6 @@ namespace
 Player::Player() :
 	m_pCamera(nullptr),
 	m_jumpPower(0),
-	m_isGround(true),
 	m_forward(VGet(0.0f, 0.0f, 1.0f)),
 	m_hakutoHandle(-1),
 	m_isAttackHit(false),
@@ -57,13 +56,15 @@ void Player::Init()
 	m_currentState = PlayerState::Idle;
 	m_prevState = PlayerState::Idle;
 
+	m_pos = VGet(0.0f, 50.0f, 0.0f);
+
 	m_hp = 100;
 	m_jumpPower = 10;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	CollisionManager::Instance().Register(this);
-
+	m_isGround = true;
 	
 }
 
@@ -151,7 +152,7 @@ void Player::Update()
 
 	//前の場所
 	Vector3 oldPos = m_pos;
-
+	
 
 	//通常移動
 	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk)
@@ -188,10 +189,23 @@ void Player::Update()
 		}
 	}
 
-	/*if (CollisionManager::Instance().CheckStageCollision(this, m_pStage->GetModelHandle()))
+	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk)
 	{
-		m_pos = oldPos;
-	}*/
+		if (m_isGround && input.IsTriggered("Jump"))
+		{
+			// 上にジャンプパワーを入れる
+			m_velocity.y = m_jumpPower;
+
+			// ジャンプしたら空中ってことにする
+			m_isGround = false;
+
+			// 【保険】地面判定から確実に引き離すために1ピクセルだけ浮かすとより安定します
+			m_pos.y += 1.0f;
+		}
+	}
+
+	Character::Collision();
+
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
 
@@ -226,6 +240,7 @@ void Player::Draw()
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
+
 }
 
 Vector3 Player::GetCameraTarget() const

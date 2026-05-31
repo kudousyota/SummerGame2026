@@ -30,7 +30,8 @@ private:
 		Attack,
 		Rush,
 		Avoid,
-		Damage
+		Damage,
+		Jump
 	};
 
 	// 現在の状態
@@ -40,7 +41,6 @@ private:
 	PlayerState m_prevState;
 
 	int m_jumpPower;
-	bool m_isGround;
 
 	int m_hakutoHandle;
 
