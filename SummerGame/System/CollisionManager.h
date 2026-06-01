@@ -14,7 +14,7 @@ public:
 	//ステージとの判定
 	bool CheckStageCollision(Character* caracter,int stageHandle);
 	//ステージの地面
-	bool CheckStageGround(Character* character, int stageHandle, float* outGroundY);
+	bool CheckStageGround(Character* character, int stageHandle, float& outGroundY);
 private:
 	std::vector<Character*> m_pCharacters;
 

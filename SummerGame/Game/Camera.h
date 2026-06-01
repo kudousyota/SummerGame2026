@@ -32,5 +32,7 @@ private:
 	//カメラの角度
 	//カメラの水平回転角度
 	float m_cameraAngleX;
+
+	float m_cameraTargetY;
 };
 

@@ -8,9 +8,9 @@ namespace
 	const Vector3 kTargetToCamera = VGet(0.0f, 250.0f, 1100.0f);
 
 	//注視点からカメラまでの距離
-	constexpr float kCameraDistance = 700.0f;
+	constexpr float kCameraDistance = 450.0f;
 	//カメラの高さ
-	constexpr float kCameraHeight = -350.0f;
+	constexpr float kCameraHeight = -180.0f;
 
 	//補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
 	constexpr float kCameraFollow = 1.0f;
@@ -28,6 +28,7 @@ Camera::Camera() :
 	m_cameraAngleX(0.0f),
 	m_cameraPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_cameraTarget(VGet(0.0f, 0.0f, 0.0f)),
+	m_cameraTargetY(0.0f),
 	m_skyDomeHandle(-1)
 {
 }
@@ -44,6 +45,8 @@ void Camera::Init()
 	//初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
 
+	m_cameraTargetY = cameraTarget.y;
+
 	//カメラの初期位置
 	Vector3 offset;
 	offset.x = sinf(m_cameraAngleX) * kCameraDistance;
@@ -52,6 +55,8 @@ void Camera::Init()
 
 	m_cameraTarget = cameraTarget;
 	m_cameraPos = cameraTarget - offset;
+
+
 
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(), m_cameraTarget.ToDxLibVector());
 
@@ -99,6 +104,9 @@ void Camera::Update()
 
 	//プレイヤー追従先
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
+
+	// Yは固定
+	cameraTarget.y = m_cameraTargetY;
 
 	//カメラの位置
 	Vector3 offset;

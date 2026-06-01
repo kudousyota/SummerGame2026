@@ -99,14 +99,16 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 	return false;
 }
 
-bool CollisionManager::CheckStageGround(Character* character, int stageHandle, float* outGroundY)
+bool CollisionManager::CheckStageGround(Character* character, int stageHandle, float& outGroundY)
 {
 	Vector3 pos = character->GetPosition();
 
+	float radius = character->GetCollisionRadius();
+
 	// レイ(下向きの線分)の開始点と終了点を決める
 	// キャラクターの足元の少し上から、少し下まで
-	VECTOR rayStart = VGet(pos.x, pos.y + 10.0f, pos.z);
-	VECTOR rayEnd = VGet(pos.x, pos.y - 20.0f, pos.z);
+	VECTOR rayStart = VGet(pos.x, pos.y + 5.0f, pos.z);
+	VECTOR rayEnd = VGet(pos.x, pos.y - radius - 5.0f, pos.z);
 
 	// DxLibの線分とモデルの当たり判定
 	MV1_COLL_RESULT_POLY hitPoly = MV1CollCheck_Line(stageHandle, -1, rayStart, rayEnd);
@@ -116,7 +118,7 @@ bool CollisionManager::CheckStageGround(Character* character, int stageHandle, f
 		if (outGroundY)
 		{
 
-			*outGroundY = hitPoly.HitPosition.y; 
+			outGroundY = hitPoly.HitPosition.y;
 		}
 		return true; // 接地
 	}
