@@ -21,6 +21,10 @@ namespace
 
 	const char* const kPunchRushAnimName = "Player|Punchrush";
 
+	const char* const kJumpAnimName = "Player|Jump";
+
+	const char* const kDodgeAnimName = "Player|Dodge";
+
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame = 10;
 
@@ -95,6 +99,26 @@ void Player::Update()
 			TransitionTo(PlayerState::Walk);
 		}
 
+		if (input.IsTriggered("Jump")&& m_isGround)
+		{
+			TransitionTo(PlayerState::Jump);
+
+			//上にジャンプパワーを入れる
+			m_velocity.y = m_jumpPower;
+
+			//ジャンプしたら空中ってことにする
+			m_isGround = false;
+
+			//地面判定から1ピクセルだけ浮かす
+			m_pos.y += 1.0f;
+
+		}
+
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
+
 		break;
 
 	case PlayerState::Walk:
@@ -110,6 +134,20 @@ void Player::Update()
 			!input.IsPressed("right"))
 		{
 			TransitionTo(PlayerState::Idle);
+		}
+
+		if (input.IsTriggered("Jump"))
+		{
+			TransitionTo(PlayerState::Jump);
+
+			//上にジャンプパワーを入れる
+			m_velocity.y = m_jumpPower;
+
+			//ジャンプしたら空中ってことにする
+			m_isGround = false;
+
+			//地面判定から1ピクセルだけ浮かす
+			m_pos.y += 1.0f;
 		}
 
 		break;
@@ -140,12 +178,28 @@ void Player::Update()
 	
 	case PlayerState::Rush:
 
-		float rate = m_animation.GetAnimRate();
+		//float rate = m_animation.GetAnimRate();
 
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
 
+		}
+		break;
+	
+	case PlayerState::Jump:
+		
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Idle);
+		}
+		break;
+
+	case PlayerState::Dodge:
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Idle);
 		}
 		break;
 	}
@@ -155,7 +209,7 @@ void Player::Update()
 	
 
 	//通常移動
-	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk)
+	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump)
 	{
 		Vector3 moveVec(0, 0, 0);
 
@@ -186,21 +240,6 @@ void Player::Update()
 			m_pos += moveVec * m_speed;
 
 			m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
-		}
-	}
-
-	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk)
-	{
-		if (m_isGround && input.IsTriggered("Jump"))
-		{
-			// 上にジャンプパワーを入れる
-			m_velocity.y = m_jumpPower;
-
-			// ジャンプしたら空中ってことにする
-			m_isGround = false;
-
-			// 【保険】地面判定から確実に引き離すために1ピクセルだけ浮かすとより安定します
-			m_pos.y += 1.0f;
 		}
 	}
 
@@ -306,8 +345,17 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 	case PlayerState::Rush:
 
-		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;
+
+	case PlayerState::Jump:
+		m_animation.ChangeAnim(kJumpAnimName, false, 0.38f);
+		break;
+
+	case PlayerState::Dodge:
+		m_animation.ChangeAnim(kDodgeAnimName, false, 0.8f);
+		break;
+
 	default:
 		break;
 	}

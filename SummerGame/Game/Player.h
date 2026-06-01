@@ -31,7 +31,8 @@ private:
 		Rush,
 		Avoid,
 		Damage,
-		Jump
+		Jump,
+		Dodge
 	};
 
 	// 現在の状態
@@ -58,8 +59,8 @@ private:
 	Vector3 m_forward;
 
 	void TransitionTo(PlayerState nextState);
-	void EnterState();
-	void ExitState();
+	//void EnterState();
+	//void ExitState();
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
