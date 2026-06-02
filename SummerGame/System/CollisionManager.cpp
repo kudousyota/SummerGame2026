@@ -38,7 +38,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		float capsuleRadius = character->GetCollisionRadius();
 		float capsuleHeight = character->GetCollisionHeight();
 
-		// カプセルの線分 (a -> b)
+		// カプセルの線分(a -> b)
 		Vector3 a = character->GetPosition();
 		Vector3 b = VGet(a.x, a.y + capsuleHeight, a.z);
 
@@ -49,7 +49,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		float t = 0.0f;
 		if (abLen2 > 0.000001f)
 		{
-			// 線分上の最近接点パラメータ t
+			// 線分上の最近接点パラメータt
 			t = ap.Dot(ab) / abLen2;
 			if (t < 0.0f) t = 0.0f;
 			if (t > 1.0f) t = 1.0f;
@@ -81,7 +81,7 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 	//カプセルの足元
 	VECTOR start = VGet(pos.x, pos.y + radius, pos.z);
 	//カプセルの頭のほう
-	VECTOR end = VAdd(start, VGet(pos.x,pos.y + height - radius,pos.z));
+	VECTOR end = VAdd(start, VGet(0.0f, height - radius * 2.0f, 0.0f));
 	
 	// ステージモデルとのカプセル衝突判定
 	auto hit = MV1CollCheck_Capsule(

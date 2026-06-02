@@ -32,6 +32,11 @@ private:
 
 	//アタック
 	bool m_isAttackHit;
+	//攻撃中か
+	bool m_isAttacking;
+
+	//攻撃のクールタイム
+	int m_attackCooldown;
 
 	//攻撃する場所
 	Vector3 m_attackPos;

@@ -6,7 +6,10 @@
 
 Enemy::Enemy():
 	m_modelHandle(-1),
-	m_isDead(false)
+	m_isDead(false),
+	m_isAttackHit(false),
+	m_attackCooldown(0.0f),
+	m_forward(VGet(0.0f, 0.0f, 1.0f))
 {
 }
 
@@ -23,7 +26,9 @@ void Enemy::Init()
 
 	m_hp = 50;
 
-	m_pos = VGet(0.0f, 0.0f, 0.0f);
+	m_attackCooldown = 0;
+
+	m_pos = VGet(0.0f, 0.0f, 250.0f);
 	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
 
 	CollisionManager::Instance().Register(this);
@@ -31,15 +36,21 @@ void Enemy::Init()
 
 void Enemy::Update()
 {
-
 	Character::Collision();
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
-
-	AttackUpdate();
+	if (m_isAttacking)
+	{
+		AttackUpdate();
+	}
+	else
+	{
+		//攻撃終了でリセット
+		m_isAttackHit = false;
+	}
 }
 
 
@@ -60,6 +71,15 @@ void Enemy::Draw()
 		16,
 		GetColor(255, 0, 0),
 		GetColor(255, 0, 0),
+		false
+	);
+
+	DrawSphere3D(
+		m_attackPos.ToDxLibVector(),
+		50.0f,
+		16,
+		GetColor(0, 255, 0),
+		GetColor(0, 255, 0),
 		false
 	);
 
@@ -108,4 +128,5 @@ void Enemy::AttackUpdate()
 
 		m_isAttackHit = true;
 	}
+	
 }

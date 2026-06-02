@@ -294,13 +294,7 @@ void Player::Draw()
 	DrawSphere3D(m_pos.ToDxLibVector(), 60.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 
-	DrawFormatString(
-		150,
-		150,
-		GetColor(255, 255, 255),
-		"PlayerHP:%d",
-		m_hp
-	);
+	
 
 }
 
@@ -322,7 +316,7 @@ void Player::ApplyDamage(int damage)
 		//当たり判定を消す
 		CollisionManager::Instance().Unregister(this);
 
-		printfDx("PlayerDead!\n");
+		//printfDx("PlayerDead!\n");
 	}
 
 	printfDx("Player HP = %d\n", m_hp);
