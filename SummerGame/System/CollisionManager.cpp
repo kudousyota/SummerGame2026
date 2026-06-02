@@ -86,7 +86,7 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 	// ステージモデルとのカプセル衝突判定
 	auto hit = MV1CollCheck_Capsule(
 		stageHandle, // ステージモデル
-		-1,                 // 全フレーム対象
+		-1,          // 全フレーム対象
 		start,
 		end,
 		radius

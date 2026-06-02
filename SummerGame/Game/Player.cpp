@@ -60,6 +60,7 @@ Player::~Player()
 void Player::Init()
 {
 	Character::Init();
+	CollisionManager::Instance().Register(this);
 	//初期状態
 	m_currentState = PlayerState::Idle;
 	m_prevState = PlayerState::Idle;
@@ -71,7 +72,7 @@ void Player::Init()
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
-	CollisionManager::Instance().Register(this);
+	
 	m_isGround = true;
 	
 }
@@ -316,7 +317,7 @@ void Player::ApplyDamage(int damage)
 		//当たり判定を消す
 		CollisionManager::Instance().Unregister(this);
 
-		//printfDx("PlayerDead!\n");
+		printfDx("PlayerDead!\n");
 	}
 
 	printfDx("Player HP = %d\n", m_hp);

@@ -2,14 +2,15 @@
 #include "DxLib.h"
 #include "../System/CollisionManager.h"
 #include "Stage.h"
-
+#include "Player.h"
 
 Enemy::Enemy():
 	m_modelHandle(-1),
 	m_isDead(false),
 	m_isAttackHit(false),
 	m_attackCooldown(0.0f),
-	m_forward(VGet(0.0f, 0.0f, 1.0f))
+	m_forward(VGet(0.0f, 0.0f, 1.0f)),
+	m_isAttacking(false)
 {
 }
 
@@ -24,6 +25,8 @@ void Enemy::Init()
 {
 	Character::Init();
 
+	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+
 	m_hp = 50;
 
 	m_attackCooldown = 0;
@@ -31,12 +34,15 @@ void Enemy::Init()
 	m_pos = VGet(0.0f, 0.0f, 250.0f);
 	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
 
+
 	CollisionManager::Instance().Register(this);
 }
 
 void Enemy::Update()
 {
 	Character::Collision();
+
+	m_isAttacking = true;
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -120,7 +126,7 @@ void Enemy::ApplyDamage(int damage)
 void Enemy::AttackUpdate()
 {
 	//前側に表示高さは微調整
-	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 
 	if (!m_isAttackHit)
 	{
