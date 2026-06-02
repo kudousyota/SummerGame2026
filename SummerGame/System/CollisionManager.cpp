@@ -59,10 +59,12 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		Vector3 diff = closest - pos;
 		float dist2 = diff.SqMagnitude();
 
-		// 球の中心とカプセル中心線の最短距離 <= (攻撃半径 + カプセル半径)
+		// 球の中心とカプセル中心線の最短距離(攻撃半径 + カプセル半径)
 		float combined = radius + capsuleRadius;
+		// 最短距離が両者の半径の和以下ならヒット
 		if (dist2 <= combined * combined)
 		{
+			// ダメージを与える
 			character->ApplyDamage(damage);
 		}
 	}
@@ -77,9 +79,9 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 
 	Vector3 pos = character->GetPosition();
 	//カプセルの足元
-	VECTOR start = pos.ToDxLibVector();
+	VECTOR start = VGet(pos.x, pos.y + radius, pos.z);
 	//カプセルの頭のほう
-	VECTOR end = VAdd(start, VGet(0.0f, height, 0.0f));
+	VECTOR end = VAdd(start, VGet(pos.x,pos.y + height - radius,pos.z));
 	
 	// ステージモデルとのカプセル衝突判定
 	auto hit = MV1CollCheck_Capsule(
@@ -93,9 +95,25 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 	// 当たっていたら
 	if (hit.HitNum > 0)
 	{
+		Vector3 pos = character->GetPosition();
+		for(int i = 0;i < hit.HitNum;i++)
+		{
+			// 衝突したポリゴンの情報を取得
+			auto& normal = hit.Dim[i].Normal;
+
+			//法線方向に押し出す
+			pos += Vector3(normal.x, normal.y, normal.z) * 3.0f;
+		}
+
+		character->SetPosition(pos);
+		
+		//MV1CollCheck_Lineが確保した衝突ポリゴン情報を解放
+		MV1CollResultPolyDimTerminate(hit);
+
 		return true;
 	}
 
+	MV1CollResultPolyDimTerminate(hit);
 	return false;
 }
 

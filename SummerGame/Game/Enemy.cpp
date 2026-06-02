@@ -1,6 +1,8 @@
 #include "Enemy.h"
 #include "DxLib.h"
 #include "../System/CollisionManager.h"
+#include "Stage.h"
+
 
 Enemy::Enemy():
 	m_modelHandle(-1),
@@ -29,10 +31,15 @@ void Enemy::Init()
 
 void Enemy::Update()
 {
+
+	Character::Collision();
+
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
+
+	AttackUpdate();
 }
 
 
@@ -88,4 +95,17 @@ void Enemy::ApplyDamage(int damage)
 	}
 
 	printfDx("Enemy HP = %d\n",m_hp);
+}
+
+void Enemy::AttackUpdate()
+{
+	//前側に表示高さは微調整
+	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+
+	if (!m_isAttackHit)
+	{
+		CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+
+		m_isAttackHit = true;
+	}
 }

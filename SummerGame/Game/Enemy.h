@@ -22,10 +22,21 @@ public:
 	bool IsDead()const { return m_isDead; }
 
 private:
+	//攻撃処理
+	void AttackUpdate();
+
 	//ハンドル
 	int m_modelHandle;
 	//しんだか
 	bool m_isDead;
+
+	//アタック
+	bool m_isAttackHit;
+
+	//攻撃する場所
+	Vector3 m_attackPos;
+	//向き
+	Vector3 m_forward;
 
 };
 

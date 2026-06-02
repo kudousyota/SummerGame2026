@@ -15,6 +15,8 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void ApplyDamage(int damage) override;
+
 	//カメラの注視点を取得する関数
 	Vector3 GetCameraTarget()const;
 	float GetAngle() const { return m_angle; }
@@ -57,6 +59,11 @@ private:
 	Vector3 m_attackPos;
 	//向き
 	Vector3 m_forward;
+	//被弾したかどうか
+	bool m_isHit;
+	//死んだ
+	bool m_isDead;
+	
 
 	void TransitionTo(PlayerState nextState);
 	//void EnterState();

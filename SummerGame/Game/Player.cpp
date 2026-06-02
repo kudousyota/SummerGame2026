@@ -42,7 +42,11 @@ Player::Player() :
 	m_hakutoHandle(-1),
 	m_isAttackHit(false),
 	m_isNextAttack(false),
-	m_attackPos(VGet(0.0f,0.0f,0.0f))
+	m_attackPos(VGet(0.0f,0.0f,0.0f)),
+	m_currentState(PlayerState::Idle),
+	m_prevState(PlayerState::Idle),
+	m_isDead(false),
+	m_isHit(false)
 {
 }
 
@@ -60,7 +64,7 @@ void Player::Init()
 	m_currentState = PlayerState::Idle;
 	m_prevState = PlayerState::Idle;
 
-	m_pos = VGet(0.0f, 50.0f, 0.0f);
+	m_pos = VGet(0.0f, 0.0f, 0.0f);
 
 	m_hp = 100;
 	m_jumpPower = 10;
@@ -149,6 +153,7 @@ void Player::Update()
 			//地面判定から1ピクセルだけ浮かす
 			m_pos.y += 1.0f;
 		}
+
 
 		break;
 
@@ -260,6 +265,12 @@ void Player::Update()
 
 void Player::Draw()
 {
+	//HPがゼロになったら
+	if (m_isDead)
+	{
+		return;
+	}
+
 	MV1DrawModel(m_modelHandle);
 
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
@@ -279,7 +290,42 @@ void Player::Draw()
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
+	//回避用の当たり判定
+	DrawSphere3D(m_pos.ToDxLibVector(), 60.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
+
+	DrawFormatString(
+		150,
+		150,
+		GetColor(255, 255, 255),
+		"PlayerHP:%d",
+		m_hp
+	);
+
+}
+
+void Player::ApplyDamage(int damage)
+{
+	if (m_isDead)
+	{
+		return;
+	}
+
+	m_hp -= damage;
+
+	if (m_hp <= 0)
+	{
+		m_hp = 0;
+		//死んだ
+		m_isDead = true;
+
+		//当たり判定を消す
+		CollisionManager::Instance().Unregister(this);
+
+		printfDx("PlayerDead!\n");
+	}
+
+	printfDx("Player HP = %d\n", m_hp);
 }
 
 Vector3 Player::GetCameraTarget() const
@@ -333,7 +379,7 @@ void Player::TransitionTo(PlayerState nextState)
 
 	case PlayerState::Walk:
 
-		m_animation.ChangeAnim(kWalkAnimName,true,0.5f);
+		m_animation.ChangeAnim(kWalkAnimName,true,0.4f);
 		break;
 
 	case PlayerState::Attack:

@@ -52,7 +52,7 @@ void Character::Collision()
 
 	// CollisionManagerに地面判定用の関数を呼び出す
 	if (m_velocity.y <= 0.0f &&
-		CollisionManager::Instance().CheckStageGround(this, stageHandle, &groundY))
+		CollisionManager::Instance().CheckStageGround(this, stageHandle, groundY))
 	{
 		// 地面にいるときは、地面の高さキャラクターの半径分だけY座標を上げる
 		m_pos.y = groundY + GetCollisionRadius();
