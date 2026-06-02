@@ -46,7 +46,8 @@ Player::Player() :
 	m_currentState(PlayerState::Idle),
 	m_prevState(PlayerState::Idle),
 	m_isDead(false),
-	m_isHit(false)
+	m_isHit(false),
+	m_invincibleTime(0)
 {
 }
 
@@ -69,6 +70,7 @@ void Player::Init()
 
 	m_hp = 100;
 	m_jumpPower = 10;
+	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
@@ -87,6 +89,10 @@ void Player::Update()
 
 	// アニメーション更新
 	m_animation.Update();
+	if (m_invincibleTime > 0)
+	{
+		m_invincibleTime--;
+	}
 
 	switch (m_currentState)
 	{
@@ -295,7 +301,13 @@ void Player::Draw()
 	DrawSphere3D(m_pos.ToDxLibVector(), 60.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 
-	
+	DrawFormatString(
+		50,
+		70,
+		GetColor(255, 255, 255),
+		"PlayerHP:%d",
+		m_hp
+	);
 
 }
 
@@ -305,8 +317,16 @@ void Player::ApplyDamage(int damage)
 	{
 		return;
 	}
+	//無敵時間中はダメージを受けない
+	if (m_invincibleTime > 0)
+	{
+		return;
+	}
 
 	m_hp -= damage;
+
+	//無敵時間を設定
+	m_invincibleTime = 120;
 
 	if (m_hp <= 0)
 	{

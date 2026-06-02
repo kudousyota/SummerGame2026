@@ -35,7 +35,7 @@ void SceneMain::Init()
 
 	auto enemy = std::make_shared<Enemy>();
 	enemy->Init();
-
+	enemy->SetPlayer(m_pPlayer);
 	m_pEnemy.push_back(enemy);
 
 	m_pStage = std::make_shared<Stage>();

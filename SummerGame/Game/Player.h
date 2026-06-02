@@ -63,6 +63,8 @@ private:
 	bool m_isHit;
 	//死んだ
 	bool m_isDead;
+	//無敵時間
+	int m_invincibleTime;
 	
 
 	void TransitionTo(PlayerState nextState);

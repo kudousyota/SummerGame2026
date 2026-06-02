@@ -22,6 +22,8 @@ public:
 
 	bool IsDead()const { return m_isDead; }
 
+	void SetPlayer(std::shared_ptr<Player> player);
+
 private:
 	//攻撃処理
 	void AttackUpdate();
@@ -44,5 +46,6 @@ private:
 	//向き
 	Vector3 m_forward;
 
+	std::shared_ptr<Player> m_pPlayer;
 };
 

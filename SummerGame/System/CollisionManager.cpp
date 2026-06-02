@@ -13,6 +13,8 @@ CollisionManager& CollisionManager::Instance()
 void CollisionManager::Register(Character* character)
 {
 	m_pCharacters.push_back(character);
+
+	
 }
 // 登録済みのキャラクターを削除
 void CollisionManager::Unregister(Character* character)
@@ -28,6 +30,8 @@ void CollisionManager::Unregister(Character* character)
 // 球状の攻撃判定を行う
 void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos, float radius, int damage)
 {
+
+	
 	// 登録済みの全キャラクターを走査
 	for (auto* character : m_pCharacters)
 	{

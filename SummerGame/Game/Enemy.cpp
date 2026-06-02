@@ -28,6 +28,7 @@ void Enemy::Init()
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
 	m_hp = 50;
+	m_attackPower = 20;
 
 	m_attackCooldown = 0;
 
@@ -42,7 +43,27 @@ void Enemy::Update()
 {
 	Character::Collision();
 
+	//クールタイム
+	if (m_attackCooldown > 0)
+	{
+		m_attackCooldown--;
+	}
+
+	if (m_attackCooldown <= 0)
+	{
+		AttackUpdate();
+
+		m_attackCooldown = 60;
+	}
+
 	m_isAttacking = true;
+
+	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+
+	if (dir.SqMagnitude() > 0.001f)
+	{
+		m_forward = dir.Normalize();
+	}
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -123,16 +144,22 @@ void Enemy::ApplyDamage(int damage)
 	printfDx("Enemy HP = %d\n",m_hp);
 }
 
+void Enemy::SetPlayer(std::shared_ptr<Player> player)
+{
+	m_pPlayer = player;
+}
+
+
 void Enemy::AttackUpdate()
 {
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 
-	if (!m_isAttackHit)
-	{
-		CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-
-		m_isAttackHit = true;
-	}
+	CollisionManager::Instance().CheckAttackSphere(
+		this,
+		m_attackPos,
+		50.0f,
+		m_attackPower
+	);
 	
 }
