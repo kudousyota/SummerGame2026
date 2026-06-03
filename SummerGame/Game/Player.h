@@ -14,7 +14,7 @@ public:
 	void Init()override; 
 	void Update() override;
 	void Draw() override;
-
+	//ダメージを受ける関数
 	void ApplyDamage(int damage) override;
 
 	//カメラの注視点を取得する関数
@@ -50,6 +50,8 @@ private:
 	
 	//攻撃処理
 	void AttackUpdate();
+	//回避処理
+	void DodgeUpdate();
 	//アタック
 	bool m_isAttackHit;
 	//次に行けるか

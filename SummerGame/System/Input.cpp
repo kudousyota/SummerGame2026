@@ -26,16 +26,16 @@ Input& Input::Instance()
 void Input::InitializeInputTable()
 {
 	m_inputTable["ok"] = { { PeripheralType::keyboard,KEY_INPUT_RETURN},
-					  { PeripheralType::pad1,PAD_INPUT_B } };	// PADのAボタン
+					  { PeripheralType::pad1,PAD_INPUT_B } };	// PADのBボタン
 	m_inputTable["pause"] = { { PeripheralType::keyboard,KEY_INPUT_P},
 					   { PeripheralType::pad1,PAD_INPUT_START } };	// PADのSTARTボタン
 
 	m_inputTable["Attack"] = { { PeripheralType::keyboard,KEY_INPUT_Z},
-						  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
+						  { PeripheralType::pad1,PAD_INPUT_Y } };	// PADのYボタン
 	m_inputTable["Jump"] = { { PeripheralType::keyboard,KEY_INPUT_LSHIFT},
 						  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
 	m_inputTable["Dodge"] = { { PeripheralType::keyboard,KEY_INPUT_X},
-						{ PeripheralType::pad1,PAD_INPUT_X } };	// PADのYボタン
+						{ PeripheralType::pad1,PAD_INPUT_X } };	// PADのXボタン
 
 	m_inputTable["up"] = { { PeripheralType::keyboard,KEY_INPUT_UP},
 						{ PeripheralType::pad1,PAD_INPUT_UP } };
@@ -45,6 +45,8 @@ void Input::InitializeInputTable()
 						  { PeripheralType::pad1,PAD_INPUT_LEFT } };
 	m_inputTable["right"] = { { PeripheralType::keyboard,KEY_INPUT_RIGHT},
 						  { PeripheralType::pad1,PAD_INPUT_RIGHT } };
+	m_inputTable["target"] = { { PeripheralType::keyboard,KEY_INPUT_SPACE},
+							{ PeripheralType::pad1,PAD_INPUT_12 } };	// PADの右スティック押し込み
 }
 
 

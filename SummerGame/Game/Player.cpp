@@ -161,6 +161,10 @@ void Player::Update()
 			m_pos.y += 1.0f;
 		}
 
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 
 		break;
 
@@ -221,7 +225,7 @@ void Player::Update()
 	
 
 	//通常移動
-	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump)
+	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge)
 	{
 		Vector3 moveVec(0, 0, 0);
 
@@ -267,6 +271,8 @@ void Player::Update()
 
 	//攻撃判定
 	AttackUpdate();
+	//回避判定
+	DodgeUpdate();
 	
 }
 
@@ -374,6 +380,23 @@ void Player::AttackUpdate()
 	
 	
 
+}
+void Player::DodgeUpdate()
+{
+	//回避中は当たり判定を消す
+	if (m_currentState == PlayerState::Dodge)
+	{
+		CollisionManager::Instance().Unregister(this);
+	}
+	else
+	{
+		//回避が終わったら当たり判定を戻す
+		if (!m_isDead)
+		{
+			CollisionManager::Instance().Register(this);
+		}
+		
+	}
 }
 void Player::TransitionTo(PlayerState nextState)
 {
