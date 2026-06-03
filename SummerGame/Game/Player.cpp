@@ -33,6 +33,9 @@ namespace
 	constexpr float kAttackStartFrame = 10.0f;
 
 	constexpr float kAttackEndFrame = 15.0f;
+
+	//ジャスト回避の受付フレーム
+	constexpr int kDodgeFrame = 15;
 }
 
 Player::Player() :
@@ -47,7 +50,8 @@ Player::Player() :
 	m_prevState(PlayerState::Idle),
 	m_isDead(false),
 	m_isHit(false),
-	m_invincibleTime(0)
+	m_invincibleTime(0),
+	m_dodgeFrame(0)
 {
 }
 
@@ -212,6 +216,8 @@ void Player::Update()
 		break;
 
 	case PlayerState::Dodge:
+		//ジャスト回避の受付
+		m_dodgeFrame++;
 
 		if (m_animation.GetAnimEndFlag())
 		{
@@ -323,6 +329,17 @@ void Player::ApplyDamage(int damage)
 	{
 		return;
 	}
+	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
+	{
+		// ジャスト回避成功時の処理
+		printfDx("Just\n");
+
+		// ここにスローモーション開始の処理をかくか、
+		//関数を呼ぶ
+
+		// ダメージを受けずに処理を抜ける
+		return;
+	}
 	//無敵時間中はダメージを受けない
 	if (m_invincibleTime > 0)
 	{
@@ -386,7 +403,11 @@ void Player::DodgeUpdate()
 	//回避中は当たり判定を消す
 	if (m_currentState == PlayerState::Dodge)
 	{
-		CollisionManager::Instance().Unregister(this);
+		//15フレームを過ぎたら当たり判定を消す
+		if (m_dodgeFrame < kDodgeFrame)
+		{
+			CollisionManager::Instance().Unregister(this);
+		}
 	}
 	else
 	{
@@ -437,6 +458,8 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Dodge:
+		//フレームをリセット
+		m_dodgeFrame = 0;
 		m_animation.ChangeAnim(kDodgeAnimName, false, 0.8f);
 		break;
 

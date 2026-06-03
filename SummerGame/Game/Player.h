@@ -65,6 +65,8 @@ private:
 	bool m_isHit;
 	//死んだ
 	bool m_isDead;
+	//回避開始からの経過フレーム
+	int m_dodgeFrame;
 	//無敵時間
 	int m_invincibleTime;
 	
