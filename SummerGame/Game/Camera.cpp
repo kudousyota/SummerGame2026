@@ -26,6 +26,7 @@ namespace
 
 Camera::Camera() :
 	m_cameraAngleX(0.0f),
+	m_cameraAngleY(0.0f),
 	m_cameraPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_cameraTarget(VGet(0.0f, 0.0f, 0.0f)),
 	m_cameraTargetY(0.0f),
@@ -44,13 +45,16 @@ void Camera::Init()
 
 	//初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
+	m_cameraAngleY = playerAng;
+
 
 	m_cameraTargetY = cameraTarget.y;
 
 	//カメラの初期位置
 	Vector3 offset;
 	offset.x = sinf(m_cameraAngleX) * kCameraDistance;
-	offset.y = kCameraHeight;
+	offset.y = sinf(m_cameraAngleY) * kCameraDistance;
+	//offset.y = kCameraHeight;
 	offset.z = cosf(m_cameraAngleX) * kCameraDistance;
 
 	m_cameraTarget = cameraTarget;
@@ -96,6 +100,11 @@ void Camera::Update()
 	if (xBuf != 0)
 	{
 		m_cameraAngleX += xBuf * kCameraRotSpeed;
+	}
+	//カメラ上下回転
+	if (yBuf != 0)
+	{
+		m_cameraAngleY += yBuf * kCameraRotSpeed * 10.0f;
 	}
 
 	//角度を-π～πに収める

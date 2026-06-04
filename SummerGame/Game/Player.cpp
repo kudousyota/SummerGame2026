@@ -45,6 +45,8 @@ namespace
 
 	//ジャスト回避の受付フレーム
 	constexpr int kDodgeFrame = 10;
+	//無敵時間
+	constexpr int kInvincibleFrame = 30;
 }
 
 Player::Player() :
@@ -301,7 +303,7 @@ void Player::Draw()
 
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
-	DrawBillboard3D(VGet(100.0f, 50.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
+	DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
 
 	float animTime = m_animation.GetCurrentAnimTime();
 
@@ -348,7 +350,7 @@ void Player::ApplyDamage(int damage)
 		return;
 	}
 	//無敵時間中はダメージを受けない
-	if (m_invincibleTime > 0)
+	if (m_currentState==PlayerState::Dodge && m_dodgeFrame <= kInvincibleFrame)
 	{
 		return;
 	}
