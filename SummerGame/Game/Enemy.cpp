@@ -27,7 +27,7 @@ void Enemy::Init()
 
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
-	m_hp = 50;
+	m_hp = 150;
 	m_attackPower = 20;
 
 	m_attackCooldown = 0;

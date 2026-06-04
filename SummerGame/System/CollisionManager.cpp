@@ -33,7 +33,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 
 	
 	// 登録済みの全キャラクターを走査
-	for (auto* character : m_pCharacters)
+	for (auto& character : m_pCharacters)
 	{
 		// 自分自身には当たらない
 		if (character == attacker) continue;

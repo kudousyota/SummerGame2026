@@ -11,31 +11,40 @@ namespace
 	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 	//重力加速度
 
-	const float kGravity = 0.5f;
+	const float kGravity				 = 0.5f;
 	//アニメーションの名前
-	const char* const kIdleAnimName = "Player|Idle";
+	const char* const kIdleAnimName		 = "Player|Idle";
 	
-	const char* const kWalkAnimName = "Player|Walk";
+	const char* const kWalkAnimName		 = "Player|Walk";
 
-	const char* const kPunchAnimName = "Player|Punch";
+	const char* const kPunchAnimName	 = "Player|Punch";
 
 	const char* const kPunchRushAnimName = "Player|Punchrush";
 
-	const char* const kJumpAnimName = "Player|Jump";
+	const char* const kJumpAnimName		 = "Player|Jump";
 
-	const char* const kDodgeAnimName = "Player|Dodge";
+	const char* const kDodgeAnimName	 = "Player|Dodge";
 
 	//攻撃中のフレーム
-	constexpr float kPunchAnimFrame = 10;
+	constexpr float kPunchAnimFrame		 = 10.0f;
 
-	constexpr int kAnimBlendFrame = 10;
+	constexpr int kAnimBlendFrame		 = 10;
 
-	constexpr float kAttackStartFrame = 10.0f;
+	constexpr float kAttackStartFrame	 = 10.0f;
 
-	constexpr float kAttackEndFrame = 15.0f;
+	constexpr float kAttackEndFrame		 = 15.0f;
+
+	//攻撃の一回目のダメージを与えるフレーム
+	constexpr int kAttackDamageFrame1 = 5;
+	//攻撃の二回目のダメージを与えるフレーム
+	constexpr int kAttackDamageFrame2 = 10;
+	//攻撃の三回目のダメージを与えるフレーム
+	constexpr int kAttackDamageFrame3 = 17;
+	//攻撃の四回目のダメージを与えるフレーム
+	constexpr int kAttackDamageFrame4 = 25;
 
 	//ジャスト回避の受付フレーム
-	constexpr int kDodgeFrame = 15;
+	constexpr int kDodgeFrame = 10;
 }
 
 Player::Player() :
@@ -51,7 +60,8 @@ Player::Player() :
 	m_isDead(false),
 	m_isHit(false),
 	m_invincibleTime(0),
-	m_dodgeFrame(0)
+	m_dodgeFrame(0),
+	m_rushHit{false, false, false, false}
 {
 }
 
@@ -198,12 +208,9 @@ void Player::Update()
 	
 	case PlayerState::Rush:
 
-		//float rate = m_animation.GetAnimRate();
-
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
-
 		}
 		break;
 	
@@ -370,6 +377,7 @@ Vector3 Player::GetCameraTarget() const
 {
 	return m_pos + kPlayerToTarget;
 }
+
 void Player::AttackUpdate()
 {
 	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush)
@@ -379,39 +387,75 @@ void Player::AttackUpdate()
 
 	float animTime = m_animation.GetCurrentAnimTime();
 
+	//アニメーションのフレーム数を取得して、攻撃判定を出すタイミングを決める
+	float rate = m_animation.GetAnimRate();
+
+	//攻撃判定を出すフレームの範囲内にいるか
 	if (animTime >= kAttackStartFrame &&
 		animTime <= kAttackEndFrame)
 	{
 		if (!m_isAttackHit)
 		{
+			//攻撃判定を出す
 			CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 
 			m_isAttackHit = true;
 		}
-		if (m_currentState == PlayerState::Rush)
+	}
+	if (m_currentState == PlayerState::Rush)
+	{
+		//ラッシュの攻撃は一回だけ当たるようにする
+		if (!m_rushHit[0] && animTime >= kAttackDamageFrame1)
 		{
+			//攻撃判定を出す
 			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[0] = true;
+		}
+		//ラッシュの攻撃の二回目の攻撃判定
+		if(!m_rushHit[1] && animTime >= kAttackDamageFrame2)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[1] = true;
+		}
+		//ラッシュの攻撃の三回目の攻撃判定
+		if(!m_rushHit[2] && animTime >= kAttackDamageFrame3)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[2] = true;
+		}
+		//ラッシュの攻撃の四回目の攻撃判定
+		if(!m_rushHit[3] && animTime >= kAttackDamageFrame4)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[3] = true;
 		}
 		
 	}
 	
-	
-
 }
+
 void Player::DodgeUpdate()
 {
-	//回避中は当たり判定を消す
+	
 	if (m_currentState == PlayerState::Dodge)
 	{
 		//15フレームを過ぎたら当たり判定を消す
 		if (m_dodgeFrame < kDodgeFrame)
 		{
+			//回避状態のときは当たり判定を消す
 			CollisionManager::Instance().Unregister(this);
 		}
 	}
 	else
 	{
-		//回避が終わったら当たり判定を戻す
+		//回避状態じゃなかったら当たり判定を出す
 		if (!m_isDead)
 		{
 			CollisionManager::Instance().Register(this);
@@ -449,6 +493,12 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kPunchAnimName,false,0.5f);
 		break;
 	case PlayerState::Rush:
+
+		//ラッシュの攻撃は複数回当たる可能性があるので、当たったかどうかを管理する配列をリセットする
+		for (int i = 0; i < 4; i++)
+		{
+			m_rushHit[i] = false;
+		}
 
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;

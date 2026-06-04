@@ -63,6 +63,9 @@ private:
 	Vector3 m_forward;
 	//被弾したかどうか
 	bool m_isHit;
+	//ラッシュの攻撃が当たったかどうかを管理する配列
+	bool m_rushHit[4];
+
 	//死んだ
 	bool m_isDead;
 	//回避開始からの経過フレーム
