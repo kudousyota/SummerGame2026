@@ -349,11 +349,12 @@ void Player::ApplyDamage(int damage)
 		// ダメージを受けずに処理を抜ける
 		return;
 	}
-	//無敵時間中はダメージを受けない
-	if (m_currentState==PlayerState::Dodge && m_dodgeFrame <= kInvincibleFrame)
+	// 無敵時間中ならダメージを受けない
+	if (m_invincibleTime > 0)
 	{
 		return;
 	}
+
 
 	m_hp -= damage;
 
