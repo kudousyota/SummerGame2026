@@ -44,9 +44,12 @@ namespace
 	constexpr int kAttackDamageFrame4 = 25;
 
 	//ジャスト回避の受付フレーム
-	constexpr int kDodgeFrame = 10;
+	constexpr int kDodgeFrame = 100;
 	//無敵時間
 	constexpr int kInvincibleFrame = 30;
+
+	//ジャスト回避の範囲
+	constexpr float kJustDodgeRadius = 100.0f;
 }
 
 Player::Player() :
@@ -325,7 +328,7 @@ void Player::Draw()
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
 	//回避用の当たり判定
-	DrawSphere3D(m_pos.ToDxLibVector(), 60.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+	DrawSphere3D(m_pos.ToDxLibVector(), GetCollisionRadius(), 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 
 	DrawFormatString(

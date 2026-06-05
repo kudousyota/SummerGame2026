@@ -81,7 +81,7 @@ void Character::ApplyDamage(int damage)
 
 float Character::GetCollisionRadius() const
 {
-	return 30.0f;
+	return 150.0f;
 }
 
 float Character::GetCollisionHeight() const
