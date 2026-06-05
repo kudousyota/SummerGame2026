@@ -65,6 +65,7 @@ Player::Player() :
 	m_dodgeFrame(0),
 	m_rushHit{false, false, false, false}
 {
+	
 }
 
 Player::~Player()
@@ -97,6 +98,11 @@ void Player::Init()
 
 void Player::Update()
 {
+	//HPがゼロになったら
+	if (m_isDead)
+	{
+		return;
+	}
 
 	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
