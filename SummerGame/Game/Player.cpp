@@ -44,7 +44,7 @@ namespace
 	constexpr int kAttackDamageFrame4 = 25;
 
 	//ジャスト回避の受付フレーム
-	constexpr int kDodgeFrame = 100;
+	constexpr int kDodgeFrame = 15;
 	//無敵時間
 	constexpr int kInvincibleFrame = 30;
 
@@ -328,7 +328,7 @@ void Player::Draw()
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
 	//回避用の当たり判定
-	DrawSphere3D(m_pos.ToDxLibVector(), GetCollisionRadius(), 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+	//DrawSphere3D(m_pos.ToDxLibVector(), 30.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 
 	DrawFormatString(
@@ -456,24 +456,6 @@ void Player::AttackUpdate()
 void Player::DodgeUpdate()
 {
 	
-	if (m_currentState == PlayerState::Dodge)
-	{
-		//15フレームを過ぎたら当たり判定を消す
-		if (m_dodgeFrame < kDodgeFrame)
-		{
-			//回避状態のときは当たり判定を消す
-			CollisionManager::Instance().Unregister(this);
-		}
-	}
-	else
-	{
-		//回避状態じゃなかったら当たり判定を出す
-		if (!m_isDead)
-		{
-			CollisionManager::Instance().Register(this);
-		}
-		
-	}
 }
 void Player::TransitionTo(PlayerState nextState)
 {

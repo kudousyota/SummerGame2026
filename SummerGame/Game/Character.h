@@ -22,9 +22,9 @@ public:
 
 	virtual Vector3 GetPosition() const { return m_pos; }
 
-	// カプセルの半径（XZ方向）
+	// カプセルの半径(XZ方向)
 	virtual float GetCollisionRadius() const;
-	// カプセルの高さ（Y方向の長さ）
+	// カプセルの高さ(Y方向の長さ)
 	virtual float GetCollisionHeight() const;
 
 	virtual void SetPosition(const Vector3& pos) { m_pos = pos; }

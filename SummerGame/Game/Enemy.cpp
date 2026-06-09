@@ -8,9 +8,10 @@ Enemy::Enemy():
 	m_modelHandle(-1),
 	m_isDead(false),
 	m_isAttackHit(false),
-	m_attackCooldown(0.0f),
+	m_attackCooldown(0),
 	m_forward(VGet(0.0f, 0.0f, 1.0f)),
-	m_isAttacking(false)
+	m_isAttacking(false),
+	m_attackFrame(0)
 {
 }
 
@@ -41,43 +42,47 @@ void Enemy::Init()
 
 void Enemy::Update()
 {
+
+	m_isAttacking = false;
+
 	Character::Collision();
 
-	//クールタイム
+
+	
+	//攻撃表示タイマー
+	if (m_attackFrame > 0)
+	{
+		m_attackFrame--;
+	}
+	//攻撃クールタイム
 	if (m_attackCooldown > 0)
 	{
 		m_attackCooldown--;
 	}
 
+	//攻撃発生
 	if (m_attackCooldown <= 0)
 	{
 		AttackUpdate();
-
 		m_attackCooldown = 60;
 	}
 
-	m_isAttacking = true;
 
+	//プレイヤーの方向を向く
 	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 
 	if (dir.SqMagnitude() > 0.001f)
 	{
 		m_forward = dir.Normalize();
+
+		m_angle = atan2f(m_forward.x,m_forward.z) + DX_PI_F;
 	}
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
-	if (m_isAttacking)
-	{
-		AttackUpdate();
-	}
-	else
-	{
-		//攻撃終了でリセット
-		m_isAttackHit = false;
-	}
+	
 }
 
 
@@ -101,14 +106,20 @@ void Enemy::Draw()
 		false
 	);
 
-	DrawSphere3D(
-		m_attackPos.ToDxLibVector(),
-		50.0f,
-		16,
-		GetColor(0, 255, 0),
-		GetColor(0, 255, 0),
-		false
-	);
+	//攻撃の時に判定を表示
+	if (m_attackFrame > 0)
+	{
+		DrawSphere3D(
+			m_attackPos.ToDxLibVector(),
+			50.0f,
+			16,
+			GetColor(0, 255, 0),
+			GetColor(0, 255, 0),
+			false
+		);
+	}
+
+	
 
 	DrawFormatString(
 		50,
@@ -162,4 +173,6 @@ void Enemy::AttackUpdate()
 		m_attackPower
 	);
 	
+	m_attackFrame = 30;
+
 }

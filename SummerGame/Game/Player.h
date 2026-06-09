@@ -81,7 +81,9 @@ private:
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
 
+	//プレイヤーの当たり判定はカプセルで行う
 	float GetCollisionRadius() const override { return 30.0f; }
+	//プレイヤーの当たり判定はカプセルで行う
 	float GetCollisionHeight() const override { return 100.0f; }
 
 };

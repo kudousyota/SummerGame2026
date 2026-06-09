@@ -40,6 +40,8 @@ private:
 
 	//攻撃のクールタイム
 	int m_attackCooldown;
+	//攻撃するフレーム数
+	int m_attackFrame;
 
 	//攻撃する場所
 	Vector3 m_attackPos;
