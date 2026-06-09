@@ -30,9 +30,7 @@ void CollisionManager::Unregister(Character* character)
 // 球状の攻撃判定を行う
 void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos, float radius, int damage)
 {
-
-	
-	// 登録済みの全キャラクターを走査
+	// 登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
 		// 自分自身には当たらない
@@ -62,13 +60,30 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		Vector3 closest = a + ab * t;
 		Vector3 diff = closest - pos;
 		float dist2 = diff.SqMagnitude();
+		//ジャスト回避
+		//受付中なら100、普段は30
+		float justDodgeRadius = character->GetJustDodgeRadius(); 
+		float combinedJust = radius + justDodgeRadius;
 
-		// 球の中心とカプセル中心線の最短距離(攻撃半径 + カプセル半径)
-		float combined = radius + capsuleRadius;
-		// 最短距離が両者の半径の和以下ならヒット
-		if (dist2 <= combined * combined)
+		if (dist2 <= combinedJust * combinedJust)
 		{
-			// ダメージを与える
+			// もし相手がジャスト回避受付中なら、ジャスト回避成功
+			if (character->IsJustDodgeWindow())
+			{
+				//ダメージ0で呼び出すして中でジャスト回避処理が走る
+				character->ApplyDamage(0);
+				//通常ダメージは与えない
+				continue; 
+			}
+		}
+
+		//ジャスト回避が不発、または受付時間外だった場合、通常の判定でチェック
+		float normalRadius = character->GetCollisionRadius(); // 30.0f
+		float combinedNormal = radius + normalRadius;
+
+		if (dist2 <= combinedNormal * combinedNormal)
+		{
+			// 通常の被弾
 			character->ApplyDamage(damage);
 		}
 	}

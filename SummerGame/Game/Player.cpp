@@ -327,10 +327,22 @@ void Player::Draw()
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
-	//回避用の当たり判定
-	//DrawSphere3D(m_pos.ToDxLibVector(), 30.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+	
+	// プレイヤーの状態によって、表示する半径と色を変える
+	float drawRadius = 30.0f; // デフォルトの半径
+	unsigned int drawColor = GetColor(255, 0, 0); // 通常は赤
 
+	// 今ジャスト回避の受付時間（犹予）か？
+	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
+	{
+		// 受付中だけ、判定の半径を広げ、色を青にする
+		drawRadius = kJustDodgeRadius; // コンストで定義した 100.0f
+		drawColor = GetColor(0, 100, 255); // 青
+	}
 
+	// 実際に描画する
+	DrawSphere3D(m_pos.ToDxLibVector(), drawRadius, 16, drawColor, drawColor, false);
+	//HP
 	DrawFormatString(
 		50,
 		70,
@@ -347,38 +359,44 @@ void Player::ApplyDamage(int damage)
 	{
 		return;
 	}
-	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
-	{
-		// ジャスト回避成功時の処理
-		printfDx("Just\n");
 
-		// ここにスローモーション開始の処理をかくか、
-		//関数を呼ぶ
-
-		// ダメージを受けずに処理を抜ける
-		return;
-	}
-	// 無敵時間中ならダメージを受けない
+	// 無敵時間中なら、通常の被弾もジャスト回避もすべて無視する
 	if (m_invincibleTime > 0)
 	{
 		return;
 	}
 
+	// CollisionManager側でジャスト回避の大きな判定半径100に当たった時に、
+	// damage = 0 でこの関数が呼ばれる
+	if (damage == 0 && m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
+	{
+		// ジャスト回避成功時の処理
+		printfDx("Just Dodge (Witch Time!)\n");
 
+		// 直ぐに無敵を付与連続ヒット防止にもなる
+		m_invincibleTime = kInvincibleFrame;
+
+		// --- ここでウィッチタイム状態に入る処理 ---
+		// 例1: プレイヤーのステートをウィッチタイム中に変える場合
+		// TransitionTo(PlayerState::WitchTime); 
+
+		// 例2: 専用のフラグや、ゲーム全体をスローにする関数を呼ぶ場合
+		// TriggerWitchTime(); 
+
+		return; // ダメージを受けずに処理を抜ける
+	}
+
+	// 通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
 	m_hp -= damage;
 
-	//無敵時間を設定
+	// 無敵時間を設定
 	m_invincibleTime = 120;
 
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
-		//死んだ
 		m_isDead = true;
-
-		//当たり判定を消す
 		CollisionManager::Instance().Unregister(this);
-
 		printfDx("PlayerDead!\n");
 	}
 
@@ -389,6 +407,23 @@ Vector3 Player::GetCameraTarget() const
 {
 	return m_pos + kPlayerToTarget;
 }
+
+bool Player::IsJustDodgeWindow() const
+{
+	return (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame);
+}
+
+// 今ジャスト回避を受け付ける状態にいるかを返す
+float Player::GetJustDodgeRadius() const
+{
+	if (IsJustDodgeWindow())
+	{
+		return kJustDodgeRadius; // 受付中なら広げる（100.0f）
+	}
+	return 30.0f; // 通常時の半径（GetCollisionRadius()の戻り値など）
+}
+
+
 
 void Player::AttackUpdate()
 {

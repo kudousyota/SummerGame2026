@@ -23,6 +23,10 @@ public:
 
 	void SetCamera(std::shared_ptr<Camera> camera) { m_pCamera = camera; }
 
+	float GetJustDodgeRadius() const override;
+	bool IsJustDodgeWindow() const override;
+
+
 private:
 	
 	enum class PlayerState
@@ -52,6 +56,8 @@ private:
 	void AttackUpdate();
 	//回避処理
 	void DodgeUpdate();
+
+	
 	//アタック
 	bool m_isAttackHit;
 	//次に行けるか
