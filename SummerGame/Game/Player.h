@@ -78,11 +78,12 @@ private:
 	int m_dodgeFrame;
 	//無敵時間
 	int m_invincibleTime;
+	//ウィッチタイムかどうか
+	bool m_isWitchTime;
 	
-
 	void TransitionTo(PlayerState nextState);
-	//void EnterState();
-	//void ExitState();
+	//ウィッチタイム
+	void WitchTime();
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;

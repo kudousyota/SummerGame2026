@@ -25,6 +25,19 @@ public:
 	void SetPlayer(std::shared_ptr<Player> player);
 
 private:
+
+	enum class EnemyState
+	{
+		Idle,
+		Walk,
+		Attack,
+		Rush,
+		Avoid,
+		Damage,
+		Jump,
+		Dodge
+	};
+
 	//攻撃処理
 	void AttackUpdate();
 

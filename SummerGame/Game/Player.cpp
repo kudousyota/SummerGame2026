@@ -44,7 +44,7 @@ namespace
 	constexpr int kAttackDamageFrame4 = 25;
 
 	//ジャスト回避の受付フレーム
-	constexpr int kDodgeFrame = 15;
+	constexpr int kDodgeFrame = 30;
 	//無敵時間
 	constexpr int kInvincibleFrame = 30;
 
@@ -66,7 +66,8 @@ Player::Player() :
 	m_isHit(false),
 	m_invincibleTime(0),
 	m_dodgeFrame(0),
-	m_rushHit{false, false, false, false}
+	m_rushHit{false, false, false, false},
+	m_isWitchTime(false)
 {
 	
 }
@@ -329,18 +330,18 @@ void Player::Draw()
 	}
 	
 	// プレイヤーの状態によって、表示する半径と色を変える
-	float drawRadius = 30.0f; // デフォルトの半径
+	float drawRadius = 100.0f; // デフォルトの半径
 	unsigned int drawColor = GetColor(255, 0, 0); // 通常は赤
 
 	// 今ジャスト回避の受付時間（犹予）か？
 	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
-		// 受付中だけ、判定の半径を広げ、色を青にする
+		//受付中だけ、判定の半径を広げ、色を青にする
 		drawRadius = kJustDodgeRadius; // コンストで定義した 100.0f
 		drawColor = GetColor(0, 100, 255); // 青
 	}
 
-	// 実際に描画する
+	//実際に描画する
 	DrawSphere3D(m_pos.ToDxLibVector(), drawRadius, 16, drawColor, drawColor, false);
 	//HP
 	DrawFormatString(
@@ -376,7 +377,8 @@ void Player::ApplyDamage(int damage)
 		// 直ぐに無敵を付与連続ヒット防止にもなる
 		m_invincibleTime = kInvincibleFrame;
 
-		// --- ここでウィッチタイム状態に入る処理 ---
+		// ここでウィッチタイム状態に入る処理
+		m_isWitchTime = true;
 		// 例1: プレイヤーのステートをウィッチタイム中に変える場合
 		// TransitionTo(PlayerState::WitchTime); 
 
@@ -422,8 +424,6 @@ float Player::GetJustDodgeRadius() const
 	}
 	return 30.0f; // 通常時の半径（GetCollisionRadius()の戻り値など）
 }
-
-
 
 void Player::AttackUpdate()
 {
@@ -539,10 +539,18 @@ void Player::TransitionTo(PlayerState nextState)
 	case PlayerState::Dodge:
 		//フレームをリセット
 		m_dodgeFrame = 0;
-		m_animation.ChangeAnim(kDodgeAnimName, false, 0.8f);
+		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
 		break;
 
 	default:
 		break;
+	}
+}
+
+void Player::WitchTime()
+{
+	if (m_isWitchTime)
+	{
+
 	}
 }

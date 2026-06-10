@@ -3,6 +3,14 @@
 #include "../System/CollisionManager.h"
 #include "Stage.h"
 #include "Player.h"
+#include "../System/Timer.h"
+
+namespace
+{
+	const char* const kIdleAnimName = "Enemy|Idle";
+
+	const char* const kAttackAnimName = "Enemy|Attack";
+}
 
 Enemy::Enemy():
 	m_modelHandle(-1),
@@ -47,7 +55,7 @@ void Enemy::Update()
 
 	Character::Collision();
 
-
+	float scale = Timer::Instance().GetEnemyTimeScale();
 	
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)

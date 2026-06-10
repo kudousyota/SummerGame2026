@@ -7,9 +7,15 @@ public:
 	void SetTimeScale(float scale) { m_timeScale = scale; }
 	float GetTimeScale() const { return m_timeScale; }
 
+	//敵専用のタイムスケール
+	float GetEnemyTimeScale()const { return m_enemyTimeScale; }
+
+	void Update();
+
 	void SetTimeScaleForFrames(float timescale, int frames);
 	
-	//void SetEnemyTimeScaleForFrames(float scale, int frames);
+	void SetEnemyTimeScaleForFrames(float scale, int frames);
+
 private:
 	//コンストラクタとデストラクタをプライベートにして、シングルトンパターンを実装
 	Timer() = default;
@@ -21,8 +27,9 @@ private:
 	float m_timeScale = 1.0f;
 	//時間を元に戻すためのやつ
 	int m_frameCount = 0;
-
-
+	
+	float m_enemyTimeScale = 1.0f;
+	int m_frameCountEnemy = 0;
 
 	
 };
