@@ -25,7 +25,7 @@ Animation::Animation():
 Animation::~Animation()
 {
 	//モデルをメモリから解放する
-	MV1DeleteModel(m_modelHandle);
+	//MV1DeleteModel(m_modelHandle);
 }
 
 void Animation::Init(int modelHandle, std::string name, bool isRoop, float timeScale)

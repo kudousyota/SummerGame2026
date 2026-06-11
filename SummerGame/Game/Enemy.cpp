@@ -62,22 +62,9 @@ void Enemy::Update()
 	Character::Collision();
 	//アニメーションの更新
 	m_animation.Update();
-
-	switch (m_currentState)
-	{
-	case EnemyState::Idle:
-
-		break;
-	case EnemyState::Attack:
-		if (m_isAttacking)
-		{
-			TransitionTo(EnemyState::Idle);
-		}
-		m_isAttacking = false;
-	}
-
+	//タイムスケールの取得
 	float scale = Timer::Instance().GetEnemyTimeScale();
-	
+
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
 	{
@@ -89,30 +76,45 @@ void Enemy::Update()
 		m_attackCooldown--;
 	}
 
-	//攻撃発生
-	if (m_attackCooldown <= 0)
+	//ステート
+	switch (m_currentState)
 	{
-		AttackUpdate();
-		m_attackCooldown = 60;
-	}
+	case EnemyState::Idle:
+		//一旦攻撃にする
+		if (m_attackCooldown <= 0)
+		{
+			TransitionTo(EnemyState::Attack);
+		}
+		break;
+	case EnemyState::Attack:
+		if (!m_isAttack &&
+			m_animation.GetAnimRate() >= 0.5f)
+		{
+			AttackUpdate();
+			m_isAttack = true;
+		}
 
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(EnemyState::Idle);
+		}
+		break;
+	}
 
 	//プレイヤーの方向を向く
-	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-
-	
-
-	if (dir.SqMagnitude() > 0.001f)
+	if (m_currentState == EnemyState::Idle)
 	{
-		m_forward = dir.Normalize();
+		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 
-		m_angle = atan2f(m_forward.x,m_forward.z) + DX_PI_F;
+		if (dir.SqMagnitude() > 0.001f)
+		{
+			m_forward = dir.Normalize();
+			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+		}
+
+		//移動処理方向ベクトル*スピードを現在地に足す
+		m_pos += m_forward * m_speed;
 	}
-
-	//移動量
-	dir.x += m_speed;
-
-	m_pos.x = dir.x;
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -230,6 +232,11 @@ void Enemy::TransitionTo(EnemyState nextState)
 
 	case EnemyState::Attack:
 
-		m_animation.ChangeAnim(kAttackAnimName, false, 1.0f);
+		m_animation.ChangeAnim(kAttackAnimName, false, 0.5f);
+		//攻撃ステートになったら更新する
+		m_isAttack = false;
+		//クールタイム設定
+		m_attackCooldown = 90;
+		break;
 	}
 }
