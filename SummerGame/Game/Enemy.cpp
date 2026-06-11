@@ -19,7 +19,10 @@ Enemy::Enemy():
 	m_attackCooldown(0),
 	m_forward(VGet(0.0f, 0.0f, 1.0f)),
 	m_isAttacking(false),
-	m_attackFrame(0)
+	m_attackFrame(0),
+	m_currentState(EnemyState::Idle),
+	m_prevState(EnemyState::Idle),
+	m_isAttack(false)
 {
 }
 
@@ -39,11 +42,16 @@ void Enemy::Init()
 	m_hp = 150;
 	m_attackPower = 20;
 
+	
+
+	m_currentState = EnemyState::Idle;
+	m_prevState = EnemyState::Idle;
+
 	m_attackCooldown = 0;
 
 	m_pos = VGet(0.0f, 0.0f, 250.0f);
 	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
-
+	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 
 	CollisionManager::Instance().Register(this);
 }
@@ -51,9 +59,22 @@ void Enemy::Init()
 void Enemy::Update()
 {
 
-	m_isAttacking = false;
-
 	Character::Collision();
+	//アニメーションの更新
+	m_animation.Update();
+
+	switch (m_currentState)
+	{
+	case EnemyState::Idle:
+
+		break;
+	case EnemyState::Attack:
+		if (m_isAttacking)
+		{
+			TransitionTo(EnemyState::Idle);
+		}
+		m_isAttacking = false;
+	}
 
 	float scale = Timer::Instance().GetEnemyTimeScale();
 	
@@ -79,12 +100,19 @@ void Enemy::Update()
 	//プレイヤーの方向を向く
 	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 
+	
+
 	if (dir.SqMagnitude() > 0.001f)
 	{
 		m_forward = dir.Normalize();
 
 		m_angle = atan2f(m_forward.x,m_forward.z) + DX_PI_F;
 	}
+
+	//移動量
+	dir.x += m_speed;
+
+	m_pos.x = dir.x;
 
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -126,8 +154,6 @@ void Enemy::Draw()
 			false
 		);
 	}
-
-	
 
 	DrawFormatString(
 		50,
@@ -180,7 +206,30 @@ void Enemy::AttackUpdate()
 		50.0f,
 		m_attackPower
 	);
-	
+	m_isAttacking = true;
 	m_attackFrame = 30;
 
+}
+
+void Enemy::TransitionTo(EnemyState nextState)
+{
+	if (m_currentState == nextState)
+	{
+		return;
+	}
+
+	m_prevState = m_currentState;
+	m_currentState = nextState;
+
+	switch (m_currentState)
+	{
+	case EnemyState::Idle:
+
+		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
+		break;
+
+	case EnemyState::Attack:
+
+		m_animation.ChangeAnim(kAttackAnimName, false, 1.0f);
+	}
 }

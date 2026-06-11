@@ -51,6 +51,8 @@ private:
 
 	int m_hakutoHandle;
 
+	int m_uiHandle;
+
 	
 	//攻撃処理
 	void AttackUpdate();

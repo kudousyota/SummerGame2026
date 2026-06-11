@@ -38,6 +38,12 @@ private:
 		Dodge
 	};
 
+	//現在の状態
+	EnemyState m_currentState;
+
+	//前回の状態
+	EnemyState m_prevState;
+
 	//攻撃処理
 	void AttackUpdate();
 
@@ -60,6 +66,10 @@ private:
 	Vector3 m_attackPos;
 	//向き
 	Vector3 m_forward;
+	//攻撃しているかどうかのフラグ
+	bool m_isAttack;
+
+	void TransitionTo(EnemyState nextState);
 
 	std::shared_ptr<Player> m_pPlayer;
 };

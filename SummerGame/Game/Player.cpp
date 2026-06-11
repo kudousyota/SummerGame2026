@@ -4,13 +4,13 @@
 #include "Camera.h"
 #include "../System/CollisionManager.h"
 #include "Stage.h"
+#include "../System/Timer.h"
 
 namespace
 {
 	//プレイヤーからカメラに向かうベクトル
 	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 	//重力加速度
-
 	const float kGravity				 = 0.5f;
 	//アニメーションの名前
 	const char* const kIdleAnimName		 = "Player|Idle";
@@ -67,7 +67,8 @@ Player::Player() :
 	m_invincibleTime(0),
 	m_dodgeFrame(0),
 	m_rushHit{false, false, false, false},
-	m_isWitchTime(false)
+	m_isWitchTime(false),
+	m_uiHandle(-1)
 {
 	
 }
@@ -94,6 +95,7 @@ void Player::Init()
 	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
+	m_uiHandle = LoadGraph("data/ui_maho.png");
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
 	m_isGround = true;
@@ -315,6 +317,8 @@ void Player::Draw()
 
 	DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
 
+	DrawBillboard3D(VGet(-500.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f, m_uiHandle, true);
+
 	float animTime = m_animation.GetCurrentAnimTime();
 
 	//攻撃判定
@@ -333,7 +337,7 @@ void Player::Draw()
 	float drawRadius = 100.0f; // デフォルトの半径
 	unsigned int drawColor = GetColor(255, 0, 0); // 通常は赤
 
-	// 今ジャスト回避の受付時間（犹予）か？
+	// 今ジャスト回避の受付時間か？
 	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
 		//受付中だけ、判定の半径を広げ、色を青にする
@@ -351,6 +355,8 @@ void Player::Draw()
 		"PlayerHP:%d",
 		m_hp
 	);
+
+	
 
 }
 
@@ -549,6 +555,7 @@ void Player::TransitionTo(PlayerState nextState)
 
 void Player::WitchTime()
 {
+	//ウィッチタイムに入ったら
 	if (m_isWitchTime)
 	{
 
