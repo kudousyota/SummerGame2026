@@ -60,7 +60,11 @@ void Enemy::Init()
 
 void Enemy::Update()
 {
-	
+	//死んだら
+	if (m_hp == 0)
+	{
+		return;
+	}
 
 	Character::Collision();
 	//アニメーションの更新

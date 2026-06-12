@@ -257,40 +257,65 @@ void Player::Update()
 
 		float stickX = input.GetStickLX();
 		float stickY = input.GetStickLY();
+		//カメラ基準の移動ベクトル
+		Vector3 moveVec = right * stickX + forward * stickY;
+		//水平成分のみにする
+		moveVec.y = 0.0f;
 
-		Vector3 moveVec(0, 0, 0);
+		float length = moveVec.Magnitude();
 
-		moveVec = right * stickX + forward * stickY;
-
-		float Length = moveVec.Magnitude();
-
-		if (moveVec.SqMagnitude() > 0.0001f)
+		if (length > 0.0001f)
 		{
+			Vector3 moveDir = moveVec.Normalize();
 
-			if (Length > 1.0f)
+			if (length > 1.0f)
 			{
-				moveVec = moveVec.Normalize();
-				Length = 1.0f;
+				length = 1.0f;
 			}
 			
 			//移動
-			m_pos += moveVec * m_speed;
+			m_pos += moveDir * m_speed * length;
 
-			float rotSpeed = 0.15f;
+			float rotSpeed = 0.2f;
+
 			//現在の向きから目標方向に少しずつ近づく
-			m_forward = m_forward + (moveVec - m_forward) * rotSpeed;
+			m_forward = m_forward + (moveDir - m_forward) * rotSpeed;
 			m_forward = m_forward.Normalize();
 
 			//向きから角度を生成
-			m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
+			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 		}
+		//else
+		//{
+		//	//移動入力がない時はカメラ前方の水平成分に向ける
+		//	Vector3 camDir = m_pCamera->GetForward();
+		//	camDir.y = 0.0f;
+		//	if (camDir.SqMagnitude() > 0.00001f)
+		//	{
+		//		camDir = camDir.Normalize();
+		//		float rotSpeed = 0.08f; // 少し遅めの追従
+		//		m_forward = m_forward + (camDir - m_forward) * rotSpeed;
+		//		m_forward = m_forward.Normalize();
+		//		m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+		//	}
+		//}
 	}
 
 	Character::Collision();
 
-	//前側に表示高さは微調整
-	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+	// 攻撃位置は垂直成分を取り除いた前方で決める
+	Vector3 attackForward = m_forward;
+	attackForward.y = 0.0f;
+	if (attackForward.SqMagnitude() > 0.0001f)
+	{
+		attackForward = attackForward.Normalize();
+	}
+	else
+	{
+		attackForward = VGet(0.0f, 0.0f, 1.0f); // フォールバック
+	}
 
+	m_attackPos = m_pos + attackForward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
@@ -348,15 +373,7 @@ void Player::Draw()
 	//実際に描画する
 	DrawSphere3D(m_pos.ToDxLibVector(), drawRadius, 16, drawColor, drawColor, false);
 	//HP
-	DrawFormatString(
-		50,
-		70,
-		GetColor(255, 255, 255),
-		"PlayerHP:%d",
-		m_hp
-	);
-
-	
+	DrawFormatString(50,70,GetColor(255, 255, 255),"PlayerHP:%d",m_hp);
 
 }
 
