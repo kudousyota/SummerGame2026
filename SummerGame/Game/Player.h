@@ -20,6 +20,7 @@ public:
 	//カメラの注視点を取得する関数
 	Vector3 GetCameraTarget()const;
 	float GetAngle() const { return m_angle; }
+	Vector3 GetPosition()const { return m_pos; }
 
 	void SetCamera(std::shared_ptr<Camera> camera) { m_pCamera = camera; }
 

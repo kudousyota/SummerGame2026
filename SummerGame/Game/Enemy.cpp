@@ -10,6 +10,8 @@ namespace
 	const char* const kIdleAnimName = "Enemy|Idle";
 
 	const char* const kAttackAnimName = "Enemy|Attack";
+
+	constexpr float kAttackRange = 150.0f;
 }
 
 Enemy::Enemy():
@@ -58,6 +60,7 @@ void Enemy::Init()
 
 void Enemy::Update()
 {
+	
 
 	Character::Collision();
 	//アニメーションの更新
@@ -80,11 +83,31 @@ void Enemy::Update()
 	switch (m_currentState)
 	{
 	case EnemyState::Idle:
-		//一旦攻撃にする
-		if (m_attackCooldown <= 0)
+	{
+		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+		float distSq = dir.SqMagnitude();
+		//攻撃にする
+		if (distSq <= kAttackRange * kAttackRange)
 		{
-			TransitionTo(EnemyState::Attack);
+			if (m_attackCooldown <= 0)
+			{
+				TransitionTo(EnemyState::Attack);
+			}
 		}
+		else
+		{
+			//追跡
+			float rotSpeed = 0.15f;
+			Vector3 targetDir = dir.Normalize();
+			//現在の向きから目標方向に少しずつ近づく
+			m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
+			m_forward = m_forward.Normalize();
+
+			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+
+			m_pos += m_forward * m_speed;
+		}
+	}
 		break;
 	case EnemyState::Attack:
 		if (!m_isAttack &&
@@ -99,21 +122,6 @@ void Enemy::Update()
 			TransitionTo(EnemyState::Idle);
 		}
 		break;
-	}
-
-	//プレイヤーの方向を向く
-	if (m_currentState == EnemyState::Idle)
-	{
-		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-
-		if (dir.SqMagnitude() > 0.001f)
-		{
-			m_forward = dir.Normalize();
-			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-		}
-
-		//移動処理方向ベクトル*スピードを現在地に足す
-		m_pos += m_forward * m_speed;
 	}
 
 	// モデル行列更新
@@ -226,6 +234,8 @@ void Enemy::TransitionTo(EnemyState nextState)
 	switch (m_currentState)
 	{
 	case EnemyState::Idle:
+
+
 
 		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
 		break;
