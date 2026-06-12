@@ -67,10 +67,13 @@ void Enemy::Update()
 	}
 
 	Character::Collision();
-	//アニメーションの更新
-	m_animation.Update();
+
 	//タイムスケールの取得
 	float scale = Timer::Instance().GetEnemyTimeScale();
+	//アニメーションの更新
+	m_animation.Update(scale);
+	
+	Timer::Instance().Update();
 
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)

@@ -9,7 +9,7 @@ public:
 	//handleとnameを受け取ってアニメーションの初期化を行う//nameはアニメーションの名前
 	void Init(int modelHandle, std::string name, bool isRoop, float timeScale = 1.0f);
 	//ここにtimeScaleを引数にして渡すことでプレイヤーでもエネミーでも使うと一緒に使える
-	void Update();
+	void Update(float speed);
 	//アニメーションのブレンドを行う
 	void AnimBlend();
 	//アニメーションの再生を設定する//m_isEndを初期化

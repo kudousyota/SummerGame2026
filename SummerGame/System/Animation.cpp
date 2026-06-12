@@ -48,15 +48,15 @@ void Animation::Init(int modelHandle, std::string name, bool isRoop, float timeS
 	m_animTimeScale = timeScale;
 }
 
-void Animation::Update()
+void Animation::Update(float speed)
 {
 	//時間のスケールを取得//0から1の値を返す
 	float timeScale = Timer::Instance().GetTimeScale();
 	//アニメーションの更新
 	//アニメーションのフレーム更新
-	m_currentAnimCount += 1.0f * timeScale * m_animTimeScale;
+	m_currentAnimCount += 1.0f * timeScale * m_animTimeScale * speed;
 	//前のアニメーションの更新
-	m_prevAnimCount += 1.0f * timeScale * m_prevAnimTimeScale;
+	m_prevAnimCount += 1.0f * timeScale * m_prevAnimTimeScale * speed;
 	//アニメーションのブレンド
 	AnimBlend();
 	//アニメーションのループ処理

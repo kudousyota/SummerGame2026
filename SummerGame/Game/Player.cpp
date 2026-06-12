@@ -115,8 +115,10 @@ void Player::Update()
 
 	auto& input = Input::Instance();
 
+	float scale = Timer::Instance().GetTimeScale();
+
 	// アニメーション更新
-	m_animation.Update();
+	m_animation.Update(scale);
 	if (m_invincibleTime > 0)
 	{
 		m_invincibleTime--;
@@ -186,7 +188,7 @@ void Player::Update()
 			m_isGround = false;
 
 			//地面判定から1ピクセルだけ浮かす
-			m_pos.y += 1.0f;
+			//m_pos.y += 1.0f;
 		}
 
 		if (input.IsTriggered("Dodge"))
@@ -229,10 +231,25 @@ void Player::Update()
 		break;
 	
 	case PlayerState::Jump:
-		
-		if (m_animation.GetAnimEndFlag())
+		//着地したら
+		if (m_isGround)
 		{
-			TransitionTo(PlayerState::Idle);
+			// 移動入力があるか
+			bool isMove =
+				input.IsPressed("up") ||
+				input.IsPressed("down") ||
+				input.IsPressed("left") ||
+				input.IsPressed("right");
+
+			// 移動優先
+			if (isMove)
+			{
+				TransitionTo(PlayerState::Walk);
+			}
+			else
+			{
+				TransitionTo(PlayerState::Idle);
+			}
 		}
 		break;
 
@@ -245,6 +262,11 @@ void Player::Update()
 			TransitionTo(PlayerState::Idle);
 		}
 		break;
+	case PlayerState::WitchTime:
+		if (m_isWitchTime)
+		{
+
+		}
 	}
 
 	//前の場所
@@ -285,20 +307,6 @@ void Player::Update()
 			//向きから角度を生成
 			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 		}
-		//else
-		//{
-		//	//移動入力がない時はカメラ前方の水平成分に向ける
-		//	Vector3 camDir = m_pCamera->GetForward();
-		//	camDir.y = 0.0f;
-		//	if (camDir.SqMagnitude() > 0.00001f)
-		//	{
-		//		camDir = camDir.Normalize();
-		//		float rotSpeed = 0.08f; // 少し遅めの追従
-		//		m_forward = m_forward + (camDir - m_forward) * rotSpeed;
-		//		m_forward = m_forward.Normalize();
-		//		m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-		//	}
-		//}
 	}
 
 	Character::Collision();
@@ -406,7 +414,7 @@ void Player::ApplyDamage(int damage)
 		// TransitionTo(PlayerState::WitchTime); 
 
 		// 例2: 専用のフラグや、ゲーム全体をスローにする関数を呼ぶ場合
-		// TriggerWitchTime(); 
+		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 150);
 
 		return; // ダメージを受けずに処理を抜ける
 	}
@@ -533,7 +541,6 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Walk:
-
 		m_animation.ChangeAnim(kWalkAnimName,true,0.4f);
 		break;
 

@@ -25,7 +25,7 @@ void Timer::Update()
 
 		if (m_frameCountEnemy <= 0)
 		{
-			m_frameCountEnemy = 1.0f;
+			m_enemyTimeScale = 1.0f;
 		}
 	}
 

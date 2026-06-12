@@ -39,7 +39,8 @@ private:
 		Avoid,
 		Damage,
 		Jump,
-		Dodge
+		Dodge,
+		WitchTime
 	};
 
 	// 現在の状態
