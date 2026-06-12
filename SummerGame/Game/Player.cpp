@@ -254,34 +254,34 @@ void Player::Update()
 	//通常移動
 	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge)
 	{
+
+		float stickX = input.GetStickLX();
+		float stickY = input.GetStickLY();
+
 		Vector3 moveVec(0, 0, 0);
 
-		if (input.IsPressed("up"))
-		{
-			moveVec += forward;
-		}
-		if (input.IsPressed("down"))
-		{
-			moveVec -= forward;
-		}
-		
-		if (input.IsPressed("right"))
-		{
-			moveVec += right;
-		}
+		moveVec = right * stickX + forward * stickY;
 
-		if (input.IsPressed("left"))
-		{
-			moveVec -= right;
-		}
+		float Length = moveVec.Magnitude();
 
 		if (moveVec.SqMagnitude() > 0.0001f)
 		{
-			moveVec = moveVec.Normalize();
 
-			m_forward = moveVec;
+			if (Length > 1.0f)
+			{
+				moveVec = moveVec.Normalize();
+				Length = 1.0f;
+			}
+			
+			//移動
 			m_pos += moveVec * m_speed;
 
+			float rotSpeed = 0.15f;
+			//現在の向きから目標方向に少しずつ近づく
+			m_forward = m_forward + (moveVec - m_forward) * rotSpeed;
+			m_forward = m_forward.Normalize();
+
+			//向きから角度を生成
 			m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
 		}
 	}

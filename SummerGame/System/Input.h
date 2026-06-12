@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
-
+#include "DxLib.h"
 enum class PeripheralType
 {
 	keyboard,
@@ -36,6 +36,9 @@ public:
 	//void Save();
 	void Load();
 
+	float GetStickLX()const;
+	float GetStickLY()const;
+
 
 private:
 	//イベント名と実際の入力の対応表
@@ -45,6 +48,9 @@ private:
 	std::map<std::string, bool>m_inputData;
 	//実際に入力されたかどうかのデータ
 	std::map<std::string, bool>m_lastInputData;
+
+	//コントローラーの入力情報
+	DINPUT_JOYSTATE m_padState;
 
 	void InitializeInputTable();
 };

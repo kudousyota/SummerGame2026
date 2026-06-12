@@ -67,6 +67,9 @@ Input::Input() : m_inputData{}, m_lastInputData{}, m_inputTable{}
 
 void Input::Update()
 {
+
+	GetJoypadDirectInputState(DX_INPUT_PAD1, &m_padState);
+
 	//まず現在の入力情報を取得
 	char keyState[256];
 	//生のキーボード情報
@@ -122,4 +125,29 @@ bool Input::IsTriggered(const char* name) const
 void Input::Load()
 {
 	// 未実装: 設定ファイル読み込みは行わない
+}
+
+float Input::GetStickLX()const
+{
+	float value = m_padState.X / 1000.0f;
+
+	if (fabs(value) < 0.2f)
+	{
+		value = 0.0f;
+	}
+
+	return value;
+}
+
+float Input::GetStickLY()const
+{
+	//判定
+	float value = -m_padState.Y / 1000.0f;
+
+	if (fabs(value) < 0.2f)
+	{
+		value = 0.0f;
+	}
+
+	return value;
 }
