@@ -300,12 +300,27 @@ void Player::Update()
 
 			float rotSpeed = 0.2f;
 
-			//現在の向きから目標方向に少しずつ近づく
-			m_forward = m_forward + (moveDir - m_forward) * rotSpeed;
-			m_forward = m_forward.Normalize();
+			float targetAngle =
+				atan2f(moveDir.x, moveDir.z) + DX_PI_F;
 
-			//向きから角度を生成
-			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+			float diff = targetAngle - m_angle;
+
+			while (diff > DX_PI_F)
+			{
+				diff -= DX_TWO_PI_F;
+			}
+
+			while (diff < -DX_PI_F)
+			{
+				diff += DX_TWO_PI_F;
+			}
+
+			m_angle += diff * 0.2f;
+
+			// 角度から向きを生成
+			m_forward.x = sinf(m_angle - DX_PI_F);
+			m_forward.y = 0.0f;
+			m_forward.z = cosf(m_angle - DX_PI_F);
 		}
 	}
 
