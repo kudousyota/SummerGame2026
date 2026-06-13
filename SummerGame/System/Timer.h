@@ -16,6 +16,8 @@ public:
 	
 	void SetEnemyTimeScaleForFrames(float scale, int frames);
 
+	bool IsEnemySlow() const;
+
 private:
 	//コンストラクタとデストラクタをプライベートにして、シングルトンパターンを実装
 	Timer() = default;
@@ -31,6 +33,7 @@ private:
 	float m_enemyTimeScale = 1.0f;
 	int m_frameCountEnemy = 0;
 
+	
 	
 };
 

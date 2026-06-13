@@ -22,6 +22,9 @@ public:
 	float GetAngle() const { return m_angle; }
 	Vector3 GetPosition()const { return m_pos; }
 
+	//ジャスト回避しているかどうか
+	bool GetWitchTime() { return m_isWitchTime; }
+
 	void SetCamera(std::shared_ptr<Camera> camera) { m_pCamera = camera; }
 
 	float GetJustDodgeRadius() const override;

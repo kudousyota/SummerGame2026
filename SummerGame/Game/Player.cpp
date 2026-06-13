@@ -344,6 +344,8 @@ void Player::Update()
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
+	m_isWitchTime = Timer::Instance().IsEnemySlow();
+
 	//攻撃判定
 	AttackUpdate();
 	//回避判定
@@ -592,11 +594,3 @@ void Player::TransitionTo(PlayerState nextState)
 	}
 }
 
-void Player::WitchTime()
-{
-	//ウィッチタイムに入ったら
-	if (m_isWitchTime)
-	{
-
-	}
-}

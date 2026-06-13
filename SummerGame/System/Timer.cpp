@@ -42,3 +42,8 @@ void Timer::SetEnemyTimeScaleForFrames(float scale, int frames)
 	m_enemyTimeScale = scale;//敵の時間のスケールを設定する
 	m_frameCountEnemy = frames;//敵のフレームカウントを設定する
 }
+
+bool Timer::IsEnemySlow() const
+{
+	return m_frameCountEnemy > 0;
+}

@@ -73,8 +73,16 @@ void SceneMain::Update(Input& input)
 void SceneMain::Draw()
 {
 
+	//ウィッチタイムだったら
+	if (m_pPlayer->GetWitchTime())
+	{
+		DrawBox(0,0,1280,720,GetColor(255,0, 255),true);
+	}
+
 	m_pPlayer->Draw();
 	m_pStage->Draw();
+
+	
 
 	if (!m_pEnemy.empty())
 	{
