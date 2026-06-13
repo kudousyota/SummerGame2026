@@ -45,17 +45,17 @@ void Camera::Init()
 
 	//初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
-	m_cameraAngleY = playerAng;
+	//カメラの初期の高さ
+	m_cameraAngleY = 0.0f;
 
 
 	m_cameraTargetY = cameraTarget.y;
 
 	//カメラの初期位置
 	Vector3 offset;
-	offset.x = sinf(m_cameraAngleX) * kCameraDistance;
+	offset.x = sinf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
 	offset.y = sinf(m_cameraAngleY) * kCameraDistance;
-	//offset.y = kCameraHeight;
-	offset.z = cosf(m_cameraAngleX) * kCameraDistance;
+	offset.z = cosf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
 
 	m_cameraTarget = cameraTarget;
 	m_cameraPos = cameraTarget - offset;
@@ -104,7 +104,19 @@ void Camera::Update()
 	//カメラ上下回転
 	if (yBuf != 0)
 	{
-		m_cameraAngleY += yBuf * kCameraRotSpeed * 10.0f;
+		m_cameraAngleY -= yBuf * kCameraRotSpeed;
+	}
+	const float kMaxPitch = DX_PI_F * 0.4f;
+	const float kMinPitch = -DX_PI_F * 0.2f;
+	//上下移動の制限
+	if (m_cameraAngleY > kMaxPitch)
+	{
+		m_cameraAngleY = kMaxPitch;
+	}
+
+	if (m_cameraAngleY < kMinPitch)
+	{
+		m_cameraAngleY = kMinPitch;
 	}
 
 	//角度を-π～πに収める
@@ -114,14 +126,13 @@ void Camera::Update()
 	//プレイヤー追従先
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
 
-	// Yは固定
-	cameraTarget.y = m_cameraTargetY;
+	cameraTarget = m_pPlayer->GetCameraTarget();
 
 	//カメラの位置
 	Vector3 offset;
-	offset.x = sinf(m_cameraAngleX) * kCameraDistance;
-	offset.y = kCameraHeight;
-	offset.z = cosf(m_cameraAngleX) * kCameraDistance;
+	offset.x = sinf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
+	offset.y = sinf(m_cameraAngleY) * kCameraDistance;
+	offset.z = cosf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
 
 	//プレイヤーの後ろから見るようにするなら「-offset」
 	Vector3 idealCameraPos = cameraTarget - offset;

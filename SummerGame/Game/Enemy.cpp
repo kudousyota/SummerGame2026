@@ -43,7 +43,6 @@ void Enemy::Init()
 
 	m_hp = 150;
 	m_attackPower = 20;
-
 	
 
 	m_currentState = EnemyState::Idle;
@@ -83,7 +82,8 @@ void Enemy::Update()
 	//攻撃クールタイム
 	if (m_attackCooldown > 0)
 	{
-		m_attackCooldown--;
+		//攻撃のクールタイムもウィッチタイムで遅くする
+		m_attackCooldown-= scale;
 	}
 
 	//ステート
@@ -108,11 +108,12 @@ void Enemy::Update()
 			Vector3 targetDir = dir.Normalize();
 			//現在の向きから目標方向に少しずつ近づく
 			m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
+			//正規化
 			m_forward = m_forward.Normalize();
 
 			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-
-			m_pos += m_forward * m_speed;
+			//速度を与えるウィッチタイムで遅くなるように
+			m_pos += m_forward * m_speed * scale;
 		}
 	}
 		break;

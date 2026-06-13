@@ -428,8 +428,8 @@ void Player::ApplyDamage(int damage)
 		// 例1: プレイヤーのステートをウィッチタイム中に変える場合
 		// TransitionTo(PlayerState::WitchTime); 
 
-		// 例2: 専用のフラグや、ゲーム全体をスローにする関数を呼ぶ場合
-		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 150);
+		//敵のアニメーションを遅くする
+		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 300);
 
 		return; // ダメージを受けずに処理を抜ける
 	}
