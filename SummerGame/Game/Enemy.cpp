@@ -14,6 +14,9 @@ namespace
 	const char* const kAttackAnimName = "Enemy|Attack";
 
 	constexpr float kAttackRange = 150.0f;
+
+	//索敵範囲
+	constexpr float kDetection = 200.0f;
 }
 
 Enemy::Enemy():
@@ -93,30 +96,14 @@ void Enemy::Update()
 	{
 	case EnemyState::Idle:
 	{
-		//Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-		//float distSq = dir.SqMagnitude();
-		////攻撃にする
-		//if (distSq <= kAttackRange * kAttackRange)
-		//{
-		//	if (m_attackCooldown <= 0)
-		//	{
-		//		TransitionTo(EnemyState::Attack);
-		//	}
-		//}
-		//else
-		//{
-		//	//追跡
-		//	float rotSpeed = 0.15f;
-		//	Vector3 targetDir = dir.Normalize();
-		//	//現在の向きから目標方向に少しずつ近づく
-		//	m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
-		//	//正規化
-		//	m_forward = m_forward.Normalize();
+		//プレイヤーの場所
+		Vector3 playervec = m_pPlayer->GetPosition() - m_pos;
+		//距離
+		float distSq = playervec.SqMagnitude();
+		if (distSq <= kDetection)
+		{
 
-		//	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-		//	//速度を与えるウィッチタイムで遅くなるように
-		//	m_pos += m_forward * m_speed * scale;
-		//}
+		}
 	}
 		break;
 	case EnemyState::Walk:
