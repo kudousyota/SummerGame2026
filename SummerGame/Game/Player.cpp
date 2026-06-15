@@ -117,7 +117,7 @@ void Player::Update()
 
 	float scale = Timer::Instance().GetTimeScale();
 
-	// アニメーション更新
+	//アニメーション更新
 	m_animation.Update(scale);
 	if (m_invincibleTime > 0)
 	{
@@ -205,7 +205,7 @@ void Player::Update()
 		{
 			m_isNextAttack = true;
 		}
-		// 攻撃アニメ終了
+		//攻撃アニメ終了
 		if (m_animation.GetAnimEndFlag())
 		{
 			if (m_isNextAttack)
@@ -234,7 +234,7 @@ void Player::Update()
 		//着地したら
 		if (m_isGround)
 		{
-			// 移動入力があるか
+			//移動入力があるか
 			bool isMove =
 				input.IsPressed("up") ||
 				input.IsPressed("down") ||
@@ -317,7 +317,7 @@ void Player::Update()
 
 			m_angle += diff * 0.2f;
 
-			// 角度から向きを生成
+			//角度から向きを生成
 			m_forward.x = sinf(m_angle - DX_PI_F);
 			m_forward.y = 0.0f;
 			m_forward.z = cosf(m_angle - DX_PI_F);
@@ -326,7 +326,7 @@ void Player::Update()
 
 	Character::Collision();
 
-	// 攻撃位置は垂直成分を取り除いた前方で決める
+	//攻撃位置は垂直成分を除いた前方で決める
 	Vector3 attackForward = m_forward;
 	attackForward.y = 0.0f;
 	if (attackForward.SqMagnitude() > 0.0001f)
@@ -335,11 +335,11 @@ void Player::Update()
 	}
 	else
 	{
-		attackForward = VGet(0.0f, 0.0f, 1.0f); // フォールバック
+		attackForward = VGet(0.0f, 0.0f, 1.0f); //フォールバック
 	}
 
 	m_attackPos = m_pos + attackForward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
-	// モデル行列更新
+	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
@@ -383,16 +383,16 @@ void Player::Draw()
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
 	
-	// プレイヤーの状態によって、表示する半径と色を変える
-	float drawRadius = 100.0f; // デフォルトの半径
-	unsigned int drawColor = GetColor(255, 0, 0); // 通常は赤
+	//プレイヤーの状態によって、表示する半径と色を変える
+	float drawRadius = 100.0f; //デフォルトの半径
+	unsigned int drawColor = GetColor(255, 0, 0); //通常は赤
 
-	// 今ジャスト回避の受付時間か？
+	//今ジャスト回避の受付時間か？
 	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
 		//受付中だけ、判定の半径を広げ、色を青にする
-		drawRadius = kJustDodgeRadius; // コンストで定義した 100.0f
-		drawColor = GetColor(0, 100, 255); // 青
+		drawRadius = kJustDodgeRadius; //コンストで定義した100.0f
+		drawColor = GetColor(0, 100, 255);
 	}
 
 	//実際に描画する
@@ -463,14 +463,14 @@ bool Player::IsJustDodgeWindow() const
 	return (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame);
 }
 
-// 今ジャスト回避を受け付ける状態にいるかを返す
+//今ジャスト回避を受け付ける状態にいるかを返す
 float Player::GetJustDodgeRadius() const
 {
 	if (IsJustDodgeWindow())
 	{
-		return kJustDodgeRadius; // 受付中なら広げる（100.0f）
+		return kJustDodgeRadius;
 	}
-	return 30.0f; // 通常時の半径（GetCollisionRadius()の戻り値など）
+	return 30.0f; //通常時の半径(GetCollisionRadius()の戻り値など)
 }
 
 void Player::AttackUpdate()

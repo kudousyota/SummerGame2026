@@ -9,6 +9,8 @@ namespace
 {
 	const char* const kIdleAnimName = "Enemy|Idle";
 
+	const char* const kWalkAnimName = "Enemy|Walk";
+
 	const char* const kAttackAnimName = "Enemy|Attack";
 
 	constexpr float kAttackRange = 150.0f;
@@ -91,6 +93,34 @@ void Enemy::Update()
 	{
 	case EnemyState::Idle:
 	{
+		//Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+		//float distSq = dir.SqMagnitude();
+		////攻撃にする
+		//if (distSq <= kAttackRange * kAttackRange)
+		//{
+		//	if (m_attackCooldown <= 0)
+		//	{
+		//		TransitionTo(EnemyState::Attack);
+		//	}
+		//}
+		//else
+		//{
+		//	//追跡
+		//	float rotSpeed = 0.15f;
+		//	Vector3 targetDir = dir.Normalize();
+		//	//現在の向きから目標方向に少しずつ近づく
+		//	m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
+		//	//正規化
+		//	m_forward = m_forward.Normalize();
+
+		//	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+		//	//速度を与えるウィッチタイムで遅くなるように
+		//	m_pos += m_forward * m_speed * scale;
+		//}
+	}
+		break;
+	case EnemyState::Walk:
+	{
 		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 		float distSq = dir.SqMagnitude();
 		//攻撃にする
@@ -117,6 +147,7 @@ void Enemy::Update()
 		}
 	}
 		break;
+
 	case EnemyState::Attack:
 		if (!m_isAttack &&
 			m_animation.GetAnimRate() >= 0.5f)
@@ -218,12 +249,7 @@ void Enemy::AttackUpdate()
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 
-	CollisionManager::Instance().CheckAttackSphere(
-		this,
-		m_attackPos,
-		50.0f,
-		m_attackPower
-	);
+	CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 	m_isAttacking = true;
 	m_attackFrame = 30;
 
@@ -242,12 +268,11 @@ void Enemy::TransitionTo(EnemyState nextState)
 	switch (m_currentState)
 	{
 	case EnemyState::Idle:
-
-
-
 		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
 		break;
-
+	case EnemyState::Walk:
+		m_animation.ChangeAnim(kWalkAnimName, true, 0.5f);
+		break;
 	case EnemyState::Attack:
 
 		m_animation.ChangeAnim(kAttackAnimName, false, 0.5f);
