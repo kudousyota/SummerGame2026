@@ -66,6 +66,8 @@ private:
 	Vector3 m_attackPos;
 	//向き
 	Vector3 m_forward;
+	//攻撃の向き
+	Vector3 m_attackDir;
 	//攻撃しているかどうかのフラグ
 	bool m_isAttack;
 

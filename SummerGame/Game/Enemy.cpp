@@ -15,8 +15,10 @@ namespace
 
 	constexpr float kAttackRange = 150.0f;
 
-	//索敵範囲
-	constexpr float kDetection = 200.0f;
+	//見える距離
+	constexpr float kSightRange = 500.0f;
+	//視野角
+	constexpr float kFov = 90.0f;
 }
 
 Enemy::Enemy():
@@ -29,7 +31,8 @@ Enemy::Enemy():
 	m_attackFrame(0),
 	m_currentState(EnemyState::Idle),
 	m_prevState(EnemyState::Idle),
-	m_isAttack(false)
+	m_isAttack(false),
+	m_attackDir(VGet(0.0f,0.0f,0.0f))
 {
 }
 
@@ -96,14 +99,11 @@ void Enemy::Update()
 	{
 	case EnemyState::Idle:
 	{
-		//プレイヤーの場所
-		Vector3 playervec = m_pPlayer->GetPosition() - m_pos;
-		//距離
-		float distSq = playervec.SqMagnitude();
-		if (distSq <= kDetection)
+		if (m_attackCooldown <= 0)
 		{
-
+			TransitionTo(EnemyState::Walk);
 		}
+		
 	}
 		break;
 	case EnemyState::Walk:
@@ -141,6 +141,8 @@ void Enemy::Update()
 		{
 			AttackUpdate();
 			m_isAttack = true;
+
+			//m_attackDir = (m_pPlayer->GetPosition() - m_pos).Normalize();
 		}
 
 		if (m_animation.GetAnimEndFlag())
@@ -169,35 +171,16 @@ void Enemy::Draw()
 
 	MV1DrawModel(m_modelHandle);
 
-	DrawCapsule3D(m_pos.ToDxLibVector(),
-		VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),
-		70.0f,
-		16,
-		GetColor(255, 0, 0),
-		GetColor(255, 0, 0),
-		false
-	);
+	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),70.0f,16,GetColor(255, 0, 0),GetColor(255, 0, 0),false);
+
 
 	//攻撃の時に判定を表示
 	if (m_attackFrame > 0)
 	{
-		DrawSphere3D(
-			m_attackPos.ToDxLibVector(),
-			50.0f,
-			16,
-			GetColor(0, 255, 0),
-			GetColor(0, 255, 0),
-			false
-		);
+		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 	}
 
-	DrawFormatString(
-		50,
-		50,
-		GetColor(255, 255, 255),
-		"EnemyHP:%d",
-		m_hp
-	);
+	DrawFormatString(50,50,GetColor(255, 255, 255),"EnemyHP:%d",m_hp);
 
 }
 
@@ -234,11 +217,12 @@ void Enemy::SetPlayer(std::shared_ptr<Player> player)
 void Enemy::AttackUpdate()
 {
 	//前側に表示高さは微調整
-	m_attackPos = m_pos + m_forward * 70.0f + VGet(0.0f, 20.0f, 0.0f);
+	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 
 	CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 	m_isAttacking = true;
 	m_attackFrame = 30;
+
 
 }
 
@@ -267,6 +251,8 @@ void Enemy::TransitionTo(EnemyState nextState)
 		m_isAttack = false;
 		//クールタイム設定
 		m_attackCooldown = 90;
+
+
 		break;
 	}
 }

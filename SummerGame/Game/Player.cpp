@@ -365,9 +365,9 @@ void Player::Draw()
 
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
-	DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
+	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
 
-	DrawBillboard3D(VGet(-500.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f, m_uiHandle, true);
+	//DrawBillboard3D(VGet(-500.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f, m_uiHandle, true);
 
 	float animTime = m_animation.GetCurrentAnimTime();
 
