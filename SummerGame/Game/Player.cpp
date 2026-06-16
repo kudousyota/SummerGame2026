@@ -145,7 +145,7 @@ void Player::Update()
 			TransitionTo(PlayerState::Jump);
 
 			//上にジャンプパワーを入れる
-			m_velocity.y = m_jumpPower;
+			m_velocity.y = static_cast<int>(m_jumpPower);
 
 			//ジャンプしたら空中ってことにする
 			m_isGround = false;
@@ -182,7 +182,7 @@ void Player::Update()
 			TransitionTo(PlayerState::Jump);
 
 			//上にジャンプパワーを入れる
-			m_velocity.y = m_jumpPower;
+			m_velocity.y = static_cast<int>(m_jumpPower);
 
 			//ジャンプしたら空中ってことにする
 			m_isGround = false;
@@ -300,8 +300,7 @@ void Player::Update()
 
 			float rotSpeed = 0.2f;
 
-			float targetAngle =
-				atan2f(moveDir.x, moveDir.z) + DX_PI_F;
+			float targetAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
 
 			float diff = targetAngle - m_angle;
 

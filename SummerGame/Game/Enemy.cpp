@@ -91,7 +91,7 @@ void Enemy::Update()
 	if (m_attackCooldown > 0)
 	{
 		//攻撃のクールタイムもウィッチタイムで遅くする
-		m_attackCooldown-= scale;
+		m_attackCooldown -= scale;
 	}
 
 	//ステート
@@ -115,6 +115,9 @@ void Enemy::Update()
 		{
 			if (m_attackCooldown <= 0)
 			{
+				m_forward = (m_pPlayer->GetPosition() - m_pos).Normalize();
+				m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+
 				TransitionTo(EnemyState::Attack);
 			}
 		}
@@ -142,7 +145,7 @@ void Enemy::Update()
 			AttackUpdate();
 			m_isAttack = true;
 
-			//m_attackDir = (m_pPlayer->GetPosition() - m_pos).Normalize();
+			m_attackDir = (m_pPlayer->GetPosition() - m_pos).Normalize();
 		}
 
 		if (m_animation.GetAnimEndFlag())
@@ -251,8 +254,8 @@ void Enemy::TransitionTo(EnemyState nextState)
 		m_isAttack = false;
 		//クールタイム設定
 		m_attackCooldown = 90;
-
-
+		
+		m_attackDir = m_forward;
 		break;
 	}
 }
