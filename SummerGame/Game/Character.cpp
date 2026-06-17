@@ -54,7 +54,7 @@ void Character::Collision()
 	if (m_velocity.y <= 0.0f &&
 		CollisionManager::Instance().CheckStageGround(this, stageHandle, groundY))
 	{
-		// 地面にいるときは、地面の高さキャラクターの半径分だけY座標を上げる
+		//地面にいるときは、地面の高さキャラクターの半径分だけY座標を上げる
 		m_pos.y = groundY + GetCollisionRadius();
 		m_isGround = true;
 		m_velocity.y = 0.0f;
@@ -64,7 +64,7 @@ void Character::Collision()
 		m_isGround = false;
 	}
 
-	// 座標を押し出すように
+	//座標を押し出すように
 	CollisionManager::Instance().CheckStageCollision(this, stageHandle);
 
 }

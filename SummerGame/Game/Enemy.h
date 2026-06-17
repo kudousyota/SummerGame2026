@@ -22,7 +22,7 @@ public:
 
 	bool IsDead()const { return m_isDead; }
 
-	void SetPlayer(std::shared_ptr<Player> player);
+	void SetPlayer(std::shared_ptr<Player> player) {m_pPlayer = player;};
 
 private:
 

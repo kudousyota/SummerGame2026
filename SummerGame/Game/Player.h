@@ -39,10 +39,11 @@ private:
 		Walk,
 		Attack,
 		Rush,
-		Avoid,
+		Kick,
 		Damage,
 		Jump,
 		Dodge,
+		Sky,
 		WitchTime
 	};
 

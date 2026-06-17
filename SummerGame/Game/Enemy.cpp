@@ -49,7 +49,10 @@ void Enemy::Init()
 
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
-	m_hp = 150;
+	//本物の体力
+	//m_hp = 150;
+	m_hp = 500;
+
 	m_attackPower = 20;
 	
 
@@ -210,12 +213,6 @@ void Enemy::ApplyDamage(int damage)
 
 	printfDx("Enemy HP = %d\n",m_hp);
 }
-
-void Enemy::SetPlayer(std::shared_ptr<Player> player)
-{
-	m_pPlayer = player;
-}
-
 
 void Enemy::AttackUpdate()
 {

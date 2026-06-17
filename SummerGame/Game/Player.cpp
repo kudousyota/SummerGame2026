@@ -25,11 +25,13 @@ namespace
 
 	const char* const kDodgeAnimName	 = "Player|Dodge";
 
+	const char* const kKickAnimName		 = "Player|Kick";
+
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame		 = 10.0f;
 
-	constexpr int kAnimBlendFrame		 = 10;
-
+	constexpr int   kAnimBlendFrame		 = 10;
+	//最初の攻撃の判定フレーム
 	constexpr float kAttackStartFrame	 = 10.0f;
 
 	constexpr float kAttackEndFrame		 = 15.0f;
@@ -43,6 +45,14 @@ namespace
 	//攻撃の四回目のダメージを与えるフレーム
 	constexpr int kAttackDamageFrame4 = 25;
 
+	//キックのダメージを与えれるフレーム
+	constexpr float kKickStartFrame = 15.0f;
+
+	constexpr float kKickEndFrame = 25.0f;
+
+	//キックのダメージ
+	constexpr int kKickPower = 10;
+
 	//ジャスト回避の受付フレーム
 	constexpr int kDodgeFrame = 30;
 	//無敵時間
@@ -50,6 +60,8 @@ namespace
 
 	//ジャスト回避の範囲
 	constexpr float kJustDodgeRadius = 100.0f;
+
+	
 }
 
 Player::Player() :
@@ -224,12 +236,42 @@ void Player::Update()
 	
 	case PlayerState::Rush:
 
+		//コンボ受け付け
+		if (input.IsTriggered("Attack"))
+		{
+			m_isNextAttack = true;
+		}
+
 		if (m_animation.GetAnimEndFlag())
 		{
-			TransitionTo(PlayerState::Idle);
+			if (m_isNextAttack)
+			{
+				TransitionTo(PlayerState::Kick);
+				m_isNextAttack = false;
+			}
+			else
+			{
+				TransitionTo(PlayerState::Idle);
+			}
 		}
 		break;
 	
+
+	case PlayerState::Kick:
+
+		//コンボ受け付け
+		if (input.IsTriggered("Attack"))
+		{
+			m_isNextAttack = true;
+		}
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Idle);
+			m_attackPower = 10;
+		}
+		break;
+
 	case PlayerState::Jump:
 		//着地したら
 		if (m_isGround)
@@ -262,11 +304,11 @@ void Player::Update()
 			TransitionTo(PlayerState::Idle);
 		}
 		break;
-	case PlayerState::WitchTime:
+	/*case PlayerState::WitchTime:
 		if (m_isWitchTime)
 		{
 
-		}
+		}*/
 	}
 
 	//前の場所
@@ -371,15 +413,17 @@ void Player::Draw()
 	float animTime = m_animation.GetCurrentAnimTime();
 
 	//攻撃判定
-	if (m_currentState == PlayerState::Attack &&
-		animTime >= kAttackStartFrame &&
-		animTime <= kAttackEndFrame)
+	if (m_currentState == PlayerState::Attack && animTime >= kAttackStartFrame && animTime <= kAttackEndFrame)
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,6,0xffffff,0xffffff,false);
 	}
 	if (m_currentState == PlayerState::Rush)
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
+	}
+	if (m_currentState == PlayerState::Kick && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
+	{
+		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x0000ff, 0x0000ff, false);
 	}
 	
 	//プレイヤーの状態によって、表示する半径と色を変える
@@ -474,7 +518,7 @@ float Player::GetJustDodgeRadius() const
 
 void Player::AttackUpdate()
 {
-	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush)
+	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush &&m_currentState != PlayerState::Kick)
 	{
 		return;
 	}
@@ -532,6 +576,17 @@ void Player::AttackUpdate()
 		}
 		
 	}
+	if (m_currentState == PlayerState::Kick)
+	{
+
+		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+
+			m_isAttackHit = true;
+		}
+	}
 	
 }
 
@@ -578,6 +633,12 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;
 
+	case PlayerState::Kick:
+		m_isAttackHit = false;
+		m_attackPower += kKickPower;
+
+		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
+		break;
 	case PlayerState::Jump:
 		m_animation.ChangeAnim(kJumpAnimName, false, 0.38f);
 		break;
