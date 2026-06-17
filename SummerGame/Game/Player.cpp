@@ -273,6 +273,11 @@ void Player::Update()
 		break;
 
 	case PlayerState::Jump:
+
+		if (!m_isGround)
+		{
+			TransitionTo(PlayerState::Sky);
+		}
 		//着地したら
 		if (m_isGround)
 		{
@@ -295,6 +300,76 @@ void Player::Update()
 		}
 		break;
 
+	case PlayerState::Sky:
+		//着地していないとき
+		if (!m_isGround)
+		{
+			if (input.IsTriggered("Attack"))
+			{
+				TransitionTo(PlayerState::SkyAttack);
+			}
+
+			
+		}
+		break;
+
+	case PlayerState::SkyAttack:
+		//コンボ受け付け
+		if (input.IsTriggered("Attack"))
+		{
+			m_isNextAttack = true;
+		}
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			if (m_isNextAttack)
+			{
+				TransitionTo(PlayerState::Kick);
+				m_isNextAttack = false;
+			}
+			else
+			{
+				TransitionTo(PlayerState::Idle);
+			}
+		}
+		break;
+
+	case PlayerState::SkyRush:
+		//コンボ受け付け
+		if (input.IsTriggered("Attack"))
+		{
+			m_isNextAttack = true;
+		}
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			if (m_isNextAttack)
+			{
+				TransitionTo(PlayerState::Kick);
+				m_isNextAttack = false;
+			}
+			else
+			{
+				TransitionTo(PlayerState::Idle);
+			}
+		}
+		
+		break;
+
+	case PlayerState::SkyKick:
+
+		//コンボ受け付け
+		if (input.IsTriggered("Attack"))
+		{
+			m_isNextAttack = true;
+		}
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Idle);
+			m_attackPower = 10;
+		}
+		break;
 	case PlayerState::Dodge:
 		//ジャスト回避の受付
 		m_dodgeFrame++;
@@ -518,7 +593,7 @@ float Player::GetJustDodgeRadius() const
 
 void Player::AttackUpdate()
 {
-	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush &&m_currentState != PlayerState::Kick)
+	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush && m_currentState != PlayerState::Kick && m_currentState != PlayerState::Sky && m_currentState != PlayerState::SkyRush && m_currentState != PlayerState::SkyKick)
 	{
 		return;
 	}
@@ -588,6 +663,65 @@ void Player::AttackUpdate()
 		}
 	}
 	
+	//攻撃判定を出すフレームの範囲内にいるか
+	if (m_currentState == PlayerState::SkyAttack)
+	{
+		if (!m_isAttackHit)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+
+			m_isAttackHit = true;
+		}
+	}
+	if (m_currentState == PlayerState::SkyRush)
+	{
+		//ラッシュの攻撃は一回だけ当たるようにする
+		if (!m_rushHit[0] && animTime >= kAttackDamageFrame1)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[0] = true;
+		}
+		//ラッシュの攻撃の二回目の攻撃判定
+		if (!m_rushHit[1] && animTime >= kAttackDamageFrame2)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[1] = true;
+		}
+		//ラッシュの攻撃の三回目の攻撃判定
+		if (!m_rushHit[2] && animTime >= kAttackDamageFrame3)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[2] = true;
+		}
+		//ラッシュの攻撃の四回目の攻撃判定
+		if (!m_rushHit[3] && animTime >= kAttackDamageFrame4)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			//一回当たったら当たり判定を消す
+			m_rushHit[3] = true;
+		}
+
+	}
+	if (m_currentState == PlayerState::SkyKick)
+	{
+
+		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
+		{
+			//攻撃判定を出す
+			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+
+			m_isAttackHit = true;
+		}
+	}
+
 }
 
 void Player::DodgeUpdate()
@@ -634,6 +768,34 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Kick:
+		m_isAttackHit = false;
+		m_attackPower += kKickPower;
+
+		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
+		break;
+
+	case PlayerState::Sky:
+		m_gravity = 0.2f;
+
+	case PlayerState::SkyAttack:
+
+		m_isAttackHit = false;
+		m_isNextAttack = false;
+
+		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
+		break;
+	case PlayerState::SkyRush:
+
+		//ラッシュの攻撃は複数回当たる可能性があるので、当たったかどうかを管理する配列をリセットする
+		for (int i = 0; i < 4; i++)
+		{
+			m_rushHit[i] = false;
+		}
+
+		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
+		break;
+
+	case PlayerState::SkyKick:
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
 

@@ -44,6 +44,9 @@ private:
 		Jump,
 		Dodge,
 		Sky,
+		SkyAttack,
+		SkyRush,
+		SkyKick,
 		WitchTime
 	};
 
