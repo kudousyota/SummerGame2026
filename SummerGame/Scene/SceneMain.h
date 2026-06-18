@@ -24,6 +24,10 @@ private:
 private:
 	int m_frameCount;
 
+	float m_angle;
+
+	int m_nidelHandle;
+
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;

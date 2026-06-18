@@ -27,6 +27,8 @@ namespace
 
 	const char* const kKickAnimName		 = "Player|Kick";
 
+	const char* const kSkyAnimName		 = "Player|Sky";
+
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame		 = 10.0f;
 
@@ -108,7 +110,7 @@ void Player::Init()
 	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
-	m_uiHandle = LoadGraph("data/ui_maho.png");
+
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
 	m_isGround = true;
@@ -500,7 +502,8 @@ void Player::Draw()
 
 	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
 
-	//DrawBillboard3D(VGet(-500.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f, m_uiHandle, true);
+	
+	
 
 	float animTime = m_animation.GetCurrentAnimTime();
 
@@ -793,14 +796,13 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Sky:
-		
-
+		m_animation.ChangeAnim(kSkyAnimName, true, 0.5f);
 		break;
 	case PlayerState::SkyAttack:
 
 		m_isAttackHit = false;
 		m_isNextAttack = false;
-		m_gravity = 0.0f;
+		
 
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
 		break;

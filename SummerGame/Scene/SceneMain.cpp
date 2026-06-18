@@ -3,7 +3,9 @@
 #include "../System/Input.h"
 
 SceneMain::SceneMain():
-m_frameCount(0)
+m_frameCount(0),
+m_nidelHandle(-1),
+m_angle(0.0f)
 {
 }
 
@@ -47,6 +49,7 @@ void SceneMain::Init()
 		enemy->SetStage(m_pStage);
 	}
 
+	m_nidelHandle = LoadGraph("data/ui_niidle_brack.png");
 
 }
 
@@ -54,6 +57,7 @@ void SceneMain::Update(Input& input)
 {
 	Input::Instance().Update();
 
+	m_angle++;
 	m_frameCount++;
 	m_pPlayer->Update();
 	m_pCamera->Update();
@@ -77,6 +81,11 @@ void SceneMain::Draw()
 	if (m_pPlayer->GetWitchTime())
 	{
 		DrawBox(0,0,1280,720,GetColor(255,0, 255),true);
+	}
+	//SetUseAlphaChannelGraphCreateFlag(TRUE);
+	//if (m_pPlayer->GetWitchTime())
+	{
+		DrawBillboard3D(VGet(0.0f, 600.0f, 30.0f), 0.0f, 1.0f, 320.0f,0.0f/* m_angle*/, m_nidelHandle, true);
 	}
 
 	m_pPlayer->Draw();
