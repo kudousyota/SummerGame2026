@@ -80,7 +80,8 @@ Player::Player() :
 	m_dodgeFrame(0),
 	m_rushHit{false, false, false, false},
 	m_isWitchTime(false),
-	m_uiHandle(-1)
+	m_uiHandle(-1),
+	m_attackForward(VGet(0.0f,0.0f,0.0f))
 {
 	
 }
@@ -301,18 +302,35 @@ void Player::Update()
 		break;
 
 	case PlayerState::Sky:
-		//着地していないとき
-		if (!m_isGround)
+		//着地したとき
+		if (m_isGround)
 		{
-			if (input.IsTriggered("Attack"))
+			//移動入力があるか
+			bool isMove =
+				input.IsPressed("up") ||
+				input.IsPressed("down") ||
+				input.IsPressed("left") ||
+				input.IsPressed("right");
+
+			// 移動優先
+			if (isMove)
 			{
-				TransitionTo(PlayerState::SkyAttack);
+				TransitionTo(PlayerState::Walk);
 			}
-
-			
+			else
+			{
+				TransitionTo(PlayerState::Idle);
+			}
+			break;
 		}
-		break;
+		
 
+		if (input.IsTriggered("Attack"))
+		{
+			TransitionTo(PlayerState::SkyAttack);
+		}
+
+		break;
 	case PlayerState::SkyAttack:
 		//コンボ受け付け
 		if (input.IsTriggered("Attack"))
@@ -324,7 +342,7 @@ void Player::Update()
 		{
 			if (m_isNextAttack)
 			{
-				TransitionTo(PlayerState::Kick);
+				TransitionTo(PlayerState::SkyRush);
 				m_isNextAttack = false;
 			}
 			else
@@ -345,7 +363,7 @@ void Player::Update()
 		{
 			if (m_isNextAttack)
 			{
-				TransitionTo(PlayerState::Kick);
+				TransitionTo(PlayerState::SkyKick);
 				m_isNextAttack = false;
 			}
 			else
@@ -388,7 +406,6 @@ void Player::Update()
 
 	//前の場所
 	Vector3 oldPos = m_pos;
-	
 
 	//通常移動
 	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge)
@@ -443,18 +460,18 @@ void Player::Update()
 	Character::Collision();
 
 	//攻撃位置は垂直成分を除いた前方で決める
-	Vector3 attackForward = m_forward;
-	attackForward.y = 0.0f;
-	if (attackForward.SqMagnitude() > 0.0001f)
+	m_attackForward = m_forward;
+	m_attackForward.y = 0.0f;
+	if (m_attackForward.SqMagnitude() > 0.0001f)
 	{
-		attackForward = attackForward.Normalize();
+		m_attackForward = m_attackForward.Normalize();
 	}
 	else
 	{
-		attackForward = VGet(0.0f, 0.0f, 1.0f); //フォールバック
+		m_attackForward = VGet(0.0f, 0.0f, 1.0f); //フォールバック
 	}
 
-	m_attackPos = m_pos + attackForward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+	m_attackPos = m_pos + m_attackForward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
 	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
@@ -527,26 +544,26 @@ void Player::ApplyDamage(int damage)
 		return;
 	}
 
-	// 無敵時間中なら、通常の被弾もジャスト回避もすべて無視する
+	//無敵時間中なら、通常の被弾もジャスト回避もすべて無視する
 	if (m_invincibleTime > 0)
 	{
 		return;
 	}
 
-	// CollisionManager側でジャスト回避の大きな判定半径100に当たった時に、
-	// damage = 0 でこの関数が呼ばれる
+	//CollisionManager側でジャスト回避の大きな判定半径100に当たった時に、
+	//damage = 0 でこの関数が呼ばれる
 	if (damage == 0 && m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
-		// ジャスト回避成功時の処理
+		//ジャスト回避成功時の処理
 		printfDx("Just Dodge (Witch Time!)\n");
 
-		// 直ぐに無敵を付与連続ヒット防止にもなる
+		//直ぐに無敵を付与連続ヒット防止にもなる
 		m_invincibleTime = kInvincibleFrame;
 
-		// ここでウィッチタイム状態に入る処理
+		//ここでウィッチタイム状態に入る処理
 		m_isWitchTime = true;
-		// 例1: プレイヤーのステートをウィッチタイム中に変える場合
-		// TransitionTo(PlayerState::WitchTime); 
+		//例1: プレイヤーのステートをウィッチタイム中に変える場合
+		//TransitionTo(PlayerState::WitchTime); 
 
 		//敵のアニメーションを遅くする
 		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 300);
@@ -554,10 +571,10 @@ void Player::ApplyDamage(int damage)
 		return; // ダメージを受けずに処理を抜ける
 	}
 
-	// 通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
+	//通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
 	m_hp -= damage;
 
-	// 無敵時間を設定
+	//無敵時間を設定
 	m_invincibleTime = 120;
 
 	if (m_hp <= 0)
@@ -741,6 +758,7 @@ void Player::TransitionTo(PlayerState nextState)
 	switch (m_currentState)
 	{
 	case PlayerState::Idle:
+		m_gravity = 0.5f;
 
 		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
@@ -775,12 +793,14 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Sky:
-		m_gravity = 0.2f;
+		
 
+		break;
 	case PlayerState::SkyAttack:
 
 		m_isAttackHit = false;
 		m_isNextAttack = false;
+		m_gravity = 0.0f;
 
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
 		break;

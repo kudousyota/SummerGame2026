@@ -78,6 +78,8 @@ private:
 	Vector3 m_attackPos;
 	//向き
 	Vector3 m_forward;
+	//攻撃する向き
+	Vector3 m_attackForward;
 	//被弾したかどうか
 	bool m_isHit;
 	//ラッシュの攻撃が当たったかどうかを管理する配列
