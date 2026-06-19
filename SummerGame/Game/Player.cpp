@@ -106,7 +106,7 @@ void Player::Init()
 	m_pos = VGet(0.0f, 0.0f, 0.0f);
 
 	m_hp = 100;
-	m_jumpPower = 10;
+	m_jumpPower = 15;
 	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("data/Player.mv1");
 	m_hakutoHandle = LoadGraph("data/kudonetta.png");
@@ -124,7 +124,6 @@ void Player::Update()
 	{
 		return;
 	}
-
 	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 
@@ -220,6 +219,11 @@ void Player::Update()
 		{
 			m_isNextAttack = true;
 		}
+		//回避できる
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 		//攻撃アニメ終了
 		if (m_animation.GetAnimEndFlag())
 		{
@@ -244,7 +248,10 @@ void Player::Update()
 		{
 			m_isNextAttack = true;
 		}
-
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 		if (m_animation.GetAnimEndFlag())
 		{
 			if (m_isNextAttack)
@@ -267,7 +274,10 @@ void Player::Update()
 		{
 			m_isNextAttack = true;
 		}
-
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
@@ -325,13 +335,15 @@ void Player::Update()
 			}
 			break;
 		}
-		
 
 		if (input.IsTriggered("Attack"))
 		{
 			TransitionTo(PlayerState::SkyAttack);
 		}
-
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 		break;
 	case PlayerState::SkyAttack:
 		//コンボ受け付け
@@ -351,6 +363,10 @@ void Player::Update()
 			{
 				TransitionTo(PlayerState::Idle);
 			}
+		}
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
 		}
 		break;
 
@@ -373,7 +389,10 @@ void Player::Update()
 				TransitionTo(PlayerState::Idle);
 			}
 		}
-		
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 		break;
 
 	case PlayerState::SkyKick:
@@ -384,6 +403,10 @@ void Player::Update()
 			m_isNextAttack = true;
 		}
 
+		if (input.IsTriggered("Dodge"))
+		{
+			TransitionTo(PlayerState::Dodge);
+		}
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
@@ -484,7 +507,7 @@ void Player::Update()
 	//攻撃判定
 	AttackUpdate();
 	//回避判定
-	DodgeUpdate();
+	//DodgeUpdate();
 	
 }
 
@@ -498,19 +521,15 @@ void Player::Draw()
 
 	MV1DrawModel(m_modelHandle);
 
+#ifdef _DEBUG
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 
-	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
-
-	
-	
 
 	float animTime = m_animation.GetCurrentAnimTime();
-
 	//攻撃判定
 	if (m_currentState == PlayerState::Attack && animTime >= kAttackStartFrame && animTime <= kAttackEndFrame)
 	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,6,0xffffff,0xffffff,false);
+		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
 	}
 	if (m_currentState == PlayerState::Rush)
 	{
@@ -520,7 +539,7 @@ void Player::Draw()
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x0000ff, 0x0000ff, false);
 	}
-	
+
 	//プレイヤーの状態によって、表示する半径と色を変える
 	float drawRadius = 100.0f; //デフォルトの半径
 	unsigned int drawColor = GetColor(255, 0, 0); //通常は赤
@@ -536,7 +555,16 @@ void Player::Draw()
 	//実際に描画する
 	DrawSphere3D(m_pos.ToDxLibVector(), drawRadius, 16, drawColor, drawColor, false);
 	//HP
-	DrawFormatString(50,70,GetColor(255, 255, 255),"PlayerHP:%d",m_hp);
+	
+#endif  //DEBUG
+	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
+
+	
+	DrawFormatString(50, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
+
+	
+
+	
 
 }
 
@@ -744,10 +772,10 @@ void Player::AttackUpdate()
 
 }
 
-void Player::DodgeUpdate()
-{
-	
-}
+//void Player::DodgeUpdate()
+//{
+//	
+//}
 void Player::TransitionTo(PlayerState nextState)
 {
 	if (m_currentState == nextState)
@@ -761,7 +789,8 @@ void Player::TransitionTo(PlayerState nextState)
 	switch (m_currentState)
 	{
 	case PlayerState::Idle:
-		m_gravity = 0.5f;
+		//重力を戻す
+		m_gravity = kGravity;
 
 		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
@@ -796,9 +825,15 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Sky:
+		m_gravity = kGravity;
+
 		m_animation.ChangeAnim(kSkyAnimName, true, 0.5f);
 		break;
 	case PlayerState::SkyAttack:
+		
+		//空中攻撃をしたときにY方向のパワー無くして重力も消す
+		m_velocity.y = 0.0f;
+		m_gravity = 0.0f;
 
 		m_isAttackHit = false;
 		m_isNextAttack = false;
@@ -807,6 +842,9 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
 		break;
 	case PlayerState::SkyRush:
+		//同様の処理
+		m_velocity.y = 0.0f;
+		m_gravity = 0.0f;
 
 		//ラッシュの攻撃は複数回当たる可能性があるので、当たったかどうかを管理する配列をリセットする
 		for (int i = 0; i < 4; i++)
@@ -818,12 +856,16 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::SkyKick:
+		//ここも同じ
+		m_velocity.y = 0.0f;
+		m_gravity = 0.0f;
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
 
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
 		break;
 	case PlayerState::Jump:
+		m_gravity = kGravity;
 		m_animation.ChangeAnim(kJumpAnimName, false, 0.38f);
 		break;
 

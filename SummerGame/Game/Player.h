@@ -66,7 +66,7 @@ private:
 	//攻撃処理
 	void AttackUpdate();
 	//回避処理
-	void DodgeUpdate();
+	//void DodgeUpdate();
 
 	
 	//アタック
