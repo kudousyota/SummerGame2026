@@ -433,7 +433,7 @@ void Player::Update()
 	Vector3 oldPos = m_pos;
 
 	//通常移動
-	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge)
+	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge || m_currentState == PlayerState::Sky)
 	{
 
 		float stickX = input.GetStickLX();

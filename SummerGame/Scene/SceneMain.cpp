@@ -2,6 +2,11 @@
 #include "DxLib.h"
 #include "../System/Input.h"
 
+namespace
+{
+	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
+}
+
 SceneMain::SceneMain():
 m_frameCount(0),
 m_nidelHandle(-1),
@@ -48,16 +53,20 @@ void SceneMain::Init()
 	{
 		enemy->SetStage(m_pStage);
 	}
-
-	m_nidelHandle = LoadGraph("data/ui_niidle_brack.png");
-
+	SetUseAlphaChannelGraphCreateFlag(TRUE);
+	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
+	
+	m_nidelHandle = LoadGraph("data/ui_niidle_flower.png");
+	//m_nidelHandle = LoadGraph("data/ui_niidle_test.png");
+	
 }
 
 void SceneMain::Update(Input& input)
 {
 	Input::Instance().Update();
 
-	m_angle++;
+	
+
 	m_frameCount++;
 	m_pPlayer->Update();
 	m_pCamera->Update();
@@ -72,6 +81,39 @@ void SceneMain::Update(Input& input)
 			}
 		}
 	}
+	m_angle += kRotateSpeed;
+	//回転角度の最大値(360度 = 2πラジアン)
+	const float kMaxAngle = DX_TWO_PI_F;
+	//まだ1週してなければ回転
+	if (m_angle < kMaxAngle)
+	{
+		
+		m_angle -= DX_PI_F / 180.0f;
+	}
+
+	//360度超えないようにする
+	if (m_angle > kMaxAngle)
+	{
+		m_angle = kMaxAngle;
+	}
+
+	if (m_pPlayer->GetWitchTime())
+	{
+		// 360度→0度まで逆回転
+		if (m_angle > 0.0f)
+		{
+			m_angle -= DX_PI_F / 30.0f;
+
+			if (m_angle < 0.0f)
+			{
+				m_angle = 0.0f;
+			}
+		}
+	}
+	else
+	{
+		m_angle = DX_TWO_PI_F;
+	}
 }
 
 void SceneMain::Draw()
@@ -81,12 +123,11 @@ void SceneMain::Draw()
 	if (m_pPlayer->GetWitchTime())
 	{
 		DrawBox(0,0,1280,720,GetColor(255,0, 255),true);
+		//0.5f0.5fで真ん中
+		DrawBillboard3D(VGet(0.0f, 300.0f, 30.0f), 0.5f, 0.5f, 320.0f,/*0.0f*/ m_angle, m_nidelHandle, true);
+
 	}
 	//SetUseAlphaChannelGraphCreateFlag(TRUE);
-	//if (m_pPlayer->GetWitchTime())
-	{
-		DrawBillboard3D(VGet(0.0f, 600.0f, 30.0f), 0.0f, 1.0f, 320.0f,0.0f/* m_angle*/, m_nidelHandle, true);
-	}
 
 	m_pPlayer->Draw();
 	m_pStage->Draw();
