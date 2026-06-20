@@ -23,6 +23,9 @@ private:
 
 private:
 	int m_frameCount;
+	int m_witchEffectFrame;
+
+	bool m_isPrevWitchTime;
 
 	float m_angle;
 

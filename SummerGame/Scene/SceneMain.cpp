@@ -10,7 +10,9 @@ namespace
 SceneMain::SceneMain():
 m_frameCount(0),
 m_nidelHandle(-1),
-m_angle(0.0f)
+m_angle(0.0f),
+m_witchEffectFrame(0),
+m_isPrevWitchTime(false)
 {
 }
 
@@ -81,53 +83,53 @@ void SceneMain::Update(Input& input)
 			}
 		}
 	}
-	m_angle += kRotateSpeed;
-	//回転角度の最大値(360度 = 2πラジアン)
-	const float kMaxAngle = DX_TWO_PI_F;
-	//まだ1週してなければ回転
-	if (m_angle < kMaxAngle)
+	//プレイヤーがウィッチタイムかどうかを知る
+	bool currentwitch = m_pPlayer->GetWitchTime();
+	//ウィッチタイムに入ったときに演出をする
+	//今の状態&&前の状態
+	if (currentwitch && !m_isPrevWitchTime)
 	{
-		
-		m_angle -= DX_PI_F / 180.0f;
+		//表示する時間
+		m_witchEffectFrame = 80;
+		//回転角度
+		m_angle = DX_TWO_PI_F;
 	}
-
-	//360度超えないようにする
-	if (m_angle > kMaxAngle)
+	//次のフレームで判定するために保存
+	m_isPrevWitchTime = currentwitch;
+	//演出中だったら回転させる
+	if (m_witchEffectFrame > 0)
 	{
-		m_angle = kMaxAngle;
-	}
-
-	if (m_pPlayer->GetWitchTime())
-	{
-		// 360度→0度まで逆回転
+		//演出フレームをここで減らす
+		m_witchEffectFrame--;
+		//360から0に向かわせる
 		if (m_angle > 0.0f)
 		{
 			m_angle -= DX_PI_F / 30.0f;
-
+			//0以下にならないように
 			if (m_angle < 0.0f)
 			{
 				m_angle = 0.0f;
 			}
 		}
 	}
-	else
-	{
-		m_angle = DX_TWO_PI_F;
-	}
+
 }
 
 void SceneMain::Draw()
 {
-
+	
 	//ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())
 	{
-		DrawBox(0,0,1280,720,GetColor(255,0, 255),true);
-		//0.5f0.5fで真ん中
-		DrawBillboard3D(VGet(0.0f, 300.0f, 30.0f), 0.5f, 0.5f, 320.0f,/*0.0f*/ m_angle, m_nidelHandle, true);
-
+		DrawBox(0, 0, 1280, 720, GetColor(255, 0, 255), true);
+		if(m_witchEffectFrame > 0)
+		{
+			//0.5f0.5fで真ん中
+			DrawBillboard3D(VGet(0.0f, 300.0f, 30.0f), 0.5f, 0.5f, 320.0f,/*0.0f*/ m_angle, m_nidelHandle, true);
+		}
+		
 	}
-	//SetUseAlphaChannelGraphCreateFlag(TRUE);
+
 
 	m_pPlayer->Draw();
 	m_pStage->Draw();
