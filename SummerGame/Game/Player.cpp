@@ -53,7 +53,7 @@ namespace
 	constexpr float kKickEndFrame = 25.0f;
 
 	//キックのダメージ
-	constexpr int kKickPower = 10;
+	constexpr int kKickPower = 20;
 
 	//ジャスト回避の受付フレーム
 	constexpr int kDodgeFrame = 30;
