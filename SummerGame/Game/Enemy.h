@@ -31,11 +31,8 @@ private:
 		Idle,
 		Walk,
 		Attack,
-		Rush,
-		Avoid,
+		Punch,
 		Damage,
-		Jump,
-		Dodge
 	};
 
 	//現在の状態

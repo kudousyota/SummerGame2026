@@ -10,8 +10,10 @@ namespace
 	const char* const kIdleAnimName = "Enemy|Idle";
 
 	const char* const kWalkAnimName = "Enemy|Walk";
-
+	//強攻撃
 	const char* const kAttackAnimName = "Enemy|Attack";
+	//弱攻撃
+	const char* const kPunchAnimName = "Enemy|Punch";
 
 	constexpr float kAttackRange = 150.0f;
 
@@ -156,8 +158,10 @@ void Enemy::Update()
 			TransitionTo(EnemyState::Idle);
 		}
 		break;
-	}
 
+	case EnemyState::Punch:
+		if()
+	}
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
@@ -253,6 +257,11 @@ void Enemy::TransitionTo(EnemyState nextState)
 		m_attackCooldown = 90;
 		
 		m_attackDir = m_forward;
+		break;
+	case EnemyState::Punch:
+
+		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
+
 		break;
 	}
 }
