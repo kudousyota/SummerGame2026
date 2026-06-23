@@ -122,8 +122,15 @@ void Enemy::Update()
 			{
 				m_forward = (m_pPlayer->GetPosition() - m_pos).Normalize();
 				m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-
-				TransitionTo(EnemyState::Attack);
+				//70％で弱攻撃
+				if (GetRand(99) < 70)
+				{
+					TransitionTo(EnemyState::Punch);
+				}
+				else
+				{
+					TransitionTo(EnemyState::Attack);
+				}
 			}
 		}
 		else
@@ -160,7 +167,17 @@ void Enemy::Update()
 		break;
 
 	case EnemyState::Punch:
-		if()
+		if (!m_isAttack && m_animation.GetAnimRate() >= 0.3f)
+		{
+			AttackUpdate();
+			m_isAttack = true;
+		}
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(EnemyState::Idle);
+		}
+		break;
 	}
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -261,6 +278,12 @@ void Enemy::TransitionTo(EnemyState nextState)
 	case EnemyState::Punch:
 
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
+
+		m_isAttack = false;
+		//クールタイム設定
+		m_attackCooldown = 90;
+
+		m_attackDir = m_forward;
 
 		break;
 	}
