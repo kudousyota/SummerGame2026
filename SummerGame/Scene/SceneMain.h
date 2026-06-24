@@ -5,6 +5,7 @@
 #include "../Game/Enemy.h"
 #include <vector>
 #include "../Game/Stage.h"
+#include "../Game/Angel.h"
 
 class Input;
 class SceneMain
@@ -35,5 +36,6 @@ private:
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
 	std::vector<std::shared_ptr<Enemy>> m_pEnemy;
+	std::vector<std::shared_ptr<Angel>> m_pAngel;
 };
 

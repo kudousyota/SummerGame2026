@@ -4,41 +4,32 @@
 #include <memory> 
 
 class Player;
-class Enemy: public Character
+class Angel :public Character
 {
 public:
-	Enemy();
-	~Enemy()override;
+	Angel();
+	~Angel()override;
 	void Init()override;
 	void Update() override;
 	void Draw()override;
 
-	//ダメージ
-	void ApplyDamage(int damage)override;
-
-	float GetCollisionRadius() const override { return 70.0f; }
-	float GetCollisionHeight() const override { return 100.0f; }
-
-	bool IsDead()const { return m_isDead; }
-
-	void SetPlayer(std::shared_ptr<Player> player) {m_pPlayer = player;};
-
+	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; };
 private:
 
-	enum class EnemyState
+	enum class AngelState
 	{
 		Idle,
-		Walk,
+		Run,
 		Attack,
 		Punch,
 		Damage,
 	};
 
 	//現在の状態
-	EnemyState m_currentState;
+	AngelState m_currentState;
 
 	//前回の状態
-	EnemyState m_prevState;
+	AngelState m_prevState;
 
 	//攻撃処理
 	void AttackUpdate();
@@ -67,7 +58,7 @@ private:
 	//攻撃しているかどうかのフラグ
 	bool m_isAttack;
 
-	void TransitionTo(EnemyState nextState);
+	void TransitionTo(AngelState nextState);
 
 	std::shared_ptr<Player> m_pPlayer;
 };

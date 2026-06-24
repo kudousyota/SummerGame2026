@@ -47,6 +47,11 @@ void SceneMain::Init()
 	enemy->SetPlayer(m_pPlayer);
 	m_pEnemy.push_back(enemy);
 
+	auto angel = std::make_shared<Angel>();
+	angel->Init();
+	angel->SetPlayer(m_pPlayer);
+	m_pAngel.push_back(angel);
+
 	m_pStage = std::make_shared<Stage>();
 	m_pStage->Init();
 	m_pPlayer->SetStage(m_pStage);
@@ -55,7 +60,9 @@ void SceneMain::Init()
 	{
 		enemy->SetStage(m_pStage);
 	}
-	SetUseAlphaChannelGraphCreateFlag(TRUE);
+
+
+	SetUseAlphaChannelGraphCreateFlag(true);
 	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
 	
 	m_nidelHandle = LoadGraph("data/ui_niidle_flower.png");
@@ -80,6 +87,16 @@ void SceneMain::Update(Input& input)
 			if (enemy)
 			{
 				enemy->Update();
+			}
+		}
+	}
+	if (!m_pAngel.empty())
+	{
+		for (auto& angel : m_pAngel)
+		{
+			if (angel)
+			{
+				angel->Update();
 			}
 		}
 	}
@@ -143,6 +160,17 @@ void SceneMain::Draw()
 			if (enemy)
 			{
 				enemy->Draw();
+			}
+		}
+	}
+
+	if (!m_pAngel.empty())
+	{
+		for (auto& angel : m_pAngel)
+		{
+			if (angel)
+			{
+				angel->Draw();
 			}
 		}
 	}

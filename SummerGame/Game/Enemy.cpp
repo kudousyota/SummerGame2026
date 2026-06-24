@@ -167,7 +167,7 @@ void Enemy::Update()
 		break;
 
 	case EnemyState::Punch:
-		if (!m_isAttack && m_animation.GetAnimRate() >= 0.3f)
+		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
 		{
 			AttackUpdate();
 			m_isAttack = true;
@@ -277,7 +277,7 @@ void Enemy::TransitionTo(EnemyState nextState)
 		break;
 	case EnemyState::Punch:
 
-		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kPunchAnimName, false, 0.3f);
 
 		m_isAttack = false;
 		//クールタイム設定
