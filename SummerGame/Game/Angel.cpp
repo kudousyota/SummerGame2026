@@ -66,7 +66,9 @@ void Angel::Update()
 
 		break;
 	}
-
+	MATRIX rot = MGetRotY(m_angle);
+	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
+	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 }
 
 void Angel::Draw()

@@ -13,6 +13,9 @@ public:
 	void Update() override;
 	void Draw()override;
 
+	float GetCollisionRadius() const override { return 70.0f; }
+	float GetCollisionHeight() const override { return 100.0f; }
+
 	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; };
 private:
 
