@@ -361,7 +361,7 @@ void Player::Update()
 			}
 			else
 			{
-				TransitionTo(PlayerState::Idle);
+				TransitionTo(PlayerState::Sky);
 			}
 		}
 		if (input.IsTriggered("Dodge"))
@@ -386,7 +386,7 @@ void Player::Update()
 			}
 			else
 			{
-				TransitionTo(PlayerState::Idle);
+				TransitionTo(PlayerState::Sky);
 			}
 		}
 		if (input.IsTriggered("Dodge"))
@@ -409,7 +409,7 @@ void Player::Update()
 		}
 		if (m_animation.GetAnimEndFlag())
 		{
-			TransitionTo(PlayerState::Idle);
+			TransitionTo(PlayerState::Sky);
 			m_attackPower = 10;
 		}
 		break;
@@ -641,7 +641,7 @@ float Player::GetJustDodgeRadius() const
 
 void Player::AttackUpdate()
 {
-	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush && m_currentState != PlayerState::Kick && m_currentState != PlayerState::Sky && m_currentState != PlayerState::SkyRush && m_currentState != PlayerState::SkyKick)
+	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush && m_currentState != PlayerState::Kick && m_currentState != PlayerState::SkyAttack && m_currentState != PlayerState::SkyRush && m_currentState != PlayerState::SkyKick)
 	{
 		return;
 	}
