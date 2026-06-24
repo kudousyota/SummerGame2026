@@ -61,6 +61,11 @@ void SceneMain::Init()
 		enemy->SetStage(m_pStage);
 	}
 
+	for (auto& angel : m_pAngel)
+	{
+		angel->SetStage(m_pStage);
+	}
+
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
