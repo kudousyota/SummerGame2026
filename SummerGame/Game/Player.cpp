@@ -63,7 +63,16 @@ namespace
 	//ジャスト回避の範囲
 	constexpr float kJustDodgeRadius = 100.0f;
 
-	
+	//攻撃した時に進む距離
+	constexpr float kAttackMove = 15.0f;
+	constexpr float kRushMove = 4.0f;
+	constexpr float kKickMove = 25.0f;
+
+	constexpr float kSkyAttackMove = 10.0f;
+	constexpr float kSkyRushMove = 3.0f;
+	constexpr float kSkyKickMove = 15.0f;
+	//落ちるスピード
+	constexpr float kSkyKickFallSpeed = -8.0f;
 }
 
 Player::Player() :
@@ -803,6 +812,8 @@ void Player::TransitionTo(PlayerState nextState)
 
 		m_isAttackHit = false;
 		m_isNextAttack = false;
+		//攻撃で進む
+		MoveAttack(kAttackMove);
 
 		m_animation.ChangeAnim(kPunchAnimName,false,0.5f);
 		break;
@@ -813,20 +824,20 @@ void Player::TransitionTo(PlayerState nextState)
 		{
 			m_rushHit[i] = false;
 		}
-
+		MoveAttack(kRushMove);
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;
 
 	case PlayerState::Kick:
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
-
+		MoveAttack(kKickMove);
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
 		break;
 
 	case PlayerState::Sky:
 		m_gravity = kGravity;
-
+		
 		m_animation.ChangeAnim(kSkyAnimName, true, 0.5f);
 		break;
 	case PlayerState::SkyAttack:
@@ -835,6 +846,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_velocity.y = 0.0f;
 		m_gravity = 0.0f;
 
+		MoveAttack(kSkyAttackMove);
 		m_isAttackHit = false;
 		m_isNextAttack = false;
 		
@@ -851,7 +863,7 @@ void Player::TransitionTo(PlayerState nextState)
 		{
 			m_rushHit[i] = false;
 		}
-
+		MoveAttack(kSkyRushMove);
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;
 
@@ -861,6 +873,8 @@ void Player::TransitionTo(PlayerState nextState)
 		m_gravity = 0.0f;
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
+
+		MoveAttack(kSkyKickMove);
 
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
 		break;
@@ -878,5 +892,10 @@ void Player::TransitionTo(PlayerState nextState)
 	default:
 		break;
 	}
+}
+
+void Player::MoveAttack(float distance)
+{
+	m_pos += m_attackForward * distance;
 }
 

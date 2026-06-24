@@ -98,6 +98,9 @@ private:
 	//ウィッチタイム
 	void WitchTime();
 
+	//攻撃で進む処理
+	void MoveAttack(float distance);
+
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
 

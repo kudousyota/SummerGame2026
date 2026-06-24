@@ -8,20 +8,21 @@ namespace
 	const Vector3 kTargetToCamera = VGet(0.0f, 250.0f, 1100.0f);
 
 	//注視点からカメラまでの距離
-	constexpr float kCameraDistance = 450.0f;
+	constexpr float kCameraDistance = 500.0f;
 	//カメラの高さ
 	constexpr float kCameraHeight = -180.0f;
 
 	//補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
-	constexpr float kCameraFollow = 1.0f;
+	constexpr float kCameraFollow = 0.15f;
 
 	//スティック感度
-	constexpr float kCameraRotSpeed = 0.00005f;
+	//constexpr float kCameraRotSpeed = 0.00005f;
 
 	//デッドゾーン
 	constexpr int kStickDeadZone = 1000;
 
-
+	constexpr float kCameraRotSpeedX = 0.00005f;
+	constexpr float kCameraRotSpeedY = 0.00003f;
 }
 
 Camera::Camera() :
@@ -99,12 +100,12 @@ void Camera::Update()
 	//カメラ左右回転
 	if (xBuf != 0)
 	{
-		m_cameraAngleX += xBuf * kCameraRotSpeed;
+		m_cameraAngleX += xBuf * kCameraRotSpeedX;
 	}
 	//カメラ上下回転
 	if (yBuf != 0)
 	{
-		m_cameraAngleY -= yBuf * kCameraRotSpeed;
+		m_cameraAngleY -= yBuf * kCameraRotSpeedY;
 	}
 	const float kMaxPitch = DX_PI_F * 0.4f;
 	const float kMinPitch = -DX_PI_F * 0.2f;
@@ -126,7 +127,6 @@ void Camera::Update()
 	//プレイヤー追従先
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
 
-	cameraTarget = m_pPlayer->GetCameraTarget();
 
 	//カメラの位置
 	Vector3 offset;
