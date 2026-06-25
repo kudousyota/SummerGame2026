@@ -4,15 +4,30 @@
 #include "Stage.h"
 #include "Player.h"
 #include "../System/Timer.h"
-#include "Stage.h"
 
 namespace
 {
+	const char* const kShoutAnimName = "Angel|Shout";
+
 	const char* const kRunAnimName = "Angel|Run";
+
+	const char* const kDancingAttackAnimName = "Anglel|DancingAttack";
+
+	const char* const kRotateAnimName = "Angel|Rotate";
 }
 
 Angel::Angel():
-	m_modelHandle(1)
+	m_modelHandle(-1),
+	m_isDead(false),
+	m_isAttackHit(false),
+	m_attackCooldown(0),
+	m_forward(VGet(0.0f, 0.0f, 1.0f)),
+	m_isAttacking(false),
+	m_attackFrame(0),
+	m_currentState(AngelState::Idle),
+	m_prevState(AngelState::Idle),
+	m_isAttack(false),
+	m_attackDir(VGet(0.0f, 0.0f, 0.0f))
 {
 }
 
@@ -27,8 +42,10 @@ void Angel::Init()
 {
 	Character::Init();
 
-	m_currentState = AngelState::Run;
-	m_prevState = AngelState::Run;
+	m_currentState = AngelState::Shout;
+	m_prevState = AngelState::Shout;
+
+	m_pos = VGet(300.0f, 0.0f, 250.0f);
 
 	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
 	m_animation.Init(m_modelHandle, kRunAnimName, true, 0.5f);
@@ -49,6 +66,14 @@ void Angel::Update()
 
 	switch (m_currentState)
 	{
+	case AngelState::Shout:
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(AngelState::Run);
+		}
+
+		break;
 	case AngelState::Run:
 		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 		float distSq = dir.SqMagnitude();
@@ -78,8 +103,19 @@ void Angel::Draw()
 
 void Angel::TransitionTo(AngelState nextState)
 {
+	if (m_currentState == nextState)
+	{
+		return;
+	}
+
+	m_prevState = m_currentState;
+	m_currentState = nextState;
+
 	switch (m_currentState)
 	{
+	case AngelState::Shout:
+		m_animation.ChangeAnim(kShoutAnimName, false, 0.5);
+		break;
 	case AngelState::Run:
 		m_animation.ChangeAnim(kRunAnimName, true, 0.5f);
 		break;

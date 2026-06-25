@@ -23,8 +23,9 @@ private:
 	{
 		Idle,
 		Run,
-		Attack,
-		Punch,
+		DancingAttack,
+		Rotate,
+		Shout,
 		Damage,
 	};
 
