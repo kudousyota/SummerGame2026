@@ -438,8 +438,6 @@ void Player::Update()
 		}*/
 	}
 
-	//前の場所
-	Vector3 oldPos = m_pos;
 
 	//通常移動
 	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge || m_currentState == PlayerState::Sky)
@@ -464,7 +462,8 @@ void Player::Update()
 			}
 			
 			//移動
-			m_pos += moveDir * m_speed * length;
+			m_velocity.x = moveDir.x * m_speed * length;
+			m_velocity.z = moveDir.z * m_speed * length;
 
 			float rotSpeed = 0.2f;
 
@@ -489,6 +488,14 @@ void Player::Update()
 			m_forward.y = 0.0f;
 			m_forward.z = cosf(m_angle - DX_PI_F);
 		}
+		else
+		{
+			m_velocity.x = 0.0f;
+			m_velocity.z = 0.0f;
+		}
+
+		m_pos.x += m_velocity.x;
+		m_pos.z += m_velocity.z;
 	}
 
 	Character::Collision();

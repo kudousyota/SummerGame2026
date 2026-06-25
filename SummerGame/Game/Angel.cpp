@@ -65,7 +65,7 @@ void Angel::Update()
 
 	m_animation.Update(scale);
 
-	float animpos = MV1GetFramePosition(m_modelHandle,50);
+	//float animpos = MV1GetFramePosition(m_modelHandle,50);
 
 	Timer::Instance().Update();
 
