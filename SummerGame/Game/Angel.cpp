@@ -14,6 +14,8 @@ namespace
 	const char* const kDancingAttackAnimName = "Anglel|DancingAttack";
 
 	const char* const kRotateAnimName = "Angel|Rotate";
+
+	const char* const kRightHand = "mixamorig:RightHandRing";
 }
 
 Angel::Angel():
@@ -53,6 +55,7 @@ void Angel::Init()
 	CollisionManager::Instance().Register(this);
 }
 
+
 void Angel::Update()
 {
 
@@ -61,6 +64,8 @@ void Angel::Update()
 	float scale = Timer::Instance().GetEnemyTimeScale();
 
 	m_animation.Update(scale);
+
+	float animpos = MV1GetFramePosition(m_modelHandle,50);
 
 	Timer::Instance().Update();
 
@@ -118,6 +123,9 @@ void Angel::TransitionTo(AngelState nextState)
 		break;
 	case AngelState::Run:
 		m_animation.ChangeAnim(kRunAnimName, true, 0.5f);
+		break;
+	case AngelState::DancingAttack:
+		m_animation.ChangeAnim(kDancingAttackAnimName, false, 0.5);
 		break;
 	}
 }

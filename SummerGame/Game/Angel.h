@@ -62,6 +62,8 @@ private:
 	//攻撃しているかどうかのフラグ
 	bool m_isAttack;
 
+
+
 	void TransitionTo(AngelState nextState);
 
 	std::shared_ptr<Player> m_pPlayer;
