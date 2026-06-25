@@ -92,7 +92,9 @@ Player::Player() :
 	m_rushHit{false, false, false, false},
 	m_isWitchTime(false),
 	m_uiHandle(-1),
-	m_attackForward(VGet(0.0f,0.0f,0.0f))
+	m_attackForward(VGet(0.0f,0.0f,0.0f)),
+	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
+	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f))
 {
 	
 }
@@ -153,6 +155,7 @@ void Player::Update()
 
 		if (input.IsTriggered("Attack"))
 		{
+			TurnToInputDirection(right, forward);
 			TransitionTo(PlayerState::Attack);
 		}
 		if (input.IsPressed("up")	||
@@ -227,6 +230,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
+			TurnToInputDirection(right, forward);
 		}
 		//回避できる
 		if (input.IsTriggered("Dodge"))
@@ -256,6 +260,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
+			TurnToInputDirection(right, forward);
 		}
 		if (input.IsTriggered("Dodge"))
 		{
@@ -282,6 +287,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
+			TurnToInputDirection(right, forward);
 		}
 		if (input.IsTriggered("Dodge"))
 		{
@@ -462,8 +468,8 @@ void Player::Update()
 			}
 			
 			//移動
-			m_velocity.x = moveDir.x * m_speed * length;
-			m_velocity.z = moveDir.z * m_speed * length;
+			m_moveVelocity.x = moveDir.x * m_speed * length;
+			m_moveVelocity.z = moveDir.z * m_speed * length;
 
 			float rotSpeed = 0.2f;
 
@@ -490,15 +496,12 @@ void Player::Update()
 		}
 		else
 		{
-			m_velocity.x = 0.0f;
-			m_velocity.z = 0.0f;
+			m_moveVelocity.x = 0.0f;
+			m_moveVelocity.z = 0.0f;
 		}
-
-		m_pos.x += m_velocity.x;
-		m_pos.z += m_velocity.z;
 	}
 
-	Character::Collision();
+	
 
 	//攻撃位置は垂直成分を除いた前方で決める
 	m_attackForward = m_forward;
@@ -512,7 +515,17 @@ void Player::Update()
 		m_attackForward = VGet(0.0f, 0.0f, 1.0f); //フォールバック
 	}
 
+	m_attackVelocity *= 0.8f;
+
+	m_pos += m_moveVelocity + m_attackVelocity;
+
+	Character::Collision();
+	//ここで攻撃位置を更新
 	m_attackPos = m_pos + m_attackForward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+
+	//攻撃判定
+	AttackUpdate();
+
 	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
@@ -520,8 +533,7 @@ void Player::Update()
 
 	m_isWitchTime = Timer::Instance().IsEnemySlow();
 
-	//攻撃判定
-	AttackUpdate();
+
 	//回避判定
 	//DodgeUpdate();
 	
@@ -575,12 +587,7 @@ void Player::Draw()
 #endif  //DEBUG
 	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
 
-	
 	DrawFormatString(50, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
-
-	
-
-	
 
 }
 
@@ -808,6 +815,8 @@ void Player::TransitionTo(PlayerState nextState)
 		//重力を戻す
 		m_gravity = kGravity;
 
+		m_attackPower = 10;
+
 		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
 
@@ -819,6 +828,8 @@ void Player::TransitionTo(PlayerState nextState)
 
 		m_isAttackHit = false;
 		m_isNextAttack = false;
+		//ここでmoveVelocityをリセット
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		//攻撃で進む
 		MoveAttack(kAttackMove);
 
@@ -831,6 +842,7 @@ void Player::TransitionTo(PlayerState nextState)
 		{
 			m_rushHit[i] = false;
 		}
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kRushMove);
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;
@@ -838,6 +850,7 @@ void Player::TransitionTo(PlayerState nextState)
 	case PlayerState::Kick:
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kKickMove);
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
 		break;
@@ -852,7 +865,7 @@ void Player::TransitionTo(PlayerState nextState)
 		//空中攻撃をしたときにY方向のパワー無くして重力も消す
 		m_velocity.y = 0.0f;
 		m_gravity = 0.0f;
-
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyAttackMove);
 		m_isAttackHit = false;
 		m_isNextAttack = false;
@@ -870,6 +883,7 @@ void Player::TransitionTo(PlayerState nextState)
 		{
 			m_rushHit[i] = false;
 		}
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyRushMove);
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
 		break;
@@ -880,7 +894,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_gravity = 0.0f;
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
-
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyKickMove);
 
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
@@ -903,6 +917,30 @@ void Player::TransitionTo(PlayerState nextState)
 
 void Player::MoveAttack(float distance)
 {
-	m_pos += m_attackForward * distance;
+	Vector3 dir = m_forward;
+	dir.y = 0.0f;
+
+	if (dir.SqMagnitude() > 0.0001f)
+	{
+		dir = dir.Normalize();
+	}
+
+	m_attackVelocity = dir * distance;
+}
+
+void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
+{
+	float stickX = Input::Instance().GetStickLX();
+	float stickY = Input::Instance().GetStickLY();
+	Vector3 moveVec = right * stickX + forward * stickY;
+	moveVec.y = 0.0f;
+	if (moveVec.SqMagnitude() > 0.0001f)
+	{
+		Vector3 dir = moveVec.Normalize();
+		m_angle = atan2f(dir.x, dir.z) + DX_PI_F;
+		m_forward.x = sinf(m_angle - DX_PI_F);
+		m_forward.y = 0.0f;
+		m_forward.z = cosf(m_angle - DX_PI_F);
+	}
 }
 

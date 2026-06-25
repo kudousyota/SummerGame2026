@@ -84,6 +84,10 @@ private:
 	bool m_isHit;
 	//ラッシュの攻撃が当たったかどうかを管理する配列
 	bool m_rushHit[4];
+	//通常移動
+	Vector3 m_moveVelocity;
+	//攻撃移動
+	Vector3 m_attackVelocity;
 
 	//死んだ
 	bool m_isDead;
@@ -100,6 +104,8 @@ private:
 
 	//攻撃で進む処理
 	void MoveAttack(float distance);
+	//攻撃時に方向を変えるための関数
+	void TurnToInputDirection(const Vector3& right, const Vector3& forward);
 
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
