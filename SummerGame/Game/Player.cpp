@@ -365,6 +365,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
+			TurnToInputDirection(right, forward);
 		}
 
 		if (m_animation.GetAnimEndFlag())
@@ -390,6 +391,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
+			TurnToInputDirection(right, forward);
 		}
 
 		if (m_animation.GetAnimEndFlag())
@@ -416,6 +418,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
+			TurnToInputDirection(right, forward);
 		}
 
 		if (input.IsTriggered("Dodge"))
