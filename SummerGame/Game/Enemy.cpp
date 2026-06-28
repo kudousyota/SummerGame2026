@@ -230,17 +230,19 @@ void Enemy::Draw()
 	//索敵範囲デバッグ描画
 	int color = GetColor(255, 255, 0);//黄色
 
-	//視野角の扇形(線分)
+	//視野角の半分(ラジアン)
 	float halfFov = kFov * 0.5f * DX_PI_F / 180.0f;
-	float baseAngle = atan2f(m_forward.x, m_forward.z); //前方の角度
-	int segments = 16; //分割数
-
+	//前方の角度
+	float baseAngle = atan2f(m_forward.x, m_forward.z);
+	//分割数
+	int segments = 16;
+	//線形の始点
 	VECTOR prevPoint = VGet(
 		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
 		m_pos.y + 50.0f,
 		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
 	);
-
+	//扇形の円弧を線分で描画
 	for (int i = 1; i <= segments; i++)
 	{
 		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
@@ -265,16 +267,21 @@ void Enemy::Draw()
 		m_pos.y + 50.0f,
 		m_pos.z + kSightRange * cosf(baseAngle + halfFov)
 	);
+	//扇形の境界線を描画
 	DrawLine3D(center, leftEdge, color);
 	DrawLine3D(center, rightEdge, color);
 
 	//プレイヤーが視野内にいるとき色を変える
+	//敵からプレイヤーへのベクトル
 	Vector3 dir = (m_pPlayer->GetPosition() - m_pos);
 	float dist = dir.SqMagnitude();
 	if (dist <= kSightRange * kSightRange)
 	{
+		//内積の計算
 		float dot = m_forward.Dot(dir.Normalize());
+		//視野角の境界になる内積の値
 		float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+		//視野の中ならプレイヤーまで赤い線を引く
 		if (dot >= halfFovCos)
 		{
 			// 発見中は赤で上書き
