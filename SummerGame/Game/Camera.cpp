@@ -15,14 +15,9 @@ namespace
 	//補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
 	constexpr float kCameraFollow = 0.15f;
 
-	//スティック感度
-	//constexpr float kCameraRotSpeed = 0.00005f;
-
-	//デッドゾーン
-	constexpr int kStickDeadZone = 1000;
-
-	constexpr float kCameraRotSpeedX = 0.00005f;
-	constexpr float kCameraRotSpeedY = 0.00003f;
+	constexpr float kStickDeadZone = 0.01f;
+	constexpr float kCameraRotSpeedX = 0.8f;
+	constexpr float kCameraRotSpeedY = 0.6f;
 }
 
 Camera::Camera() :
@@ -43,6 +38,8 @@ void Camera::Init()
 {
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
 	float playerAng = m_pPlayer->GetAngle();
+
+	m_skyDomeHandle = MV1LoadModel("Data/Sky_Night01.mv1");
 
 	//初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
@@ -93,19 +90,22 @@ void Camera::Update()
 	DrawFormatString(256, 160, 0xffffff, "CameraAngle : %.3f", m_cameraAngleX);
 #endif //_DEBUG
 
+	//正規化
+	float stickX = static_cast<float>(xBuf) / 32767.0f;
+	float stickY = static_cast<float>(yBuf) / 32767.0f;
+
 	//デッドゾーン
-	if (abs(xBuf) < kStickDeadZone) xBuf = 0;
-	if (abs(yBuf) < kStickDeadZone) yBuf = 0;
+	if (fabsf(stickX) < kStickDeadZone) stickX = 0.0f;
+	if (fabsf(stickY) < kStickDeadZone) stickY = 0.0f;
 
 	//カメラ左右回転
-	if (xBuf != 0)
+	if (stickX != 0.0f)
 	{
-		m_cameraAngleX += xBuf * kCameraRotSpeedX;
+		m_cameraAngleX += stickX * kCameraRotSpeedX;
 	}
-	//カメラ上下回転
-	if (yBuf != 0)
+	if (stickY != 0.0f)
 	{
-		m_cameraAngleY -= yBuf * kCameraRotSpeedY;
+		m_cameraAngleY -= stickY * kCameraRotSpeedY;
 	}
 	const float kMaxPitch = DX_PI_F * 0.4f;
 	const float kMinPitch = -DX_PI_F * 0.2f;
@@ -155,10 +155,12 @@ void Camera::Update()
 
 	MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
 
+	MV1SetScale(m_skyDomeHandle, VGet(1.5f, 1.5f, 1.5f));
 }
 
 void Camera::Draw()
 {
+	MV1DrawModel(m_skyDomeHandle);
 }
 
 Vector3 Camera::GetForward() const

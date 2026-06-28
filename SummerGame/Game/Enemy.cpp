@@ -14,7 +14,7 @@ namespace
 	const char* const kAttackAnimName = "Enemy|Attack";
 	//弱攻撃
 	const char* const kPunchAnimName = "Enemy|Punch";
-
+	//攻撃する長さ
 	constexpr float kAttackRange = 150.0f;
 
 	//見える距離
@@ -317,8 +317,6 @@ void Enemy::AttackUpdate()
 	CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 	m_isAttacking = true;
 	m_attackFrame = 30;
-
-
 }
 
 bool Enemy::CanSeePlayer()

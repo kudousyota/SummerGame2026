@@ -29,7 +29,7 @@ void SceneMain::Init()
 	// カメラの設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(200.0f, 1500.0f);
+	SetCameraNearFar(20.0f, 5000.0f);
 
 	// 先にPlayer生成
 	m_pPlayer = std::make_shared<Player>();
@@ -140,6 +140,7 @@ void SceneMain::Update(Input& input)
 void SceneMain::Draw()
 {
 	
+
 	//ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())
 	{
@@ -151,7 +152,7 @@ void SceneMain::Draw()
 		}
 		
 	}
-
+	m_pCamera->Draw();
 
 	m_pPlayer->Draw();
 	m_pStage->Draw();

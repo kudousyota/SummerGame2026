@@ -11,11 +11,14 @@ namespace
 
 	const char* const kRunAnimName = "Angel|Run";
 
-	const char* const kDancingAttackAnimName = "Anglel|DancingAttack";
+	const char* const kDancingAttackAnimName = "Angel|DancingAttack";
 
 	const char* const kRotateAnimName = "Angel|Rotate";
 
 	const char* const kRightHand = "mixamorig:RightHandRing";
+
+	//攻撃する長さ
+	constexpr float kAttackRange = 150.0f;
 }
 
 Angel::Angel():
@@ -50,11 +53,10 @@ void Angel::Init()
 	m_pos = VGet(300.0f, 0.0f, 250.0f);
 
 	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
-	m_animation.Init(m_modelHandle, kRunAnimName, true, 0.5f);
+	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
 
 	CollisionManager::Instance().Register(this);
 }
-
 
 void Angel::Update()
 {
@@ -79,21 +81,54 @@ void Angel::Update()
 		}
 
 		break;
+
 	case AngelState::Run:
+	{
 		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 		float distSq = dir.SqMagnitude();
-		//追跡
-		float rotSpeed = 0.15f;
-		Vector3 targetDir = dir.Normalize();
-		//現在の向きから目標方向に少しずつ近づく
-		m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
-		//正規化
-		m_forward = m_forward.Normalize();
 
-		m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-		//速度を与えるウィッチタイムで遅くなるように
-		m_pos += m_forward * m_speed * scale;
+		if (distSq <= kAttackRange * kAttackRange)
+		{
+			if (m_attackCooldown <= 0)
+			{
+				m_forward = (m_pPlayer->GetPosition() - m_pos).Normalize();
+				m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+				TransitionTo(AngelState::DancingAttack);
+			}
+		}
+		else
+		{
+			//追跡
+			float rotSpeed = 0.15f;
+			Vector3 targetDir = dir.Normalize();
+			//現在の向きから目標方向に少しずつ近づく
+			m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
+			//正規化
+			m_forward = m_forward.Normalize();
 
+			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+			//速度を与えるウィッチタイムで遅くなるように
+			m_pos += m_forward * m_speed * scale;
+		}
+		
+	}
+		break;
+	case AngelState::DancingAttack:
+		{
+		//アニメーション中に攻撃判定を出す
+		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
+		{
+			m_attackDir = m_forward;
+			AttackUpdate();
+			m_isAttack = true;
+		}
+		if (m_animation.GetAnimEndFlag())
+		{
+			m_isAttack = false;
+			m_attackCooldown = 90;
+			TransitionTo(AngelState::Run);
+		}
+		}
 		break;
 	}
 	MATRIX rot = MGetRotY(m_angle);
@@ -104,6 +139,16 @@ void Angel::Update()
 void Angel::Draw()
 {
 	MV1DrawModel(m_modelHandle);
+}
+
+void Angel::AttackUpdate()
+{
+	//前側に表示高さは微調整
+	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
+	//攻撃判定を出す
+	CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+	m_isAttacking = true;
+	m_attackFrame = 30;
 }
 
 void Angel::TransitionTo(AngelState nextState)
