@@ -77,7 +77,7 @@ void Enemy::Update()
 	{
 		return;
 	}
-
+	//当たり判定の更新
 	Character::Collision();
 
 	//タイムスケールの取得
@@ -104,7 +104,13 @@ void Enemy::Update()
 	{
 	case EnemyState::Idle:
 	{
-		if (m_attackCooldown <= 0)
+		//クールタイム中は待つ
+		if (m_attackCooldown > 0)
+		{
+			break;
+		}
+		//プレイヤーを見つけたら追いかけ始める
+		if (CanSeePlayer())
 		{
 			TransitionTo(EnemyState::Walk);
 		}
@@ -113,13 +119,23 @@ void Enemy::Update()
 		break;
 	case EnemyState::Walk:
 	{
-		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-		float distSq = dir.SqMagnitude();
-		//攻撃にする
-		if (distSq <= kAttackRange * kAttackRange)
+		//視野角から消えたら待機にする
+		if (!CanSeePlayer())
 		{
+			TransitionTo(EnemyState::Idle);
+			break;
+		}
+		//プレイヤーのまでのベクトル
+		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+		float distsq = dir.SqMagnitude();
+
+		//攻撃範囲に入ったら攻撃
+		if (distsq <= kAttackRange * kAttackRange)
+		{
+			//攻撃
 			if (m_attackCooldown <= 0)
 			{
+				//プレイヤーの方向に向く
 				m_forward = (m_pPlayer->GetPosition() - m_pos).Normalize();
 				m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 				//70％で弱攻撃
@@ -135,14 +151,14 @@ void Enemy::Update()
 		}
 		else
 		{
-			//追跡
+			//プレイヤーの方向に少しづつ向きを合わせる
 			float rotSpeed = 0.15f;
 			Vector3 targetDir = dir.Normalize();
 			//現在の向きから目標方向に少しずつ近づく
 			m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
 			//正規化
 			m_forward = m_forward.Normalize();
-
+			//モデルの向きを更新
 			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 			//速度を与えるウィッチタイムで遅くなるように
 			m_pos += m_forward * m_speed * scale;
@@ -151,15 +167,15 @@ void Enemy::Update()
 		break;
 
 	case EnemyState::Attack:
-		if (!m_isAttack &&
-			m_animation.GetAnimRate() >= 0.5f)
+		//アニメーションの半分で攻撃判定を出す
+		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
 		{
 			AttackUpdate();
 			m_isAttack = true;
-
+			//攻撃する方向を保存
 			m_attackDir = (m_pPlayer->GetPosition() - m_pos).Normalize();
 		}
-
+		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(EnemyState::Idle);
@@ -167,12 +183,13 @@ void Enemy::Update()
 		break;
 
 	case EnemyState::Punch:
+		//アニメーションの半分で攻撃判定を発生
 		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
 		{
 			AttackUpdate();
 			m_isAttack = true;
 		}
-
+		//攻撃終了したらIdleに行く
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(EnemyState::Idle);
@@ -197,7 +214,7 @@ void Enemy::Draw()
 	}
 
 	MV1DrawModel(m_modelHandle);
-
+#ifdef _DEBUG
 	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),70.0f,16,GetColor(255, 0, 0),GetColor(255, 0, 0),false);
 
 
@@ -208,6 +225,63 @@ void Enemy::Draw()
 	}
 
 	DrawFormatString(50,50,GetColor(255, 255, 255),"EnemyHP:%d",m_hp);
+
+
+	//索敵範囲デバッグ描画
+	int color = GetColor(255, 255, 0);//黄色
+
+	//視野角の扇形(線分)
+	float halfFov = kFov * 0.5f * DX_PI_F / 180.0f;
+	float baseAngle = atan2f(m_forward.x, m_forward.z); //前方の角度
+	int segments = 16; //分割数
+
+	VECTOR prevPoint = VGet(
+		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
+		m_pos.y + 50.0f,
+		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
+	);
+
+	for (int i = 1; i <= segments; i++)
+	{
+		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
+		VECTOR point = VGet(
+			m_pos.x + kSightRange * sinf(angle),
+			m_pos.y + 50.0f,
+			m_pos.z + kSightRange * cosf(angle)
+		);
+		DrawLine3D(prevPoint, point, color);
+		prevPoint = point;
+	}
+
+	//扇の両辺(敵から視野端への線)
+	VECTOR center = VGet(m_pos.x, m_pos.y + 50.0f, m_pos.z);
+	VECTOR leftEdge = VGet(
+		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
+		m_pos.y + 50.0f,
+		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
+	);
+	VECTOR rightEdge = VGet(
+		m_pos.x + kSightRange * sinf(baseAngle + halfFov),
+		m_pos.y + 50.0f,
+		m_pos.z + kSightRange * cosf(baseAngle + halfFov)
+	);
+	DrawLine3D(center, leftEdge, color);
+	DrawLine3D(center, rightEdge, color);
+
+	//プレイヤーが視野内にいるとき色を変える
+	Vector3 dir = (m_pPlayer->GetPosition() - m_pos);
+	float dist = dir.SqMagnitude();
+	if (dist <= kSightRange * kSightRange)
+	{
+		float dot = m_forward.Dot(dir.Normalize());
+		float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+		if (dot >= halfFovCos)
+		{
+			// 発見中は赤で上書き
+			DrawLine3D(center, VGet(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 50.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
+		}
+	}
+#endif
 
 }
 
@@ -239,7 +313,7 @@ void Enemy::AttackUpdate()
 {
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
-
+	//攻撃判定を出す
 	CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
 	m_isAttacking = true;
 	m_attackFrame = 30;
@@ -247,42 +321,64 @@ void Enemy::AttackUpdate()
 
 }
 
+bool Enemy::CanSeePlayer()
+{
+	//プレイヤーのまでのベクトル
+	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	float distSq = dir.SqMagnitude();
+
+	//視認距離の外ならfalse
+	if (distSq > kSightRange * kSightRange)
+	{
+		return false;
+	}
+
+	//視野角内かを内積で判定
+	float dot = m_forward.Dot(dir.Normalize());
+	float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+
+	return dot >= halfFovCos;
+}
+
 void Enemy::TransitionTo(EnemyState nextState)
 {
+	//同じステートなら何もしない
 	if (m_currentState == nextState)
 	{
 		return;
 	}
-
+	//ステートの更新
 	m_prevState = m_currentState;
 	m_currentState = nextState;
 
 	switch (m_currentState)
 	{
 	case EnemyState::Idle:
+		//待機アニメーション
 		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
 		break;
 	case EnemyState::Walk:
+		//歩きアニメーション
 		m_animation.ChangeAnim(kWalkAnimName, true, 0.5f);
 		break;
 	case EnemyState::Attack:
-
+		//強攻撃アニメーション
 		m_animation.ChangeAnim(kAttackAnimName, false, 0.5f);
 		//攻撃ステートになったら更新する
 		m_isAttack = false;
 		//クールタイム設定
 		m_attackCooldown = 90;
-		
+		//攻撃方向を保存
 		m_attackDir = m_forward;
 		break;
 	case EnemyState::Punch:
-
+		//弱攻撃のアニメーション
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.3f);
-
+		//攻撃判定をリセット
 		m_isAttack = false;
 		//クールタイム設定
 		m_attackCooldown = 90;
-
+		//攻撃方向を保存
 		m_attackDir = m_forward;
 
 		break;

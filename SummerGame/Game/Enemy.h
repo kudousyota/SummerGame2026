@@ -42,6 +42,8 @@ private:
 
 	//攻撃処理
 	void AttackUpdate();
+	//索敵処理
+	bool CanSeePlayer();
 
 	//ハンドル
 	int m_modelHandle;
