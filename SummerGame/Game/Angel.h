@@ -35,8 +35,7 @@ private:
 	//前回の状態
 	AngelState m_prevState;
 
-	//攻撃処理
-	void AttackUpdate();
+	
 
 	//ハンドル
 	int m_modelHandle;
@@ -62,7 +61,7 @@ private:
 	//攻撃しているかどうかのフラグ
 	bool m_isAttack;
 
-
+	bool m_dancingAttackHit[8];
 
 	void TransitionTo(AngelState nextState);
 

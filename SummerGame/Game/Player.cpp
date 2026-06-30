@@ -29,6 +29,8 @@ namespace
 
 	const char* const kSkyAnimName		 = "Player|Sky";
 
+	const char* const kSkyKickAnimName = "Player|kakatootosi_TEST";
+
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame		 = 10.0f;
 
@@ -46,6 +48,16 @@ namespace
 	constexpr int kAttackDamageFrame3 = 17;
 	//攻撃の四回目のダメージを与えるフレーム
 	constexpr int kAttackDamageFrame4 = 25;
+	//ラッシュ攻撃回数
+	constexpr int kRushAttackCount = 4;
+	//ダメージを出すフレーム
+	constexpr int kAttackDamageFrame[kRushAttackCount] =
+	{
+		kAttackDamageFrame1,
+		kAttackDamageFrame2,
+		kAttackDamageFrame3,
+		kAttackDamageFrame4
+	};
 
 	//キックのダメージを与えれるフレーム
 	constexpr float kKickStartFrame = 15.0f;
@@ -73,6 +85,8 @@ namespace
 	constexpr float kSkyKickMove = 15.0f;
 	//落ちるスピード
 	constexpr float kSkyKickFallSpeed = -8.0f;
+
+
 }
 
 Player::Player() :
@@ -689,41 +703,17 @@ void Player::AttackUpdate()
 			m_isAttackHit = true;
 		}
 	}
-	if (m_currentState == PlayerState::Rush)
+	if (m_currentState == PlayerState::Rush || m_currentState ==PlayerState::SkyRush)
 	{
-		//ラッシュの攻撃は一回だけ当たるようにする
-		if (!m_rushHit[0] && animTime >= kAttackDamageFrame1)
+		for (int i = 0; i < kRushAttackCount; i++)
 		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[0] = true;
+			if (!m_rushHit[i] && animTime >= kAttackDamageFrame[i])
+			{
+				CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+
+				m_rushHit[i] = true;
+			}
 		}
-		//ラッシュの攻撃の二回目の攻撃判定
-		if(!m_rushHit[1] && animTime >= kAttackDamageFrame2)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[1] = true;
-		}
-		//ラッシュの攻撃の三回目の攻撃判定
-		if(!m_rushHit[2] && animTime >= kAttackDamageFrame3)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[2] = true;
-		}
-		//ラッシュの攻撃の四回目の攻撃判定
-		if(!m_rushHit[3] && animTime >= kAttackDamageFrame4)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[3] = true;
-		}
-		
 	}
 	if (m_currentState == PlayerState::Kick)
 	{
@@ -748,42 +738,7 @@ void Player::AttackUpdate()
 			m_isAttackHit = true;
 		}
 	}
-	if (m_currentState == PlayerState::SkyRush)
-	{
-		//ラッシュの攻撃は一回だけ当たるようにする
-		if (!m_rushHit[0] && animTime >= kAttackDamageFrame1)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[0] = true;
-		}
-		//ラッシュの攻撃の二回目の攻撃判定
-		if (!m_rushHit[1] && animTime >= kAttackDamageFrame2)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[1] = true;
-		}
-		//ラッシュの攻撃の三回目の攻撃判定
-		if (!m_rushHit[2] && animTime >= kAttackDamageFrame3)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[2] = true;
-		}
-		//ラッシュの攻撃の四回目の攻撃判定
-		if (!m_rushHit[3] && animTime >= kAttackDamageFrame4)
-		{
-			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-			//一回当たったら当たり判定を消す
-			m_rushHit[3] = true;
-		}
-
-	}
+	
 	if (m_currentState == PlayerState::SkyKick)
 	{
 
@@ -798,10 +753,6 @@ void Player::AttackUpdate()
 
 }
 
-//void Player::DodgeUpdate()
-//{
-//	
-//}
 void Player::TransitionTo(PlayerState nextState)
 {
 	if (m_currentState == nextState)
@@ -900,7 +851,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyKickMove);
 
-		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kSkyKickAnimName, false, 0.5f);
 		break;
 	case PlayerState::Jump:
 		m_gravity = kGravity;

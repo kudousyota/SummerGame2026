@@ -96,7 +96,7 @@ void Enemy::Update()
 	if (m_attackCooldown > 0)
 	{
 		//攻撃のクールタイムもウィッチタイムで遅くする
-		m_attackCooldown -= scale;
+		m_attackCooldown -= static_cast<int>(scale);
 	}
 
 	//ステート

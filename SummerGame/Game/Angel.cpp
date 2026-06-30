@@ -15,7 +15,23 @@ namespace
 
 	const char* const kRotateAnimName = "Angel|Rotate";
 
-	const char* const kRightHand = "mixamorig:RightHandRing";
+	constexpr int kDanicgAttackRadius = 180.0f;
+
+	//ラッシュ攻撃回数
+	constexpr int kDancingAttackCount = 8;
+
+	//ダメージを出すフレーム
+	constexpr int kAttackDamageFrame[kDancingAttackCount] =
+	{
+		20,
+		40,
+		60,
+		80,
+		100,
+		120,
+		140,
+		160
+	};
 
 	//攻撃する長さ
 	constexpr float kAttackRange = 150.0f;
@@ -32,7 +48,8 @@ Angel::Angel():
 	m_currentState(AngelState::Idle),
 	m_prevState(AngelState::Idle),
 	m_isAttack(false),
-	m_attackDir(VGet(0.0f, 0.0f, 0.0f))
+	m_attackDir(VGet(0.0f, 0.0f, 0.0f)),
+	m_dancingAttackHit{false,false, false, false, false, false, false, false }
 {
 }
 
@@ -62,8 +79,17 @@ void Angel::Update()
 {
 
 	Character::Collision();
-
+	//敵用のタイムスケールを取得
 	float scale = Timer::Instance().GetEnemyTimeScale();
+	//アニメーションのフレーム
+	float animTime = m_animation.GetCurrentAnimTime();
+
+	//攻撃クールタイム
+	if (m_attackCooldown > 0)
+	{
+		//攻撃のクールタイムもウィッチタイムで遅くする
+		m_attackCooldown -= static_cast<int>(scale);
+	}
 
 	m_animation.Update(scale);
 
@@ -115,19 +141,23 @@ void Angel::Update()
 		break;
 	case AngelState::DancingAttack:
 		{
-		//アニメーション中に攻撃判定を出す
-		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
-		{
-			m_attackDir = m_forward;
-			AttackUpdate();
-			m_isAttack = true;
-		}
-		if (m_animation.GetAnimEndFlag())
-		{
-			m_isAttack = false;
-			m_attackCooldown = 90;
-			TransitionTo(AngelState::Run);
-		}
+		
+			for (int i = 0; i < kDancingAttackCount; i++)
+			{
+				if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
+				{
+					CollisionManager::Instance().CheckAttackSphere(this, m_pos, kDanicgAttackRadius, m_attackPower);
+
+					m_dancingAttackHit[i] = true;
+				
+				}
+			}
+			//アニメーションが終わったら追跡に戻る
+			if (m_animation.GetAnimEndFlag())
+			{
+				TransitionTo(AngelState::Run);
+			}
+		
 		}
 		break;
 	}
@@ -138,18 +168,16 @@ void Angel::Update()
 
 void Angel::Draw()
 {
+
+	if (m_currentState == AngelState::DancingAttack)
+	{
+		DrawSphere3D(m_pos.ToDxLibVector(), kDanicgAttackRadius, 6, 0x00ffff, 0x00ffff, false);
+	}
+
 	MV1DrawModel(m_modelHandle);
 }
 
-void Angel::AttackUpdate()
-{
-	//前側に表示高さは微調整
-	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
-	//攻撃判定を出す
-	CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
-	m_isAttacking = true;
-	m_attackFrame = 30;
-}
+
 
 void Angel::TransitionTo(AngelState nextState)
 {
@@ -170,6 +198,14 @@ void Angel::TransitionTo(AngelState nextState)
 		m_animation.ChangeAnim(kRunAnimName, true, 0.5f);
 		break;
 	case AngelState::DancingAttack:
+		m_attackCooldown = 90;
+
+		//ラッシュの攻撃は複数回当たる可能性があるので、当たったかどうかを管理する配列をリセットする
+		for (int i = 0; i < kDancingAttackCount; i++)
+		{
+			m_dancingAttackHit[i] = false;
+		}
+
 		m_animation.ChangeAnim(kDancingAttackAnimName, false, 0.5);
 		break;
 	}
