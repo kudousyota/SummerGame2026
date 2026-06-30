@@ -35,6 +35,11 @@ namespace
 
 	//攻撃する長さ
 	constexpr float kAttackRange = 150.0f;
+
+	//見える距離
+	constexpr float kSightRange = 500.0f;
+	//視野角
+	constexpr float kFov = 90.0f;
 }
 
 Angel::Angel():
@@ -108,8 +113,22 @@ void Angel::Update()
 
 		break;
 
+	case AngelState::Idle:
+
+		if (CanSeePlayer())
+		{
+			TransitionTo(AngelState::Run);
+		}
+		break;
 	case AngelState::Run:
 	{
+		//視野角から消えたら待機にする
+		if (!CanSeePlayer())
+		{
+			TransitionTo(AngelState::Idle);
+			break;
+		}
+
 		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 		float distSq = dir.SqMagnitude();
 
@@ -169,12 +188,76 @@ void Angel::Update()
 void Angel::Draw()
 {
 
+	MV1DrawModel(m_modelHandle);
+	
+#ifdef _DEBUG
+
 	if (m_currentState == AngelState::DancingAttack)
 	{
 		DrawSphere3D(m_pos.ToDxLibVector(), kDanicgAttackRadius, 6, 0x00ffff, 0x00ffff, false);
 	}
+	//索敵範囲デバッグ描画
+	int color = GetColor(255, 255, 0);//黄色
 
-	MV1DrawModel(m_modelHandle);
+	//視野角の半分(ラジアン)
+	float halfFov = kFov * 0.5f * DX_PI_F / 180.0f;
+	//前方の角度
+	float baseAngle = atan2f(m_forward.x, m_forward.z);
+	//分割数
+	int segments = 16;
+	//線形の始点
+	VECTOR prevPoint = VGet(
+		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
+		m_pos.y + 50.0f,
+		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
+	);
+	//扇形の円弧を線分で描画
+	for (int i = 1; i <= segments; i++)
+	{
+		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
+		VECTOR point = VGet(
+			m_pos.x + kSightRange * sinf(angle),
+			m_pos.y + 50.0f,
+			m_pos.z + kSightRange * cosf(angle)
+		);
+		DrawLine3D(prevPoint, point, color);
+		prevPoint = point;
+	}
+
+	//扇の両辺(敵から視野端への線)
+	VECTOR center = VGet(m_pos.x, m_pos.y + 50.0f, m_pos.z);
+	VECTOR leftEdge = VGet(
+		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
+		m_pos.y + 50.0f,
+		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
+	);
+	VECTOR rightEdge = VGet(
+		m_pos.x + kSightRange * sinf(baseAngle + halfFov),
+		m_pos.y + 50.0f,
+		m_pos.z + kSightRange * cosf(baseAngle + halfFov)
+	);
+	//扇形の境界線を描画
+	DrawLine3D(center, leftEdge, color);
+	DrawLine3D(center, rightEdge, color);
+
+	//プレイヤーが視野内にいるとき色を変える
+	//敵からプレイヤーへのベクトル
+	Vector3 dir = (m_pPlayer->GetPosition() - m_pos);
+	float dist = dir.SqMagnitude();
+	if (dist <= kSightRange * kSightRange)
+	{
+		//内積の計算
+		float dot = m_forward.Dot(dir.Normalize());
+		//視野角の境界になる内積の値
+		float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+		//視野の中ならプレイヤーまで赤い線を引く
+		if (dot >= halfFovCos)
+		{
+			// 発見中は赤で上書き
+			DrawLine3D(center, VGet(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 50.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
+		}
+	}
+#endif
 }
 
 void Angel::TransitionTo(AngelState nextState)
@@ -192,6 +275,9 @@ void Angel::TransitionTo(AngelState nextState)
 	case AngelState::Shout:
 		m_animation.ChangeAnim(kShoutAnimName, false, 0.5);
 		break;
+	case AngelState::Idle:
+		m_animation.ChangeAnim(kShoutAnimName, true, 0.5f);
+		break;
 	case AngelState::Run:
 		m_animation.ChangeAnim(kRunAnimName, true, 0.5f);
 		break;
@@ -207,6 +293,25 @@ void Angel::TransitionTo(AngelState nextState)
 		m_animation.ChangeAnim(kDancingAttackAnimName, false, 0.5);
 		break;
 	}
+}
+
+bool Angel::CanSeePlayer()
+{
+	//プレイヤーのまでのベクトル
+	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	float distSq = dir.SqMagnitude();
+
+	//視認距離の外ならfalse
+	if (distSq > kSightRange * kSightRange)
+	{
+		return false;
+	}
+
+	//視野角内かを内積で判定
+	float dot = m_forward.Dot(dir.Normalize());
+	float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+
+	return dot >= halfFovCos;
 }
 
 

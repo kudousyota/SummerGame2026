@@ -38,8 +38,6 @@ private:
 	//前回の状態
 	AngelState m_prevState;
 
-	
-
 	//ハンドル
 	int m_modelHandle;
 	//しんだか
@@ -67,6 +65,9 @@ private:
 	bool m_dancingAttackHit[8];
 
 	void TransitionTo(AngelState nextState);
+
+	//索敵処理
+	bool CanSeePlayer();
 
 	std::shared_ptr<Player> m_pPlayer;
 };
