@@ -177,8 +177,6 @@ void Angel::Draw()
 	MV1DrawModel(m_modelHandle);
 }
 
-
-
 void Angel::TransitionTo(AngelState nextState)
 {
 	if (m_currentState == nextState)
@@ -211,4 +209,9 @@ void Angel::TransitionTo(AngelState nextState)
 	}
 }
 
+
+CharacterType Angel::GetCharacterType() const
+{
+	return CharacterType::Ememy;
+}
 

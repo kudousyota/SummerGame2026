@@ -120,6 +120,11 @@ Player::~Player()
 	MV1DeleteModel(m_modelHandle);	
 }
 
+CharacterType Player::GetCharacterType() const
+{
+	return CharacterType::Player;
+}
+
 void Player::Init()
 {
 	Character::Init();
@@ -844,14 +849,14 @@ void Player::TransitionTo(PlayerState nextState)
 
 	case PlayerState::SkyKick:
 		//ここも同じ
-		m_velocity.y = 0.0f;
+		m_velocity.y = kSkyKickFallSpeed;
 		m_gravity = 0.0f;
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyKickMove);
 
-		m_animation.ChangeAnim(kSkyKickAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kSkyKickAnimName, false, 0.8f);
 		break;
 	case PlayerState::Jump:
 		m_gravity = kGravity;

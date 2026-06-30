@@ -5,10 +5,10 @@
 namespace
 {
 	//注視点からカメラに向かうベクトル
-	const Vector3 kTargetToCamera = VGet(0.0f, 250.0f, 1100.0f);
+	const Vector3 kTargetToCamera = VGet(0.0f, 200.0f, 800.0f);
 
 	//注視点からカメラまでの距離
-	constexpr float kCameraDistance = 500.0f;
+	constexpr float kCameraDistance = 300.0f;
 	//カメラの高さ
 	constexpr float kCameraHeight = -180.0f;
 
@@ -126,7 +126,7 @@ void Camera::Update()
 
 	//プレイヤー追従先
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
-
+	cameraTarget.y += -90.0f;
 
 	//カメラの位置
 	Vector3 offset;

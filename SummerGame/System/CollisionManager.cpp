@@ -34,7 +34,15 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 	for (auto& character : m_pCharacters)
 	{
 		//自分自身には当たらない
-		if (character == attacker) continue;
+		if (character == attacker)
+		{
+			continue;
+		}
+		//同じタイプには当たらない
+		if (character->GetCharacterType() == attacker->GetCharacterType())
+		{
+			continue;
+		}
 
 		// キャラクターのカプセル情報を取得
 		float capsuleRadius = character->GetCollisionRadius();

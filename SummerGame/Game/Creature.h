@@ -4,14 +4,15 @@
 #include <memory> 
 
 class Player;
-class Enemy: public Character
+class Creature: public Character
 {
 public:
-	Enemy();
-	~Enemy()override;
+	Creature();
+	~Creature()override;
 	void Init()override;
 	void Update() override;
 	void Draw()override;
+
 
 	//ダメージ
 	void ApplyDamage(int damage)override;
@@ -23,9 +24,11 @@ public:
 
 	void SetPlayer(std::shared_ptr<Player> player) {m_pPlayer = player;};
 
+	CharacterType GetCharacterType() const override;
+
 private:
 
-	enum class EnemyState
+	enum class CreatureState
 	{
 		Idle,
 		Walk,
@@ -35,10 +38,10 @@ private:
 	};
 
 	//現在の状態
-	EnemyState m_currentState;
+	CreatureState m_currentState;
 
 	//前回の状態
-	EnemyState m_prevState;
+	CreatureState m_prevState;
 
 	//攻撃処理
 	void AttackUpdate();
@@ -69,7 +72,7 @@ private:
 	//攻撃しているかどうかのフラグ
 	bool m_isAttack;
 
-	void TransitionTo(EnemyState nextState);
+	void TransitionTo(CreatureState nextState);
 
 	std::shared_ptr<Player> m_pPlayer;
 };

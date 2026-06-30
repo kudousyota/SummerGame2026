@@ -42,10 +42,10 @@ void SceneMain::Init()
 
 	m_pPlayer->SetCamera(m_pCamera);
 
-	auto enemy = std::make_shared<Enemy>();
-	enemy->Init();
-	enemy->SetPlayer(m_pPlayer);
-	m_pEnemy.push_back(enemy);
+	auto creature = std::make_shared<Creature>();
+	creature->Init();
+	creature->SetPlayer(m_pPlayer);
+	m_pCreature.push_back(creature);
 
 	auto angel = std::make_shared<Angel>();
 	angel->Init();
@@ -56,9 +56,9 @@ void SceneMain::Init()
 	m_pStage->Init();
 	m_pPlayer->SetStage(m_pStage);
 
-	for (auto& enemy : m_pEnemy)
+	for (auto& creature : m_pCreature)
 	{
-		enemy->SetStage(m_pStage);
+		creature->SetStage(m_pStage);
 	}
 
 	for (auto& angel : m_pAngel)
@@ -85,13 +85,13 @@ void SceneMain::Update(Input& input)
 	m_pPlayer->Update();
 	m_pCamera->Update();
 
-	if (!m_pEnemy.empty())
+	if (!m_pCreature.empty())
 	{
-		for (auto& enemy : m_pEnemy)
+		for (auto& creature : m_pCreature)
 		{
-			if (enemy)
+			if (creature)
 			{
-				enemy->Update();
+				creature->Update();
 			}
 		}
 	}
@@ -159,13 +159,13 @@ void SceneMain::Draw()
 
 	
 
-	if (!m_pEnemy.empty())
+	if (!m_pCreature.empty())
 	{
-		for (auto& enemy : m_pEnemy)
+		for (auto& creature : m_pCreature)
 		{
-			if (enemy)
+			if (creature)
 			{
-				enemy->Draw();
+				creature->Draw();
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 #include "../Game/Player.h"
 #include "../Game/Camera.h"
 #include <memory>
-#include "../Game/Enemy.h"
+#include "../Game/Creature.h"
 #include <vector>
 #include "../Game/Stage.h"
 #include "../Game/Angel.h"
@@ -35,7 +35,7 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
-	std::vector<std::shared_ptr<Enemy>> m_pEnemy;
+	std::vector<std::shared_ptr<Creature>> m_pCreature;
 	std::vector<std::shared_ptr<Angel>> m_pAngel;
 };
 

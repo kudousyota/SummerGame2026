@@ -51,7 +51,7 @@
     <ClCompile Include="Game\Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Enemy.cpp">
+    <ClCompile Include="Game\Creature.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="System\CollisionManager.cpp">
@@ -107,7 +107,7 @@
     <ClInclude Include="Game\Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Enemy.h">
+    <ClInclude Include="Game\Creature.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="System\CollisionManager.h">

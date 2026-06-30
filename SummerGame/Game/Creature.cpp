@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "Creature.h"
 #include "DxLib.h"
 #include "../System/CollisionManager.h"
 #include "Stage.h"
@@ -23,7 +23,7 @@ namespace
 	constexpr float kFov = 90.0f;
 }
 
-Enemy::Enemy():
+Creature::Creature():
 	m_modelHandle(-1),
 	m_isDead(false),
 	m_isAttackHit(false),
@@ -31,21 +31,21 @@ Enemy::Enemy():
 	m_forward(VGet(0.0f, 0.0f, 1.0f)),
 	m_isAttacking(false),
 	m_attackFrame(0),
-	m_currentState(EnemyState::Idle),
-	m_prevState(EnemyState::Idle),
+	m_currentState(CreatureState::Idle),
+	m_prevState(CreatureState::Idle),
 	m_isAttack(false),
 	m_attackDir(VGet(0.0f,0.0f,0.0f))
 {
 }
 
-Enemy::~Enemy()
+Creature::~Creature()
 {
 	CollisionManager::Instance().Unregister(this);
 
 	MV1DeleteModel(m_modelHandle);
 }
 
-void Enemy::Init()
+void Creature::Init()
 {
 	Character::Init();
 
@@ -58,8 +58,8 @@ void Enemy::Init()
 	m_attackPower = 20;
 	
 
-	m_currentState = EnemyState::Idle;
-	m_prevState = EnemyState::Idle;
+	m_currentState = CreatureState::Idle;
+	m_prevState = CreatureState::Idle;
 
 	m_attackCooldown = 0;
 
@@ -70,7 +70,7 @@ void Enemy::Init()
 	CollisionManager::Instance().Register(this);
 }
 
-void Enemy::Update()
+void Creature::Update()
 {
 	//死んだら
 	if (m_hp == 0)
@@ -102,7 +102,7 @@ void Enemy::Update()
 	//ステート
 	switch (m_currentState)
 	{
-	case EnemyState::Idle:
+	case CreatureState::Idle:
 	{
 		//クールタイム中は待つ
 		if (m_attackCooldown > 0)
@@ -112,17 +112,17 @@ void Enemy::Update()
 		//プレイヤーを見つけたら追いかけ始める
 		if (CanSeePlayer())
 		{
-			TransitionTo(EnemyState::Walk);
+			TransitionTo(CreatureState::Walk);
 		}
 		
 	}
 		break;
-	case EnemyState::Walk:
+	case CreatureState::Walk:
 	{
 		//視野角から消えたら待機にする
 		if (!CanSeePlayer())
 		{
-			TransitionTo(EnemyState::Idle);
+			TransitionTo(CreatureState::Idle);
 			break;
 		}
 		//プレイヤーのまでのベクトル
@@ -141,11 +141,11 @@ void Enemy::Update()
 				//70％で弱攻撃
 				if (GetRand(99) < 70)
 				{
-					TransitionTo(EnemyState::Punch);
+					TransitionTo(CreatureState::Punch);
 				}
 				else
 				{
-					TransitionTo(EnemyState::Attack);
+					TransitionTo(CreatureState::Attack);
 				}
 			}
 		}
@@ -166,7 +166,7 @@ void Enemy::Update()
 	}
 		break;
 
-	case EnemyState::Attack:
+	case CreatureState::Attack:
 		//アニメーションの半分で攻撃判定を出す
 		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
 		{
@@ -178,11 +178,11 @@ void Enemy::Update()
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
 		{
-			TransitionTo(EnemyState::Idle);
+			TransitionTo(CreatureState::Idle);
 		}
 		break;
 
-	case EnemyState::Punch:
+	case CreatureState::Punch:
 		//アニメーションの半分で攻撃判定を発生
 		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
 		{
@@ -192,7 +192,7 @@ void Enemy::Update()
 		//攻撃終了したらIdleに行く
 		if (m_animation.GetAnimEndFlag())
 		{
-			TransitionTo(EnemyState::Idle);
+			TransitionTo(CreatureState::Idle);
 		}
 		break;
 	}
@@ -204,7 +204,7 @@ void Enemy::Update()
 }
 
 
-void Enemy::Draw()
+void Creature::Draw()
 {
 
 	//HPがゼロになったら
@@ -292,7 +292,7 @@ void Enemy::Draw()
 
 }
 
-void Enemy::ApplyDamage(int damage)
+void Creature::ApplyDamage(int damage)
 {
 	if (m_isDead)
 	{
@@ -310,13 +310,13 @@ void Enemy::ApplyDamage(int damage)
 		//当たり判定を消す
 		CollisionManager::Instance().Unregister(this);
 
-		printfDx("EnemyDead!\n");
+		printfDx("Creature Dead!\n");
 	}
 
-	printfDx("Enemy HP = %d\n",m_hp);
+	printfDx("Creature HP = %d\n",m_hp);
 }
 
-void Enemy::AttackUpdate()
+void Creature::AttackUpdate()
 {
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
@@ -326,7 +326,7 @@ void Enemy::AttackUpdate()
 	m_attackFrame = 30;
 }
 
-bool Enemy::CanSeePlayer()
+bool Creature::CanSeePlayer()
 {
 	//プレイヤーのまでのベクトル
 	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
@@ -345,7 +345,7 @@ bool Enemy::CanSeePlayer()
 	return dot >= halfFovCos;
 }
 
-void Enemy::TransitionTo(EnemyState nextState)
+void Creature::TransitionTo(CreatureState nextState)
 {
 	//同じステートなら何もしない
 	if (m_currentState == nextState)
@@ -358,15 +358,15 @@ void Enemy::TransitionTo(EnemyState nextState)
 
 	switch (m_currentState)
 	{
-	case EnemyState::Idle:
+	case CreatureState::Idle:
 		//待機アニメーション
 		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
 		break;
-	case EnemyState::Walk:
+	case CreatureState::Walk:
 		//歩きアニメーション
 		m_animation.ChangeAnim(kWalkAnimName, true, 0.5f);
 		break;
-	case EnemyState::Attack:
+	case CreatureState::Attack:
 		//強攻撃アニメーション
 		m_animation.ChangeAnim(kAttackAnimName, false, 0.5f);
 		//攻撃ステートになったら更新する
@@ -376,7 +376,7 @@ void Enemy::TransitionTo(EnemyState nextState)
 		//攻撃方向を保存
 		m_attackDir = m_forward;
 		break;
-	case EnemyState::Punch:
+	case CreatureState::Punch:
 		//弱攻撃のアニメーション
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.3f);
 		//攻撃判定をリセット
@@ -388,4 +388,9 @@ void Enemy::TransitionTo(EnemyState nextState)
 
 		break;
 	}
+}
+
+CharacterType Creature::GetCharacterType() const
+{
+	return CharacterType::Ememy;
 }

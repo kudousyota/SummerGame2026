@@ -17,6 +17,9 @@ public:
 	float GetCollisionHeight() const override { return 100.0f; }
 
 	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; };
+
+	CharacterType GetCharacterType() const override;
+
 private:
 
 	enum class AngelState

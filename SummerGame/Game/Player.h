@@ -17,6 +17,8 @@ public:
 	//ダメージを受ける関数
 	void ApplyDamage(int damage) override;
 
+	CharacterType GetCharacterType() const override;
+
 	//カメラの注視点を取得する関数
 	Vector3 GetCameraTarget()const;
 	float GetAngle() const { return m_angle; }

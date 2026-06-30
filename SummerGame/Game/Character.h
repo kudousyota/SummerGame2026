@@ -3,6 +3,13 @@
 #include "../System/Animation.h"
 #include <memory>
 
+//キャラクタータイプ
+enum class CharacterType
+{
+	Player,
+	Ememy
+};
+
 //プレイヤーとエネミーの基底クラス
 class Input;
 class Stage;
@@ -15,6 +22,10 @@ public:
 	virtual void Init();
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
+
+	//純粋仮想関数
+	virtual CharacterType GetCharacterType()const = 0;
+
 	//当たり判定
 	virtual void Collision();
 
@@ -36,6 +47,7 @@ public:
 	virtual void SetPosition(const Vector3& pos) { m_pos = pos; }
 
 	void SetStage(std::shared_ptr<Stage> stage);
+	
 
 protected:
 	//共通のデータや関数を入れる

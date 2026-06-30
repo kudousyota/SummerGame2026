@@ -139,7 +139,7 @@
     <ClCompile Include="Game\Stage.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\CollisionManager.cpp" />
-    <ClCompile Include="Game\Enemy.cpp" />
+    <ClCompile Include="Game\Creature.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Character.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
@@ -159,7 +159,7 @@
     <ClInclude Include="Game\Stage.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\CollisionManager.h" />
-    <ClInclude Include="Game\Enemy.h" />
+    <ClInclude Include="Game\Creature.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Character.h" />
     <ClInclude Include="Scene\ResultScene.h" />
