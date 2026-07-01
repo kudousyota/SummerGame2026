@@ -72,7 +72,7 @@ void Angel::Init()
 	m_currentState = AngelState::Shout;
 	m_prevState = AngelState::Shout;
 
-	m_pos = VGet(300.0f, 0.0f, 250.0f);
+	m_pos = VGet(300.0f, 100.0f, 250.0f);
 
 	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
@@ -181,7 +181,10 @@ void Angel::Update()
 		break;
 	}
 	MATRIX rot = MGetRotY(m_angle);
-	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
+	Vector3 drawPos = m_pos;
+	//モデルの中心が足元にあるので、描画位置を少し上げる
+	drawPos.y += GetCollisionHeight() * 1.0f;
+	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 }
 
@@ -192,10 +195,14 @@ void Angel::Draw()
 	
 #ifdef _DEBUG
 
+	//当たり判定のデバッグ描画
+	DrawCapsule3D(m_pos.ToDxLibVector(), VGet(m_pos.x, m_pos.y + 200.0f, m_pos.z), GetCollisionRadius(), 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+
 	if (m_currentState == AngelState::DancingAttack)
 	{
 		DrawSphere3D(m_pos.ToDxLibVector(), kDanicgAttackRadius, 6, 0x00ffff, 0x00ffff, false);
 	}
+
 	//索敵範囲デバッグ描画
 	int color = GetColor(255, 255, 0);//黄色
 
@@ -208,7 +215,7 @@ void Angel::Draw()
 	//線形の始点
 	VECTOR prevPoint = VGet(
 		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
-		m_pos.y + 50.0f,
+		m_pos.y + 160.0f,
 		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
 	);
 	//扇形の円弧を線分で描画
@@ -217,7 +224,7 @@ void Angel::Draw()
 		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
 		VECTOR point = VGet(
 			m_pos.x + kSightRange * sinf(angle),
-			m_pos.y + 50.0f,
+			m_pos.y + 160.0f,
 			m_pos.z + kSightRange * cosf(angle)
 		);
 		DrawLine3D(prevPoint, point, color);
@@ -225,15 +232,15 @@ void Angel::Draw()
 	}
 
 	//扇の両辺(敵から視野端への線)
-	VECTOR center = VGet(m_pos.x, m_pos.y + 50.0f, m_pos.z);
+	VECTOR center = VGet(m_pos.x, m_pos.y + 160.0f, m_pos.z);
 	VECTOR leftEdge = VGet(
 		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
-		m_pos.y + 50.0f,
+		m_pos.y + 160.0f,
 		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
 	);
 	VECTOR rightEdge = VGet(
 		m_pos.x + kSightRange * sinf(baseAngle + halfFov),
-		m_pos.y + 50.0f,
+		m_pos.y + 160.0f,
 		m_pos.z + kSightRange * cosf(baseAngle + halfFov)
 	);
 	//扇形の境界線を描画
@@ -254,7 +261,7 @@ void Angel::Draw()
 		if (dot >= halfFovCos)
 		{
 			// 発見中は赤で上書き
-			DrawLine3D(center, VGet(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 50.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
+			DrawLine3D(center, VGet(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 160.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
 		}
 	}
 #endif

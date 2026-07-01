@@ -108,7 +108,8 @@ Player::Player() :
 	m_uiHandle(-1),
 	m_attackForward(VGet(0.0f,0.0f,0.0f)),
 	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
-	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f))
+	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
+	m_modelDisplayOffsetY(0.0f)
 {
 	
 }
@@ -459,11 +460,6 @@ void Player::Update()
 			TransitionTo(PlayerState::Idle);
 		}
 		break;
-	/*case PlayerState::WitchTime:
-		if (m_isWitchTime)
-		{
-
-		}*/
 	}
 
 
@@ -498,12 +494,12 @@ void Player::Update()
 			float targetAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
 
 			float diff = targetAngle - m_angle;
-
+			//角度の差を-π～πの範囲に収める
 			while (diff > DX_PI_F)
 			{
 				diff -= DX_TWO_PI_F;
 			}
-
+			//角度の差を-π～πの範囲に収める
 			while (diff < -DX_PI_F)
 			{
 				diff += DX_TWO_PI_F;
@@ -552,7 +548,9 @@ void Player::Update()
 	MATRIX rot = MGetRotY(m_angle);
 	Vector3 drawPos = m_pos;
 	//モデルの中心が足元にあるので、描画位置を少し上げる
-	drawPos.y += GetCollisionHeight()*1.0f;
+	float displayOffset = GetCollisionHeight() * 1.0f;
+	m_modelDisplayOffsetY = displayOffset;
+	drawPos.y += m_modelDisplayOffsetY;
 	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 

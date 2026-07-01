@@ -117,5 +117,7 @@ private:
 	//プレイヤーの当たり判定はカプセルで行う
 	float GetCollisionHeight() const override { return 100.0f; }
 
+	//描画に使うモデルの垂直オフセット
+	float m_modelDisplayOffsetY;
 };
 
