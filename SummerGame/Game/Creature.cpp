@@ -199,8 +199,6 @@ void Creature::Update()
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	Vector3 drawPos = m_pos;
-	//モデルの中心が足元にあるので、描画位置を少し上げる
-	drawPos.y += GetCollisionHeight() * 1.0f;
 	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 	

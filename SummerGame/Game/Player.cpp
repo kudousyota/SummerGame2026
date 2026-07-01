@@ -447,7 +447,7 @@ void Player::Update()
 		}
 		if (m_animation.GetAnimEndFlag())
 		{
-			TransitionTo(PlayerState::Sky);
+			TransitionTo(PlayerState::Idle);
 			m_attackPower = 10;
 		}
 		break;
@@ -547,10 +547,6 @@ void Player::Update()
 	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	Vector3 drawPos = m_pos;
-	//モデルの中心が足元にあるので、描画位置を少し上げる
-	float displayOffset = GetCollisionHeight() * 1.0f;
-	m_modelDisplayOffsetY = displayOffset;
-	drawPos.y += m_modelDisplayOffsetY;
 	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
@@ -573,10 +569,27 @@ void Player::Draw()
 	MV1DrawModel(m_modelHandle);
 
 #ifdef _DEBUG
-	//デバッグ用に当たり判定を描画
-	//足元と上の位置を計算してカプセルを描画
-	DrawCapsule3D(m_pos.ToDxLibVector(), (m_pos + VGet(0.0f, GetCollisionHeight(), 0.0f)).ToDxLibVector(), GetCollisionRadius(), 16, 0xffffff, 0xffffff, false);
 
+	Vector3 debugPos = GetCollisionPosition();
+
+	VECTOR start = VGet(
+		debugPos.x,
+		debugPos.y + GetCollisionRadius(),
+		debugPos.z);
+
+	VECTOR end = VGet(
+		debugPos.x,
+		debugPos.y + GetCollisionHeight() - GetCollisionRadius(),
+		debugPos.z);
+
+	DrawCapsule3D(
+		start,
+		end,
+		GetCollisionRadius(),
+		16,
+		0xffffff,
+		0xffffff,
+		false);
 	float animTime = m_animation.GetCurrentAnimTime();
 	//攻撃判定
 	if (m_currentState == PlayerState::Attack && animTime >= kAttackStartFrame && animTime <= kAttackEndFrame)
@@ -588,6 +601,20 @@ void Player::Draw()
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
 	}
 	if (m_currentState == PlayerState::Kick && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
+	{
+		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x0000ff, 0x0000ff, false);
+	}
+
+	//空中攻撃の判定描画(地上と同じ色分けにする)
+	if (m_currentState == PlayerState::SkyAttack)
+	{
+		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
+	}
+	if (m_currentState == PlayerState::SkyRush)
+	{
+		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
+	}
+	if (m_currentState == PlayerState::SkyKick && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x0000ff, 0x0000ff, false);
 	}
@@ -909,3 +936,7 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 	}
 }
 
+Vector3 Player::GetCollisionPosition() const
+{
+	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
+}

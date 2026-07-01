@@ -12,7 +12,7 @@ public:
 	//攻撃用の単純な判定
 	void CheckAttackSphere(Character* attacker, const Vector3& pos, float radius, int damage);
 	//ステージとの判定
-	bool CheckStageCollision(Character* caracter,int stageHandle);
+	bool CheckStageWall(Character* caracter,int stageHandle);
 	//ステージの地面
 	bool CheckStageGround(Character* character, int stageHandle, float& outGroundY);
 private:

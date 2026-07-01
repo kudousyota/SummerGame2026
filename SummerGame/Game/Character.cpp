@@ -32,18 +32,24 @@ void Character::Init()
 
 void Character::Collision()
 {
+
+	// 落下速度の上限を設ける
+	const float kMaxFallSpeed = -5.0f; // 値は要調整
+
 	//当たり判定
 	if (!m_isGround)
 	{
+		//空中にいる間
 		m_velocity.y -= m_gravity;
+		if (m_velocity.y < kMaxFallSpeed)
+		{
+			m_velocity.y = kMaxFallSpeed;
+		}
 	}
-	else
-	{
-		//地面にいる間
-		m_velocity.y = 0.0f;
-	}
+	
 	//座標に落下分の移動量を足す
 	m_pos.y += m_velocity.y;
+
 
 	//地面の判定
 	float groundY = 0.0f;
@@ -65,7 +71,7 @@ void Character::Collision()
 	}
 
 	//座標を押し出すように
-	CollisionManager::Instance().CheckStageCollision(this, stageHandle);
+	CollisionManager::Instance().CheckStageWall(this, stageHandle);
 
 }
 
@@ -87,6 +93,11 @@ float Character::GetCollisionRadius() const
 float Character::GetCollisionHeight() const
 {
 	return 100.0f;
+}
+
+Vector3 Character::GetCollisionPosition() const
+{
+	return m_pos;
 }
 
 void Character::SetStage(std::shared_ptr<Stage> stage)

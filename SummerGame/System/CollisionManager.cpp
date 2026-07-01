@@ -49,7 +49,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		float capsuleHeight = character->GetCollisionHeight();
 
 		//カプセルの線分(a -> b)
-		Vector3 a = character->GetPosition();
+		Vector3 a = character->GetCollisionPosition();
 		Vector3 b = VGet(a.x, a.y + capsuleHeight, a.z);
 
 		Vector3 ab = b - a;
@@ -97,7 +97,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 	}
 }
 
-bool CollisionManager::CheckStageCollision(Character* character, int stageHandle)
+bool CollisionManager::CheckStageWall(Character* character, int stageHandle)
 {
 	//プレイヤーのカプセル情報を取得
 	float radius = character->GetCollisionRadius();
@@ -127,8 +127,13 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 		for (int i = 0; i < hit.HitNum; i++)
 		{
 			auto& normal = hit.Dim[i].Normal;
-			//固定値ではなく、少し余裕を持たせた値で毎回押し出し、再判定する
-			pos += Vector3(normal.x, normal.y, normal.z) * 1.0f;
+			Vector3 push(normal.x, 0.0f, normal.z);
+
+			if (push.SqMagnitude() > 0.0001f)
+			{
+				push = push.Normalize();
+				pos += push * 1.0f;
+			}
 		}
 
 		MV1CollResultPolyDimTerminate(hit);
@@ -143,27 +148,25 @@ bool CollisionManager::CheckStageGround(Character* character, int stageHandle, f
 	Vector3 pos = character->GetPosition();
 	//キャラクターのカプセルの半径を取得
 	float radius = character->GetCollisionRadius();
+	
+	
+	const float kUpMargin = 5.0f;
+	const float kDownMargin = 10.0f;
 
 	//レイ(下向きの線分)の開始点と終了点を決める
 	//キャラクターの足元の少し上から、少し下まで
-	VECTOR rayStart = VGet(pos.x, pos.y + 5.0f, pos.z);
-	VECTOR rayEnd = VGet(pos.x, pos.y - radius - 5.0f, pos.z);
+	VECTOR rayStart = VGet(pos.x, pos.y + kUpMargin, pos.z);
+	VECTOR rayEnd = VGet(pos.x, pos.y - kDownMargin, pos.z);
 
 	//DxLibの線分とモデルの当たり判定
 	MV1_COLL_RESULT_POLY hitPoly = MV1CollCheck_Line(stageHandle, -1, rayStart, rayEnd);
 
 	if (hitPoly.HitFlag == 1)
 	{
-		if (outGroundY)
-		{
-			
-			outGroundY = hitPoly.HitPosition.y;
-			
-		}
-		return true; //接地
+		outGroundY = hitPoly.HitPosition.y;
+		return true;
 	}
-
-	return false; //空中
+	return false;
 
 
 }

@@ -70,7 +70,8 @@ private:
 	//回避処理
 	//void DodgeUpdate();
 
-	
+	Vector3 GetCollisionPosition() const override;
+
 	//アタック
 	bool m_isAttackHit;
 	//次に行けるか
@@ -112,9 +113,9 @@ private:
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
 
-	//プレイヤーの当たり判定はカプセルで行う
+	//プレイヤーの当たり判定はカプセルで行う//キャラクターの半径を取得する関数
 	float GetCollisionRadius() const override { return 30.0f; }
-	//プレイヤーの当たり判定はカプセルで行う
+	//プレイヤーの当たり判定はカプセルで行う//キャラクターの高さを取得する関数
 	float GetCollisionHeight() const override { return 100.0f; }
 
 	//描画に使うモデルの垂直オフセット
