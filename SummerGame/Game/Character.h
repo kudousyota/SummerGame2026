@@ -45,7 +45,7 @@ public:
 	virtual bool IsJustDodgeWindow() const { return false; }
 
 	virtual void SetPosition(const Vector3& pos) { m_pos = pos; }
-
+	
 	void SetStage(std::shared_ptr<Stage> stage);
 	
 

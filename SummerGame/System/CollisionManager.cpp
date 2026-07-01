@@ -105,49 +105,43 @@ bool CollisionManager::CheckStageCollision(Character* character, int stageHandle
 
 
 	Vector3 pos = character->GetPosition();
-	//カプセルの足元
-	VECTOR start = VGet(pos.x, pos.y + radius, pos.z);
-	//カプセルの頭のほう
-	VECTOR end = VAdd(start, VGet(0.0f, height - radius * 2.0f, 0.0f));
-	
-	//ステージモデルとのカプセル衝突判定
-	auto hit = MV1CollCheck_Capsule(
-		stageHandle, //ステージモデル
-		-1,          //全フレーム対象
-		start,
-		end,
-		radius
-	);
+
+	bool hitAny = false;
 
 	//当たっていたら
-	if (hit.HitNum > 0)
+	const int kMaxIteration = 4;
+	for (int iter = 0; iter < kMaxIteration; iter++)
 	{
-		Vector3 pos = character->GetPosition();
-		for(int i = 0;i < hit.HitNum;i++)
-		{
-			// 衝突したポリゴンの情報を取得
-			auto& normal = hit.Dim[i].Normal;
+		VECTOR start = VGet(pos.x, pos.y + radius, pos.z);
+		VECTOR end = VAdd(start, VGet(0.0f, height - radius * 2.0f, 0.0f));
 
-			//法線方向に押し出す
-			pos += Vector3(normal.x, normal.y, normal.z) * 3.0f;
+		auto hit = MV1CollCheck_Capsule(stageHandle, -1, start, end, radius);
+		if (hit.HitNum == 0)
+		{
+			MV1CollResultPolyDimTerminate(hit);
+			break;
 		}
 
-		character->SetPosition(pos);
-		
-		//MV1CollCheck_Lineが確保した衝突ポリゴン情報を解放
+		hitAny = true;
+
+		for (int i = 0; i < hit.HitNum; i++)
+		{
+			auto& normal = hit.Dim[i].Normal;
+			//固定値ではなく、少し余裕を持たせた値で毎回押し出し、再判定する
+			pos += Vector3(normal.x, normal.y, normal.z) * 1.0f;
+		}
+
 		MV1CollResultPolyDimTerminate(hit);
-
-		return true;
 	}
+	character->SetPosition(pos);
 
-	MV1CollResultPolyDimTerminate(hit);
-	return false;
+	return hitAny;
 }
 
 bool CollisionManager::CheckStageGround(Character* character, int stageHandle, float& outGroundY)
 {
 	Vector3 pos = character->GetPosition();
-
+	//キャラクターのカプセルの半径を取得
 	float radius = character->GetCollisionRadius();
 
 	//レイ(下向きの線分)の開始点と終了点を決める
@@ -162,8 +156,9 @@ bool CollisionManager::CheckStageGround(Character* character, int stageHandle, f
 	{
 		if (outGroundY)
 		{
-
+			
 			outGroundY = hitPoly.HitPosition.y;
+			
 		}
 		return true; //接地
 	}

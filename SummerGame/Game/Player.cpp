@@ -65,7 +65,7 @@ namespace
 	constexpr float kKickEndFrame = 25.0f;
 
 	//キックのダメージ
-	constexpr int kKickPower = 20;
+	constexpr int kKickPower = 50;
 
 	//ジャスト回避の受付フレーム
 	constexpr int kDodgeFrame = 30;
@@ -133,7 +133,7 @@ void Player::Init()
 	m_currentState = PlayerState::Idle;
 	m_prevState = PlayerState::Idle;
 
-	m_pos = VGet(0.0f, 0.0f, 0.0f);
+	m_pos = VGet(0.0f, 500.0f, 0.0f);
 
 	m_hp = 100;
 	m_jumpPower = 15;
@@ -543,14 +543,17 @@ void Player::Update()
 
 	Character::Collision();
 	//ここで攻撃位置を更新
-	m_attackPos = m_pos + m_attackForward * 70.0f + VGet(0.0f, 50.0f, 0.0f);
+	m_attackPos = m_pos + m_attackForward * 70.0f + VGet(0.0f, GetCollisionHeight() * 0.5f, 0.0f);
 
 	//攻撃判定
 	AttackUpdate();
 
 	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
-	MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
+	Vector3 drawPos = m_pos;
+	//モデルの中心が足元にあるので、描画位置を少し上げる
+	drawPos.y += GetCollisionHeight()*1.0f;
+	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
 	m_isWitchTime = Timer::Instance().IsEnemySlow();
@@ -572,8 +575,9 @@ void Player::Draw()
 	MV1DrawModel(m_modelHandle);
 
 #ifdef _DEBUG
-	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 100.0f, m_pos.z),30.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
-
+	//デバッグ用に当たり判定を描画
+	//足元と上の位置を計算してカプセルを描画
+	DrawCapsule3D(m_pos.ToDxLibVector(), (m_pos + VGet(0.0f, GetCollisionHeight(), 0.0f)).ToDxLibVector(), GetCollisionRadius(), 16, 0xffffff, 0xffffff, false);
 
 	float animTime = m_animation.GetCurrentAnimTime();
 	//攻撃判定
@@ -597,19 +601,23 @@ void Player::Draw()
 	//今ジャスト回避の受付時間か？
 	if (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
-		//受付中だけ、判定の半径を広げ、色を青にする
-		drawRadius = kJustDodgeRadius; //コンストで定義した100.0f
+		//受付中だけ,色を青にする
+		drawRadius = kJustDodgeRadius;//ジャスト回避の受付半径
 		drawColor = GetColor(0, 100, 255);
 	}
 
-	//実際に描画する
-	DrawSphere3D(m_pos.ToDxLibVector(), drawRadius, 16, drawColor, drawColor, false);
+	//プレイヤーのジャスト回避判定を描画
+	DrawSphere3D(VGet(m_pos.x, m_pos.y + GetCollisionHeight() * 0.5f, m_pos.z), drawRadius, 16, drawColor, drawColor, false);
+	
+
+	//printfDx("CollisionHeight = %f\n", GetCollisionHeight());
 	//HP
+	DrawFormatString(50, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
 	
 #endif  //DEBUG
 	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
 
-	DrawFormatString(50, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
+	
 
 }
 
