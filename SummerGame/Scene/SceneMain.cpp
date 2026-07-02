@@ -114,8 +114,9 @@ void SceneMain::Update(Input& input)
 		//•\Ž¦‚·‚éŽžŠÔ
 		m_witchEffectFrame = 80;
 		//‰ñ“]Šp“x
-		m_angle = DX_TWO_PI_F;
+		m_angle = 0.0f;
 	}
+
 	//ŽŸ‚ÌƒtƒŒ[ƒ€‚Å”»’è‚·‚é‚½‚ß‚É•Û‘¶
 	m_isPrevWitchTime = currentwitch;
 	//‰‰o’†‚¾‚Á‚½‚ç‰ñ“]‚³‚¹‚é
@@ -123,16 +124,17 @@ void SceneMain::Update(Input& input)
 	{
 		//‰‰oƒtƒŒ[ƒ€‚ð‚±‚±‚ÅŒ¸‚ç‚·
 		m_witchEffectFrame--;
-		//360‚©‚ç0‚ÉŒü‚©‚í‚¹‚é
-		if (m_angle > 0.0f)
+
+		//‰ñ“]Šp“x‚ð‘‚â‚·
+		m_angle += DX_PI_F / 40.0f;
+
+		//0‚©‚ç360“x‚Ü‚Å‰ñ“]‚³‚¹‚é
+		//360“xˆÈã‚É‚È‚ç‚È‚¢‚æ‚¤‚É
+		if (m_angle > DX_TWO_PI_F)
 		{
-			m_angle -= DX_PI_F / 30.0f;
-			//0ˆÈ‰º‚É‚È‚ç‚È‚¢‚æ‚¤‚É
-			if (m_angle < 0.0f)
-			{
-				m_angle = 0.0f;
-			}
+			m_angle -= DX_TWO_PI_F;
 		}
+		
 	}
 
 }
