@@ -34,7 +34,8 @@ Creature::Creature():
 	m_currentState(CreatureState::Idle),
 	m_prevState(CreatureState::Idle),
 	m_isAttack(false),
-	m_attackDir(VGet(0.0f,0.0f,0.0f))
+	m_attackDir(VGet(0.0f,0.0f,0.0f)),
+	m_modelDisplayOffsetY(0.0f)
 {
 }
 
@@ -63,9 +64,11 @@ void Creature::Init()
 
 	m_attackCooldown = 0;
 
-	m_pos = VGet(0.0f, 0.0f, 250.0f);
+	m_pos = VGet(0.0f, 500.0f, 250.0f);
 	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
+
+
 
 	CollisionManager::Instance().Register(this);
 }
@@ -217,8 +220,19 @@ void Creature::Draw()
 	MV1DrawModel(m_modelHandle);
 #ifdef _DEBUG
 	//当たり判定のデバッグ描画
-	DrawCapsule3D(m_pos.ToDxLibVector(),VGet(m_pos.x, m_pos.y + 200.0f, m_pos.z),GetCollisionRadius(), 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+	Vector3 debugPos = GetCollisionPosition();
 
+	VECTOR start = VGet(
+		debugPos.x,
+		debugPos.y + GetCollisionRadius(),
+		debugPos.z);
+
+	VECTOR end = VGet(
+		debugPos.x,
+		debugPos.y + GetCollisionHeight() - GetCollisionRadius(),
+		debugPos.z);
+
+	DrawCapsule3D(start, end, GetCollisionRadius(), 16, 0xffffff, 0xffffff, false);
 
 	//攻撃の時に判定を表示
 	if (m_attackFrame > 0)
@@ -345,6 +359,11 @@ bool Creature::CanSeePlayer()
 	float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
 
 	return dot >= halfFovCos;
+}
+
+Vector3 Creature::GetCollisionPosition() const
+{
+	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);;
 }
 
 void Creature::TransitionTo(CreatureState nextState)

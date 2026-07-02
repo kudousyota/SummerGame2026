@@ -141,21 +141,19 @@ void SceneMain::Draw()
 {
 	
 
+	m_pCamera->Draw();
+	m_pStage->Draw();
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	
 	//ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())
 	{
-		DrawBox(0, 0, 1280, 720, GetColor(255, 0, 255), true);
-		if(m_witchEffectFrame > 0)
-		{
-			//0.5f0.5fで真ん中
-			DrawBillboard3D(VGet(0.0f, 300.0f, 30.0f), 0.5f, 0.5f, 320.0f,/*0.0f*/ m_angle, m_nidelHandle, true);
-		}
-		
+		DrawBox(0, 0, 1280, 720, GetColor(155, 0, 255), true);
 	}
-	m_pCamera->Draw();
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	m_pPlayer->Draw();
-	m_pStage->Draw();
+	
 
 	
 
@@ -180,6 +178,20 @@ void SceneMain::Draw()
 			}
 		}
 	}
+
+	//ウィッチタイムだったら
+	if (m_pPlayer->GetWitchTime())
+	{
+		//DrawBox(0, 0, 1280, 720, GetColor(255, 0, 255), true);
+		if (m_witchEffectFrame > 0)
+		{
+			//画面の真ん中に回転する画像を描画する
+			DrawRectRotaGraph2(1280 / 2, 720 / 2, 0, 0, 256, 512, 128, 256, 1.5f, m_angle, m_nidelHandle, true, false);
+		}
+
+	}
+
+	
 
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));

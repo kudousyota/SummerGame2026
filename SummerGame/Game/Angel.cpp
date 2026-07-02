@@ -72,7 +72,7 @@ void Angel::Init()
 	m_currentState = AngelState::Shout;
 	m_prevState = AngelState::Shout;
 
-	m_pos = VGet(300.0f, 100.0f, 250.0f);
+	m_pos = VGet(300.0f, 300.0f, 250.0f);
 
 	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
@@ -180,10 +180,9 @@ void Angel::Update()
 		}
 		break;
 	}
+	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
 	Vector3 drawPos = m_pos;
-	//モデルの中心が足元にあるので、描画位置を少し上げる
-	drawPos.y += GetCollisionHeight() * 1.0f;
 	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 }
@@ -196,8 +195,19 @@ void Angel::Draw()
 #ifdef _DEBUG
 
 	//当たり判定のデバッグ描画
-	DrawCapsule3D(m_pos.ToDxLibVector(), VGet(m_pos.x, m_pos.y + 200.0f, m_pos.z), GetCollisionRadius(), 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+	Vector3 debugPos = GetCollisionPosition();
 
+	VECTOR start = VGet(
+		debugPos.x,
+		debugPos.y + GetCollisionRadius(),
+		debugPos.z);
+
+	VECTOR end = VGet(
+		debugPos.x,
+		debugPos.y + GetCollisionHeight() - GetCollisionRadius(),
+		debugPos.z);
+
+	DrawCapsule3D(start, end, GetCollisionRadius(), 16, 0xffffff, 0xffffff, false);
 	if (m_currentState == AngelState::DancingAttack)
 	{
 		DrawSphere3D(m_pos.ToDxLibVector(), kDanicgAttackRadius, 6, 0x00ffff, 0x00ffff, false);

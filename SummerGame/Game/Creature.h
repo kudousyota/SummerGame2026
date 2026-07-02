@@ -16,7 +16,8 @@ public:
 
 	//ダメージ
 	void ApplyDamage(int damage)override;
-
+	
+	
 	float GetCollisionRadius() const override { return 70.0f; }
 	float GetCollisionHeight() const override { return 100.0f; }
 
@@ -48,6 +49,12 @@ private:
 	//索敵処理
 	bool CanSeePlayer();
 
+	//当たり判定の位置を取得する関数
+	Vector3 GetCollisionPosition() const override;
+
+	//描画に使うモデルの垂直オフセット
+	float m_modelDisplayOffsetY;
+
 	//ハンドル
 	int m_modelHandle;
 	//しんだか
@@ -75,5 +82,7 @@ private:
 	void TransitionTo(CreatureState nextState);
 
 	std::shared_ptr<Player> m_pPlayer;
+
+	
 };
 

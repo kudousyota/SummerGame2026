@@ -582,14 +582,8 @@ void Player::Draw()
 		debugPos.y + GetCollisionHeight() - GetCollisionRadius(),
 		debugPos.z);
 
-	DrawCapsule3D(
-		start,
-		end,
-		GetCollisionRadius(),
-		16,
-		0xffffff,
-		0xffffff,
-		false);
+	DrawCapsule3D(start,end,GetCollisionRadius(),16,0xffffff,0xffffff,false);
+
 	float animTime = m_animation.GetCurrentAnimTime();
 	//攻撃判定
 	if (m_currentState == PlayerState::Attack && animTime >= kAttackStartFrame && animTime <= kAttackEndFrame)
