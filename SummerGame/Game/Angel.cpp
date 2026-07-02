@@ -74,6 +74,9 @@ void Angel::Init()
 
 	m_pos = VGet(300.0f, 300.0f, 250.0f);
 
+	m_hp = 300;
+	m_attackPower = 20;
+
 	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
 
@@ -193,6 +196,8 @@ void Angel::Draw()
 	MV1DrawModel(m_modelHandle);
 	
 #ifdef _DEBUG
+
+	DrawFormatString(300, 120, GetColor(255, 255, 255), "AngelHP:%d", m_hp);
 
 	//当たり判定のデバッグ描画
 	Vector3 debugPos = GetCollisionPosition();

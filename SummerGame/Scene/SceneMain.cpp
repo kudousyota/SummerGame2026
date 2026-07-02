@@ -81,7 +81,7 @@ void SceneMain::Update(Input& input)
 
 	
 
-	m_frameCount++;
+	/*m_frameCount++;*/
 	m_pPlayer->Update();
 	m_pCamera->Update();
 
@@ -196,8 +196,8 @@ void SceneMain::Draw()
 	
 
 	DrawGrid();
-	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
-	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
+	//DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
+	//DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
 }
 
 void SceneMain::DrawGrid()

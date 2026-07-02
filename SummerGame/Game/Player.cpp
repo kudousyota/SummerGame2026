@@ -109,7 +109,11 @@ Player::Player() :
 	m_attackForward(VGet(0.0f,0.0f,0.0f)),
 	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
-	m_modelDisplayOffsetY(0.0f)
+	m_modelDisplayOffsetY(0.0f),
+	m_hpGaugeHandle(-1),
+	m_hpGaugeBackHandle(-1),
+	m_hpX(0),
+	m_hpY(0)
 {
 	
 }
@@ -139,8 +143,11 @@ void Player::Init()
 	m_hp = 100;
 	m_jumpPower = 15;
 	m_invincibleTime = 0;
-	m_modelHandle = MV1LoadModel("data/Player.mv1");
-	m_hakutoHandle = LoadGraph("data/kudonetta.png");
+	m_modelHandle = MV1LoadModel("Data/Player.mv1");
+	m_hakutoHandle = LoadGraph("Data/kudonetta.png");
+
+	m_hpGaugeHandle = LoadGraph("Data/gauge_green.png");
+	m_hpGaugeBackHandle = LoadGraph("Data/HPberfrem.png");
 
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
@@ -168,6 +175,8 @@ void Player::Update()
 	{
 		m_invincibleTime--;
 	}
+
+	GetGraphSize(m_hpGaugeHandle, &m_hpX, &m_hpY);
 
 	switch (m_currentState)
 	{
@@ -567,6 +576,7 @@ void Player::Draw()
 	}
 
 	MV1DrawModel(m_modelHandle);
+	DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
 
 #ifdef _DEBUG
 
@@ -631,7 +641,7 @@ void Player::Draw()
 
 	//printfDx("CollisionHeight = %f\n", GetCollisionHeight());
 	//HP
-	DrawFormatString(50, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
+	DrawFormatString(300, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
 	
 #endif  //DEBUG
 	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);

@@ -64,7 +64,12 @@ private:
 
 	int m_uiHandle;
 
+	int m_hpGaugeHandle;
+
+	int m_hpX;
+	int m_hpY;
 	
+	int m_hpGaugeBackHandle;
 	//攻撃処理
 	void AttackUpdate();
 	//回避処理

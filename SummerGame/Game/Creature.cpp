@@ -240,7 +240,7 @@ void Creature::Draw()
 		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 	}
 
-	DrawFormatString(50,50,GetColor(255, 255, 255),"EnemyHP:%d",m_hp);
+	DrawFormatString(300,50,GetColor(255, 255, 255),"CreatureHP:%d",m_hp);
 
 
 	//索敵範囲デバッグ描画
@@ -326,10 +326,10 @@ void Creature::ApplyDamage(int damage)
 		//当たり判定を消す
 		CollisionManager::Instance().Unregister(this);
 
-		printfDx("Creature Dead!\n");
+		//printfDx("Creature Dead!\n");
 	}
 
-	printfDx("Creature HP = %d\n",m_hp);
+	//printfDx("Creature HP = %d\n",m_hp);
 }
 
 void Creature::AttackUpdate()
