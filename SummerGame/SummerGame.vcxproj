@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\EnemyManager.cpp" />
+    <ClCompile Include="Game\EnemySpawn.cpp" />
     <ClCompile Include="Game\Angel.cpp" />
     <ClCompile Include="Game\Stage.cpp" />
     <ClCompile Include="System\Animation.cpp" />
@@ -155,6 +157,8 @@
     <ClCompile Include="System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\EnemyManager.h" />
+    <ClInclude Include="Game\EnemySpawn.h" />
     <ClInclude Include="Game\Angel.h" />
     <ClInclude Include="Game\Stage.h" />
     <ClInclude Include="System\Animation.h" />

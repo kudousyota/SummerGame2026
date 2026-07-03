@@ -86,7 +86,7 @@ namespace
 	//落ちるスピード
 	constexpr float kSkyKickFallSpeed = -8.0f;
 
-
+	constexpr int kGaugeWidth = 200;
 }
 
 Player::Player() :
@@ -577,6 +577,10 @@ void Player::Draw()
 
 	MV1DrawModel(m_modelHandle);
 	DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
+	//HPゲージの描画
+	//HPの割合に応じてゲージの幅を計算 //最大HP
+	int hpWidth = kGaugeWidth * m_hp / 100;
+	DrawExtendGraph(80, 70, 80 + hpWidth, 70 + m_hpY, m_hpGaugeHandle, true);
 
 #ifdef _DEBUG
 
@@ -695,10 +699,10 @@ void Player::ApplyDamage(int damage)
 		m_hp = 0;
 		m_isDead = true;
 		CollisionManager::Instance().Unregister(this);
-		printfDx("PlayerDead!\n");
+		//printfDx("PlayerDead!\n");
 	}
 
-	printfDx("Player HP = %d\n", m_hp);
+	//printfDx("Player HP = %d\n", m_hp);
 }
 
 Vector3 Player::GetCameraTarget() const
