@@ -85,6 +85,10 @@ void Angel::Init()
 
 void Angel::Update()
 {
+	if (m_isDead)
+	{
+		return;
+	}
 
 	Character::Collision();
 	//敵用のタイムスケールを取得
@@ -192,6 +196,10 @@ void Angel::Update()
 
 void Angel::Draw()
 {
+	if (m_isDead)
+	{
+		return;
+	}
 
 	MV1DrawModel(m_modelHandle);
 	
@@ -280,6 +288,23 @@ void Angel::Draw()
 		}
 	}
 #endif
+}
+
+void Angel::ApplyDamage(int damage)
+{
+	if (m_isDead)
+	{
+		return;
+	}
+
+	m_hp -= damage;
+
+	if(m_hp <= 0)
+	{
+		m_hp = 0;
+		m_isDead = true;
+		CollisionManager::Instance().Unregister(this);
+	}
 }
 
 void Angel::TransitionTo(AngelState nextState)

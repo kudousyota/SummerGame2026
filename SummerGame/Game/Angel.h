@@ -13,6 +13,9 @@ public:
 	void Update() override;
 	void Draw()override;
 
+	void ApplyDamage(int damage) override;
+	bool IsDead()const { return m_isDead; }
+
 	float GetCollisionRadius() const override { return 70.0f; }
 	float GetCollisionHeight() const override { return 100.0f; }
 
