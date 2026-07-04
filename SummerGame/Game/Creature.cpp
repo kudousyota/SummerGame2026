@@ -64,7 +64,7 @@ void Creature::Init()
 
 	m_attackCooldown = 0;
 
-	m_pos = VGet(0.0f, 500.0f, 250.0f);
+	//m_pos = VGet(0.0f, 500.0f, 250.0f);
 	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 
@@ -87,8 +87,6 @@ void Creature::Update()
 	float scale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションの更新
 	m_animation.Update(scale);
-	
-	Timer::Instance().Update();
 
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)

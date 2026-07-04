@@ -72,7 +72,7 @@ void Angel::Init()
 	m_currentState = AngelState::Shout;
 	m_prevState = AngelState::Shout;
 
-	m_pos = VGet(300.0f, 300.0f, 250.0f);
+	//m_pos = VGet(300.0f, 300.0f, 250.0f);
 
 	m_hp = 300;
 	m_attackPower = 20;
@@ -106,8 +106,6 @@ void Angel::Update()
 	m_animation.Update(scale);
 
 	//float animpos = MV1GetFramePosition(m_modelHandle,50);
-
-	Timer::Instance().Update();
 
 	switch (m_currentState)
 	{

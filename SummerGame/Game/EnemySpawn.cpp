@@ -3,6 +3,12 @@
 #include "Angel.h"
 #include "Creature.h"
 
+namespace
+{
+	constexpr float kSpawnRadius = 300.0f;	//敵の出現座標の半径
+	constexpr float kSpawnY = 300.0f;	//敵の出現座標のY座標
+}
+
 EnemySpawner::EnemySpawner()
 {
 }
@@ -12,12 +18,29 @@ void EnemySpawner::SetupCreateData()
 	//とりあえずコード内で生成データを組み立てる
 	//ここでは、敵の名前と出現フレームを設定する例を示します
 	//いずれCSVで読み込みして管理したい
-	m_createInfoList.push_back({ "Angel", 100.0f, false });
-	m_createInfoList.push_back({ "Creature", 120.0f, false });
-	m_createInfoList.push_back({ "Creature", 300.0f, false });
+	//時間経過で2体同時に出す例
+	EnemyCreateInfo info1;
+	info1.enemyName = "Creature";
+	info1.triggerType = SpawnTriggerType::Frame;
+	info1.appearFrame = 60.0f;
+	info1.appearPosList =
+	{
+		Vector3(100.0f, kSpawnY, 200.0f),
+		Vector3(-100.0f, kSpawnY, 200.0f)
+	};
+	m_createInfoList.push_back(info1);
+
+	//プレイヤーが近づいたら出す例
+	EnemyCreateInfo info2;
+	info2.enemyName = "Angel";
+	info2.triggerType = SpawnTriggerType::PlayerNear;
+	info2.triggerPos = Vector3(0.0f, 0.0f, 500.0f);
+	info2.triggerRadius = kSpawnRadius;
+	info2.appearPosList = { Vector3(0.0f, kSpawnY, 600.0f) };
+	m_createInfoList.push_back(info2);
 }
 
-void EnemySpawner::Update(EnemyManager& manager, float currentFrame)
+void EnemySpawner::Update(EnemyManager& manager, float currentFrame, const Vector3& playerPos)
 {
 	for (auto& info : m_createInfoList)
 	{
@@ -26,19 +49,40 @@ void EnemySpawner::Update(EnemyManager& manager, float currentFrame)
 		{
 			continue;
 		}
+		bool shouldSpawn = false;
 		//出現フレームに達していない場合はスキップ
-		if (currentFrame < info.appearFrame)
+		switch (info.triggerType)
+		{
+		case SpawnTriggerType::Frame:
+			shouldSpawn = (currentFrame >= info.appearFrame);
+			break;
+
+		case SpawnTriggerType::PlayerNear:
+		{
+			Vector3 diff = playerPos - info.triggerPos;
+			float distSq = diff.SqMagnitude();
+			shouldSpawn = (distSq <= info.triggerRadius * info.triggerRadius);
+		}
+		break;
+		}
+
+		if (!shouldSpawn)
 		{
 			continue;
 		}
-		if (info.enemyName == "Angel")
+		//座標の数だけ敵を生成
+		for (const auto& pos : info.appearPosList)
 		{
-			manager.AddAngel(std::make_unique<Angel>());
+			if (info.enemyName == "Angel")
+			{
+				manager.AddAngel(std::make_unique<Angel>(), pos);
+			}
+			else if (info.enemyName == "Creature")
+			{
+				manager.AddCreature(std::make_unique<Creature>(), pos);
+			}
 		}
-		else if(info.enemyName == "Creature")
-		{
-			manager.AddCreature(std::make_unique<Creature>());
-		}
+
 		info.isCreated = true;
 	}
 }

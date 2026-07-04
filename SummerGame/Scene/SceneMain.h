@@ -2,12 +2,11 @@
 #include "../Game/Player.h"
 #include "../Game/Camera.h"
 #include <memory>
-#include "../Game/Creature.h"
-#include <vector>
 #include "../Game/Stage.h"
-#include "../Game/Angel.h"
-
+#include "../Game/EnemyManager.h"
+#include "../Game/EnemySpawn.h"
 class Input;
+class Timer;
 class SceneMain
 {
 public:
@@ -35,7 +34,8 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
-	std::vector<std::shared_ptr<Creature>> m_pCreature;
-	std::vector<std::shared_ptr<Angel>> m_pAngel;
+
+	EnemyManager m_enemyManager;
+	EnemySpawner m_enemySpawner;
 };
 

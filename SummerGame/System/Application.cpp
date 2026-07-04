@@ -9,6 +9,7 @@
 #include "EffekseerForDXLib.h"
 
 
+
 Application::Application()
 {
 
@@ -80,6 +81,7 @@ void Application::Run()
 	SceneMain sceneMain;
 	sceneMain.Init();
 
+
 	while (ProcessMessage() != -1 && !m_IsRequstendExit)
 	{
 
@@ -88,6 +90,7 @@ void Application::Run()
 
 		ClearDrawScreen();
 		input.Update();
+
 		sceneMain.Update(input);
 		sceneMain.Draw();
 

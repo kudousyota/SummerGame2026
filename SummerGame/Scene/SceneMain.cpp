@@ -1,6 +1,7 @@
 #include "SceneMain.h"
 #include "DxLib.h"
 #include "../System/Input.h"
+#include "../System/Timer.h"
 
 namespace
 {
@@ -31,41 +32,27 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 5000.0f);
 
-	// 先にPlayer生成
+	//先にPlayer生成
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
 
-	// 次にCamera生成
+	//次にCamera生成
 	m_pCamera = std::make_shared<Camera>();
 	m_pCamera->SetPlayer(m_pPlayer);
 	m_pCamera->Init();
 
 	m_pPlayer->SetCamera(m_pCamera);
 
-	auto creature = std::make_shared<Creature>();
-	creature->Init();
-	creature->SetPlayer(m_pPlayer);
-	m_pCreature.push_back(creature);
-
-	auto angel = std::make_shared<Angel>();
-	angel->Init();
-	angel->SetPlayer(m_pPlayer);
-	m_pAngel.push_back(angel);
 
 	m_pStage = std::make_shared<Stage>();
 	m_pStage->Init();
 	m_pPlayer->SetStage(m_pStage);
 
-	for (auto& creature : m_pCreature)
-	{
-		creature->SetStage(m_pStage);
-	}
+	//敵の管理に依存するプレイヤーとステージをセット
+	m_enemyManager.SetPlayer(m_pPlayer);
+	m_enemyManager.SetStage(m_pStage);
 
-	for (auto& angel : m_pAngel)
-	{
-		angel->SetStage(m_pStage);
-	}
-
+	m_enemySpawner.SetupCreateData();
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
@@ -79,32 +66,19 @@ void SceneMain::Update(Input& input)
 {
 	Input::Instance().Update();
 
+	Timer::Instance().Update();
 	
-
-	/*m_frameCount++;*/
 	m_pPlayer->Update();
 	m_pCamera->Update();
 
-	if (!m_pCreature.empty())
-	{
-		for (auto& creature : m_pCreature)
-		{
-			if (creature)
-			{
-				creature->Update();
-			}
-		}
-	}
-	if (!m_pAngel.empty())
-	{
-		for (auto& angel : m_pAngel)
-		{
-			if (angel)
-			{
-				angel->Update();
-			}
-		}
-	}
+
+	m_frameCount++;
+	//敵の更新を任せる
+	m_enemyManager.Update();
+	//敵のスポーンを管理するクラスに更新を任せる
+	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
+	
+
 	//プレイヤーがウィッチタイムかどうかを知る
 	bool currentwitch = m_pPlayer->GetWitchTime();
 	//ウィッチタイムに入ったときに演出をする
@@ -156,30 +130,7 @@ void SceneMain::Draw()
 
 	m_pPlayer->Draw();
 	
-
-	
-
-	if (!m_pCreature.empty())
-	{
-		for (auto& creature : m_pCreature)
-		{
-			if (creature)
-			{
-				creature->Draw();
-			}
-		}
-	}
-
-	if (!m_pAngel.empty())
-	{
-		for (auto& angel : m_pAngel)
-		{
-			if (angel)
-			{
-				angel->Draw();
-			}
-		}
-	}
+	m_enemyManager.Draw();
 
 	//ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())

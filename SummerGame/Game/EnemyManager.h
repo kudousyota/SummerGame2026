@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
-
+#include "../System/Vector3.h"
 
 class Angel;
 class Creature;
@@ -22,8 +22,8 @@ public:
 
 	//“G‚Ì“Ç‚İ‚İ
 	//“G‚ğ’Ç‰Á‚·‚éŠÖ”//•ÊX‚É‚·‚é‚±‚Æ‚É‚æ‚Á‚Ä,Angel‚ÆCreature‚ğˆê‘Ì‚¾‚¯o‚µ‚½‚è‚È‚Ç‚ª‚Å‚«‚é
-	void AddAngel(std::unique_ptr<Angel> angel);
-	void AddCreature(std::unique_ptr<Creature> creature);
+	void AddAngel(std::unique_ptr<Angel> angel,const Vector3& pos);
+	void AddCreature(std::unique_ptr<Creature> creature,const Vector3& pos);
 
 private:
 	//“G‚ÌƒŠƒXƒg

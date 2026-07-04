@@ -48,19 +48,25 @@ void EnemyManager::Draw()
 	}
 }
 
-void EnemyManager::AddAngel(std::unique_ptr<Angel> angel)
+void EnemyManager::AddAngel(std::unique_ptr<Angel> angel,const Vector3& pos)
 {
 	//先に依存しているプレイヤーやステージを渡して初期化する
 	angel->SetPlayer(m_pPlayer);
 	angel->SetStage(m_pStage);
 	angel->Init();
+	angel->SetPosition(pos);
+	//std::moveで所有権を移動させる
+	m_pAngels.push_back(std::move(angel));
 }
 
-void EnemyManager::AddCreature(std::unique_ptr<Creature> creature)
+void EnemyManager::AddCreature(std::unique_ptr<Creature> creature, const Vector3& pos)
 {
 	creature->SetPlayer(m_pPlayer);
 	creature->SetStage(m_pStage);
 	creature->Init();
+	creature->SetPosition(pos);
+
+	m_pCreatures.push_back(std::move(creature));
 }
 
 
