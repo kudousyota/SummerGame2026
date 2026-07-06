@@ -604,6 +604,9 @@ void Player::Draw()
 		return;
 	}
 
+	int num = MV1GetAnimNum(m_modelHandle);
+	printfDx("%d\n", num);
+
 	MV1DrawModel(m_modelHandle);
 	DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
 	//HPゲージの描画
@@ -719,10 +722,12 @@ void Player::ApplyDamage(int damage)
 
 	//通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
 	m_hp -= damage;
+	TransitionTo(PlayerState::Damage);
 
 	//無敵時間を設定
 	m_invincibleTime = 120;
 
+	
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
