@@ -113,7 +113,8 @@ Player::Player() :
 	m_hpGaugeHandle(-1),
 	m_hpGaugeBackHandle(-1),
 	m_hpX(0),
-	m_hpY(0)
+	m_hpY(0),
+	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f))
 {
 	
 }
@@ -139,7 +140,9 @@ void Player::Init()
 	m_prevState = PlayerState::Idle;
 
 	m_pos = VGet(0.0f, 500.0f, 0.0f);
-
+	//移動速度
+	m_speed = 15.0f;
+	
 	m_hp = 100;
 	m_jumpPower = 15;
 	m_invincibleTime = 0;
@@ -162,6 +165,20 @@ void Player::Update()
 	{
 		return;
 	}
+
+	//プレイヤーがいた場所を保存
+	if(m_isGround)
+	{
+		m_lastGroundPos = m_pos;
+	}
+
+	//地面より下に行ったらリスポーンさせる
+	if(m_pos.y < -5.0f)
+	{
+		m_lastGroundPos.y += 10.0f;
+		m_pos = m_lastGroundPos;
+	}
+
 	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 

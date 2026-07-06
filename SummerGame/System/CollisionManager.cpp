@@ -127,11 +127,13 @@ bool CollisionManager::CheckStageWall(Character* character, int stageHandle)
 		for (int i = 0; i < hit.HitNum; i++)
 		{
 			auto& normal = hit.Dim[i].Normal;
+			
 			Vector3 push(normal.x, 0.0f, normal.z);
 
 			if (push.SqMagnitude() > 0.0001f)
 			{
 				push = push.Normalize();
+				
 				pos += push * 1.0f;
 			}
 		}

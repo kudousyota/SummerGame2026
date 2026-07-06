@@ -16,7 +16,7 @@ EnemySpawner::EnemySpawner()
 void EnemySpawner::SetupCreateData()
 {
 	//とりあえずコード内で生成データを組み立てる
-	//ここでは、敵の名前と出現フレームを設定する例を示します
+	//ここでは、敵の名前と出現フレームを設定する例を示す
 	//いずれCSVで読み込みして管理したい
 	//時間経過で2体同時に出す例
 	EnemyCreateInfo info1;
@@ -54,15 +54,16 @@ void EnemySpawner::Update(EnemyManager& manager, float currentFrame, const Vecto
 		switch (info.triggerType)
 		{
 		case SpawnTriggerType::Frame:
-			shouldSpawn = (currentFrame >= info.appearFrame);
-			break;
-
+			{
+				shouldSpawn = (currentFrame >= info.appearFrame);
+				break;
+			}
 		case SpawnTriggerType::PlayerNear:
-		{
-			Vector3 diff = playerPos - info.triggerPos;
-			float distSq = diff.SqMagnitude();
-			shouldSpawn = (distSq <= info.triggerRadius * info.triggerRadius);
-		}
+			{
+				Vector3 diff = playerPos - info.triggerPos;
+				float distSq = diff.SqMagnitude();
+				shouldSpawn = (distSq <= info.triggerRadius * info.triggerRadius);
+			}
 		break;
 		}
 
