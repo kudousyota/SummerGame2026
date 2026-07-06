@@ -124,7 +124,7 @@ void SceneMain::Draw()
 	//ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())
 	{
-		DrawBox(0, 0, 1280, 720, GetColor(155, 0, 255), true);
+		DrawBox(0, 0, 1280, 720, GetColor(125, 0, 185), true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 

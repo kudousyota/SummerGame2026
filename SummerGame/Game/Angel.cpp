@@ -15,6 +15,8 @@ namespace
 
 	const char* const kRotateAnimName = "Angel|Rotate";
 
+	const char* const kDamageAnimName = "Angel|Hit";
+
 	constexpr int kDanicgAttackRadius = 180.0f;
 
 	//ラッシュ攻撃回数
@@ -76,6 +78,9 @@ void Angel::Init()
 
 	m_hp = 300;
 	m_attackPower = 20;
+
+	//最初は正面を向くようにする
+	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
 	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
@@ -358,7 +363,6 @@ bool Angel::CanSeePlayer()
 
 	return dot >= halfFovCos;
 }
-
 
 CharacterType Angel::GetCharacterType() const
 {

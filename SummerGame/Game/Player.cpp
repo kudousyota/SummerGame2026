@@ -604,8 +604,7 @@ void Player::Draw()
 		return;
 	}
 
-	int num = MV1GetAnimNum(m_modelHandle);
-	printfDx("%d\n", num);
+	
 
 	MV1DrawModel(m_modelHandle);
 	DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
@@ -615,6 +614,9 @@ void Player::Draw()
 	DrawExtendGraph(80, 70, 80 + hpWidth, 70 + m_hpY, m_hpGaugeHandle, true);
 
 #ifdef _DEBUG
+
+	/*int num = MV1GetAnimNum(m_modelHandle);
+	printfDx("%d\n", num);*/
 
 	Vector3 debugPos = GetCollisionPosition();
 
@@ -678,6 +680,8 @@ void Player::Draw()
 	//printfDx("CollisionHeight = %f\n", GetCollisionHeight());
 	//HP
 	DrawFormatString(300, 70, GetColor(255, 255, 255), "PlayerHP:%d", m_hp);
+
+	DrawFormatString(300,100, GetColor(255, 255, 255),"PlayerPos = (%f, %f, %f)\n", m_pos.x, m_pos.y, m_pos.z);
 	
 #endif  //DEBUG
 	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);

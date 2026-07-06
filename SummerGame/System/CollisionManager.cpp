@@ -13,8 +13,6 @@ CollisionManager& CollisionManager::Instance()
 void CollisionManager::Register(Character* character)
 {
 	m_pCharacters.push_back(character);
-
-	
 }
 //登録済みのキャラクターを削除
 void CollisionManager::Unregister(Character* character)

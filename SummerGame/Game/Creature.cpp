@@ -14,6 +14,8 @@ namespace
 	const char* const kAttackAnimName = "Enemy|Attack";
 	//弱攻撃
 	const char* const kPunchAnimName = "Enemy|Punch";
+
+	const char* const kDamageAnimName = "Enemy|Hit";
 	//攻撃する長さ
 	constexpr float kAttackRange = 150.0f;
 
@@ -196,6 +198,13 @@ void Creature::Update()
 			TransitionTo(CreatureState::Idle);
 		}
 		break;
+	case CreatureState::Damage:
+		//ダメージアニメーションが終わったらIdleに戻る
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(CreatureState::Idle);
+		}
+		break;
 	}
 	// モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -315,6 +324,8 @@ void Creature::ApplyDamage(int damage)
 
 	m_hp -= damage;
 
+	TransitionTo(CreatureState::Damage);
+
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
@@ -406,7 +417,11 @@ void Creature::TransitionTo(CreatureState nextState)
 		m_attackDir = m_forward;
 
 		break;
+	case CreatureState::Damage:
+		m_animation.ChangeAnim(kDamageAnimName, false, 0.5);
+		break;
 	}
+	
 }
 
 CharacterType Creature::GetCharacterType() const
