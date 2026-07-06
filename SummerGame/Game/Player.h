@@ -39,6 +39,7 @@ private:
 	{
 		Idle,
 		Walk,
+		Run,
 		Attack,
 		Rush,
 		Kick,

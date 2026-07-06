@@ -134,7 +134,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stageHandle)
 			{
 				push = push.Normalize();
 				
-				pos += push * 1.0f;
+				pos += push * 15.0f;
 			}
 		}
 

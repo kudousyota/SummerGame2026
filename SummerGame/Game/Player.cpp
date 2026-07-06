@@ -29,7 +29,11 @@ namespace
 
 	const char* const kSkyAnimName		 = "Player|Sky";
 
-	const char* const kSkyKickAnimName = "Player|kakatootosi_TEST";
+	const char* const kSkyKickAnimName	 = "Player|kakatootosi_TEST";
+
+	const char* const kRunAnimName		 = "Player|Run";
+
+	const char* const kHitAnimName 	 = "Player|Hit";
 
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame		 = 10.0f;
@@ -177,6 +181,7 @@ void Player::Update()
 	{
 		m_lastGroundPos.y += 10.0f;
 		m_pos = m_lastGroundPos;
+		m_hp -= 10;
 	}
 
 	Vector3 forward = m_pCamera->GetForward();
@@ -209,7 +214,7 @@ void Player::Update()
 			input.IsPressed("left") ||
 			input.IsPressed("right"))
 		{
-			TransitionTo(PlayerState::Walk);
+			TransitionTo(PlayerState::Run);
 		}
 
 		if (input.IsTriggered("Jump")&& m_isGround)
@@ -234,7 +239,7 @@ void Player::Update()
 
 		break;
 
-	case PlayerState::Walk:
+	case PlayerState::Run:
 
 		if (input.IsTriggered("Attack"))
 		{
@@ -365,7 +370,7 @@ void Player::Update()
 			// 移動優先
 			if (isMove)
 			{
-				TransitionTo(PlayerState::Walk);
+				TransitionTo(PlayerState::Run);
 			}
 			else
 			{
@@ -374,6 +379,13 @@ void Player::Update()
 		}
 		break;
 
+	case PlayerState::Damage:
+		
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Idle);
+		}
+		break;
 	case PlayerState::Sky:
 		//着地したとき
 		if (m_isGround)
@@ -388,7 +400,7 @@ void Player::Update()
 			// 移動優先
 			if (isMove)
 			{
-				TransitionTo(PlayerState::Walk);
+				TransitionTo(PlayerState::Run);
 			}
 			else
 			{
@@ -490,7 +502,7 @@ void Player::Update()
 
 
 	//通常移動
-	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Walk || m_currentState == PlayerState::Jump || m_currentState == PlayerState::Dodge || m_currentState == PlayerState::Sky)
+	if (m_currentState == PlayerState::Idle || m_currentState == PlayerState::Run || m_currentState == PlayerState::Jump /*|| m_currentState == PlayerState::Dodge*/ || m_currentState == PlayerState::Sky)
 	{
 
 		float stickX = input.GetStickLX();
@@ -837,10 +849,13 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
 
-	case PlayerState::Walk:
+	/*case PlayerState::Walk:
 		m_animation.ChangeAnim(kWalkAnimName,true,0.4f);
-		break;
+		break;*/
 
+	case PlayerState::Run:
+		m_animation.ChangeAnim(kRunAnimName, true, 0.4f);
+		break;
 	case PlayerState::Attack:
 
 		m_isAttackHit = false;
@@ -870,6 +885,9 @@ void Player::TransitionTo(PlayerState nextState)
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kKickMove);
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
+		break;
+	case PlayerState::Damage:
+		m_animation.ChangeAnim(kHitAnimName, false, 0.5f);
 		break;
 
 	case PlayerState::Sky:
@@ -924,6 +942,8 @@ void Player::TransitionTo(PlayerState nextState)
 	case PlayerState::Dodge:
 		//フレームをリセット
 		m_dodgeFrame = 0;
+		//慣性のために移動速度をリセット
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
 		break;
 
