@@ -95,7 +95,7 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 	}
 }
 
-bool CollisionManager::CheckStageWall(Character* character, int stageHandle)
+bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 {
 	//プレイヤーのカプセル情報を取得
 	float radius = character->GetCollisionRadius();
@@ -113,7 +113,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stageHandle)
 		VECTOR start = VGet(pos.x, pos.y + radius, pos.z);
 		VECTOR end = VAdd(start, VGet(0.0f, height - radius * 2.0f, 0.0f));
 
-		auto hit = MV1CollCheck_Capsule(stageHandle, -1, start, end, radius);
+		auto hit = MV1CollCheck_Capsule(stagehandle, -1, start, end, radius);
 		if (hit.HitNum == 0)
 		{
 			MV1CollResultPolyDimTerminate(hit);
@@ -143,7 +143,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stageHandle)
 	return hitAny;
 }
 
-bool CollisionManager::CheckStageGround(Character* character, int stageHandle, float& outGroundY)
+bool CollisionManager::CheckStageGround(Character* character, int stagehandle, float& outGroundY)
 {
 	Vector3 pos = character->GetPosition();
 	//キャラクターのカプセルの半径を取得
@@ -159,7 +159,7 @@ bool CollisionManager::CheckStageGround(Character* character, int stageHandle, f
 	VECTOR rayEnd = VGet(pos.x, pos.y - kDownMargin, pos.z);
 
 	//DxLibの線分とモデルの当たり判定
-	MV1_COLL_RESULT_POLY hitPoly = MV1CollCheck_Line(stageHandle, -1, rayStart, rayEnd);
+	MV1_COLL_RESULT_POLY hitPoly = MV1CollCheck_Line(stagehandle, -1, rayStart, rayEnd);
 
 	if (hitPoly.HitFlag == 1)
 	{
@@ -170,3 +170,18 @@ bool CollisionManager::CheckStageGround(Character* character, int stageHandle, f
 
 
 }
+
+bool CollisionManager::CheckCameraRay(const int stagehandle ,const Vector3& start, const Vector3& end, Vector3& hitpos)
+{
+	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(stagehandle,-1,start,end);
+	if (result.HitFlag)
+	{
+		hitpos.x = result.HitPosition.x;
+		hitpos.y = result.HitPosition.y;
+		hitpos.z = result.HitPosition.z;
+		return true;
+	}
+	return false;
+}
+
+

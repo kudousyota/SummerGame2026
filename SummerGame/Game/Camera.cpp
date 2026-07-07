@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "DxLib.h"
 #include "Player.h"
+#include "../System/CollisionManager.h"
+#include "../Game/Stage.h"
 
 namespace
 {
@@ -10,7 +12,7 @@ namespace
 	//注視点からカメラまでの距離
 	constexpr float kCameraDistance = 300.0f;
 	//カメラの高さ
-	constexpr float kCameraHeight = -180.0f;
+	constexpr float kCameraHeight = -250.0f;
 
 	//補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
 	constexpr float kCameraFollow = 0.15f;
@@ -39,14 +41,14 @@ void Camera::Init()
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
 	float playerAng = m_pPlayer->GetAngle();
 
-	m_skyDomeHandle = MV1LoadModel("Data/Sky_Night01.mv1");
+	m_skyDomeHandle = MV1LoadModel("Data/Sky_Evening.mv1");
 
 	//初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
 	//カメラの初期の高さ
 	m_cameraAngleY = 0.0f;
 
-
+	//注視点を下げる
 	m_cameraTargetY = cameraTarget.y;
 
 	//カメラの初期位置
@@ -55,9 +57,10 @@ void Camera::Init()
 	offset.y = sinf(m_cameraAngleY) * kCameraDistance;
 	offset.z = cosf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
 
+	
+
 	m_cameraTarget = cameraTarget;
 	m_cameraPos = cameraTarget - offset;
-
 
 
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(), m_cameraTarget.ToDxLibVector());
@@ -126,7 +129,8 @@ void Camera::Update()
 
 	//プレイヤー追従先
 	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
-	cameraTarget.y += -90.0f;
+	//注視点を下げる
+	cameraTarget.y += -180.0f;
 
 	//カメラの位置
 	Vector3 offset;
@@ -136,6 +140,20 @@ void Camera::Update()
 
 	//プレイヤーの後ろから見るようにするなら「-offset」
 	Vector3 idealCameraPos = cameraTarget - offset;
+
+
+	Vector3 hitpos;
+
+	//ステージとのレイ判定を行い、カメラがステージにめり込まないようにする
+	if (CollisionManager::Instance().CheckCameraRay(
+		m_pStage->GetModelHandle(),
+		m_cameraTarget,
+		m_cameraPos,
+		hitpos))
+	{
+		Vector3 dir = (m_cameraTarget - hitpos).Normalize();
+		m_cameraPos = hitpos + dir * 10.0f;
+	}
 
 	//追従
 	m_cameraPos = m_cameraPos + (idealCameraPos - m_cameraPos) * kCameraFollow;
@@ -156,6 +174,9 @@ void Camera::Update()
 	MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
 
 	MV1SetScale(m_skyDomeHandle, VGet(1.5f, 1.5f, 1.5f));
+	
+
+	
 }
 
 void Camera::Draw()

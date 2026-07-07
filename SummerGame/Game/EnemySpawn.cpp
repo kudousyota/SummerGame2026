@@ -16,9 +16,6 @@ EnemySpawner::EnemySpawner()
 
 void EnemySpawner::SetupCreateData()
 {
-	
-	
-
 	auto& spawnData = DataManager::GetInstance().GetSpawnData();
 	//“G‚ÌoŒ»ƒf[ƒ^‚ğCSV‚©‚ç“Ç‚İ‚ñ‚ÅEnemyCreateInfo‚É•ÏŠ·‚µ‚Äm_createInfoList‚ÉŠi”[‚·‚é
 	for (const auto& data : spawnData)

@@ -33,7 +33,7 @@ namespace
 
 	const char* const kRunAnimName		 = "Player|Run";
 
-	const char* const kHitAnimName 	 = "Player|Hit";
+	const char* const kHitAnimName 		 = "Player|Hit";
 
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame		 = 10.0f;
@@ -590,10 +590,6 @@ void Player::Update()
 
 	m_isWitchTime = Timer::Instance().IsEnemySlow();
 
-
-	//回避判定
-	//DodgeUpdate();
-	
 }
 
 void Player::Draw()
@@ -603,8 +599,6 @@ void Player::Draw()
 	{
 		return;
 	}
-
-	
 
 	MV1DrawModel(m_modelHandle);
 	DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
@@ -896,6 +890,9 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
 		break;
 	case PlayerState::Damage:
+
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+
 		m_animation.ChangeAnim(kHitAnimName, false, 0.5f);
 		break;
 

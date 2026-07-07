@@ -38,17 +38,20 @@ void SceneMain::Init()
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
 
+	m_pStage = std::make_shared<Stage>();
+	m_pStage->Init();
+
 	//次にCamera生成
 	m_pCamera = std::make_shared<Camera>();
 	m_pCamera->SetPlayer(m_pPlayer);
+	m_pCamera->SetStage(m_pStage);
 	m_pCamera->Init();
 
 	m_pPlayer->SetCamera(m_pCamera);
-
-
-	m_pStage = std::make_shared<Stage>();
-	m_pStage->Init();
 	m_pPlayer->SetStage(m_pStage);
+	
+
+	
 
 	//敵の管理に依存するプレイヤーとステージをセット
 	m_enemyManager.SetPlayer(m_pPlayer);
