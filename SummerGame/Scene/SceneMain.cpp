@@ -2,7 +2,7 @@
 #include "DxLib.h"
 #include "../System/Input.h"
 #include "../System/Timer.h"
-
+#include "../DataLoader/DataManager.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -32,6 +32,8 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 5000.0f);
 
+	DataManager::GetInstance().LoadData();
+
 	//êÊÇ…Playerê∂ê¨
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
@@ -53,6 +55,8 @@ void SceneMain::Init()
 	m_enemyManager.SetStage(m_pStage);
 
 	m_enemySpawner.SetupCreateData();
+
+
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
