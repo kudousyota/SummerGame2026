@@ -11,7 +11,7 @@ namespace
 	//プレイヤーからカメラに向かうベクトル
 	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 	//重力加速度
-	const float kGravity				 = 0.5f;
+	const float kGravity				 = 0.6f;
 	//アニメーションの名前
 	const char* const kIdleAnimName		 = "Player|Idle";
 	
@@ -145,7 +145,7 @@ void Player::Init()
 
 	m_pos = VGet(0.0f, 500.0f, 0.0f);
 	//移動速度
-	m_speed = 15.0f;
+	m_speed = 13.0f;
 	
 	m_hp = 100;
 	m_jumpPower = 15;
@@ -177,7 +177,7 @@ void Player::Update()
 	}
 
 	//地面より下に行ったらリスポーンさせる
-	if(m_pos.y < -5.0f)
+	if(m_pos.y < -250.0f)
 	{
 		m_lastGroundPos.y += 10.0f;
 		m_pos = m_lastGroundPos;

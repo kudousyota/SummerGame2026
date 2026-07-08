@@ -17,7 +17,7 @@ namespace
 	//補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
 	constexpr float kCameraFollow = 0.15f;
 
-	constexpr float kStickDeadZone = 0.01f;
+	constexpr float kStickDeadZone = 0.001f;
 	constexpr float kCameraRotSpeedX = 0.8f;
 	constexpr float kCameraRotSpeedY = 0.6f;
 }
