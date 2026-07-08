@@ -101,9 +101,9 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 	float radius = character->GetCollisionRadius();
 	float height = character->GetCollisionHeight();
 
-
+	//足元基準の現在地
 	Vector3 pos = character->GetPosition();
-
+	//このフレームで一回でもポリゴンに当たったか確認
 	bool hitAny = false;
 
 	//当たっていたら
@@ -114,32 +114,67 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 		VECTOR end = VAdd(start, VGet(0.0f, height - radius * 2.0f, 0.0f));
 
 		auto hit = MV1CollCheck_Capsule(stagehandle, -1, start, end, radius);
+		//何もヒットしなければ,これ以上押し出す必要はない
 		if (hit.HitNum == 0)
 		{
 			MV1CollResultPolyDimTerminate(hit);
 			break;
 		}
-
+		//ポリゴンに当たったか記録
 		hitAny = true;
-
+		//一番めり込んだポリゴンを探すための変数
+		float maxDepth = -FLT_MAX;
+		//一番深いポリゴンの法線を保持
+		Vector3 bestNormal;
+		//当たったポリゴンをチェック
 		for (int i = 0; i < hit.HitNum; i++)
 		{
-			auto& normal = hit.Dim[i].Normal;
-			
-			Vector3 push(normal.x, 0.0f, normal.z);
+			//法線のY成分を無視してXZ平面に投射
+			Vector3 rawNormal(hit.Dim[i].Normal.x, 0.0f, hit.Dim[i].Normal.z);
 
-			if (push.SqMagnitude() > 0.0001f)
+			//ほぼ水平なポリゴン(床・天井)は壁判定から除外
+			float lenSq = rawNormal.SqMagnitude();
+			if (lenSq < 0.0001f)
 			{
-				push = push.Normalize();
-				
-				pos += push * 15.0f;
+				continue;
 			}
-		}
 
+			Vector3 normal(hit.Dim[i].Normal.x,
+				0.0f,
+				hit.Dim[i].Normal.z);
+
+			normal = normal.Normalize();
+			//ポリゴンの頂点の一つを平面上の点として使う
+			Vector3 planepoint(hit.Dim[i].Position[0].x,
+				hit.Dim[i].Position[0].y,
+				hit.Dim[i].Position[0].z);
+
+			//カプセル軸
+			Vector3 axispoint(pos.x, planepoint.y, pos.z);
+			//平面点からカプセル軸への距離を法線方向に射影
+			float signedDist = normal.Dot(axispoint - planepoint);
+
+			//半径よりも平面に近ければめり込んでいる
+			float depth = radius - signedDist;
+
+			if (depth > maxDepth)
+			{
+				maxDepth = depth;
+				bestNormal = normal;
+			}
+
+		}
+		//実際にめり込んでいた場合のみ、その分だけ壁の法線方向に押し出す
+		if (maxDepth > 0.0f)
+		{
+			pos += bestNormal * maxDepth;
+		}
+		//ヒット結果のメモリを解放
 		MV1CollResultPolyDimTerminate(hit);
 	}
+	//押し出し後の最終的な座標をキャラクターに反映
 	character->SetPosition(pos);
-
+	//壁に一度でも当たったかを返す
 	return hitAny;
 }
 
