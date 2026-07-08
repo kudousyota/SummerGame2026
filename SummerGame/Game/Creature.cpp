@@ -4,6 +4,7 @@
 #include "Stage.h"
 #include "Player.h"
 #include "../System/Timer.h"
+#include "../System/Model.h"
 
 namespace
 {
@@ -67,7 +68,7 @@ void Creature::Init()
 	m_attackCooldown = 0;
 
 	//m_pos = VGet(0.0f, 500.0f, 250.0f);
-	m_modelHandle = MV1LoadModel("Data/Enemy.mv1");
+	m_modelHandle = Model::Instance().CreateCreatureModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 
 

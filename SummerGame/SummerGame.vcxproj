@@ -140,6 +140,7 @@
     <ClCompile Include="Game\EnemySpawn.cpp" />
     <ClCompile Include="Game\Angel.cpp" />
     <ClCompile Include="Game\Stage.cpp" />
+    <ClCompile Include="System\Model.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\CollisionManager.cpp" />
     <ClCompile Include="Game\Creature.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Game\EnemySpawn.h" />
     <ClInclude Include="Game\Angel.h" />
     <ClInclude Include="Game\Stage.h" />
+    <ClInclude Include="System\Model.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\CollisionManager.h" />
     <ClInclude Include="Game\Creature.h" />

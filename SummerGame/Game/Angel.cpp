@@ -4,6 +4,7 @@
 #include "Stage.h"
 #include "Player.h"
 #include "../System/Timer.h"
+#include "../System/Model.h"
 
 namespace
 {
@@ -82,7 +83,7 @@ void Angel::Init()
 	//最初は正面を向くようにする
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
-	m_modelHandle = MV1LoadModel("Data/Angel.mv1");
+	m_modelHandle = Model::Instance().CreateAngelModel();
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
 
 	CollisionManager::Instance().Register(this);

@@ -29,41 +29,7 @@ void EnemySpawner::SetupCreateData()
 		m_createInfoList.push_back(spawn);
 	}
 
-	//とりあえずコード内で生成データを組み立てる
-	//ここでは、敵の名前と出現フレームを設定する例を示す
-	//いずれCSVで読み込みして管理したい
-	//時間経過で2体同時に出す例
-	//EnemyCreateInfo info1;
-	//info1.enemyName = "Creature";
-	//info1.triggerType = SpawnTriggerType::Frame;
-	//info1.appearFrame = 60.0f;
-	//info1.appearPosList =
-	//{
-	//	Vector3(100.0f, kSpawnY, 200.0f),
-	//	Vector3(-100.0f, kSpawnY, 200.0f)
-	//};
-	//m_createInfoList.push_back(info1);
-
-	////プレイヤーが近づいたら出す
-	//EnemyCreateInfo info2;
-	//info2.enemyName = "Angel";
-	//info2.triggerType = SpawnTriggerType::PlayerNear;
-
-	//info2.triggerPos = Vector3(0.0f, 0.0f, 500.0f);
-	//info2.triggerRadius = kSpawnRadius;
-	//
-	//info2.appearPosList = { Vector3(0.0f, kSpawnY, 600.0f) };
-	//m_createInfoList.push_back(info2);
-
-	//EnemyCreateInfo info3;
-	//info3.enemyName = "Creature";
-	//info3.triggerType = SpawnTriggerType::PlayerNear;
-	////プレイヤーが近づいたら出す
-	//info3.triggerPos = Vector3(-1010.0f, 0.0f, -5041.0f);
-	//info3.triggerRadius = kSpawnRadius;
-	////出現座標
-	//info3.appearPosList = { Vector3(-1010.0f, kSpawnY, -5041.0f) };
-	//m_createInfoList.push_back(info3);
+	
 }
 
 void EnemySpawner::Update(EnemyManager& manager, float currentFrame, const Vector3& playerPos)

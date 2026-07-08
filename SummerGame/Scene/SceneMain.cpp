@@ -3,6 +3,7 @@
 #include "../System/Input.h"
 #include "../System/Timer.h"
 #include "../DataLoader/DataManager.h"
+#include "../System/Model.h";
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -19,6 +20,7 @@ m_isPrevWitchTime(false)
 
 SceneMain::~SceneMain()
 {
+	
 }
 
 void SceneMain::Init()
@@ -62,6 +64,8 @@ void SceneMain::Init()
 
 
 	SetUseAlphaChannelGraphCreateFlag(true);
+
+	Model::Instance().PreloadAll();
 	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
 	
 	m_nidelHandle = LoadGraph("data/ui_niidle_flower.png");
