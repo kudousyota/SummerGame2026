@@ -17,43 +17,23 @@ namespace
 	const char* const kPunchAnimName = "Enemy|Punch";
 
 	const char* const kDamageAnimName = "Enemy|Hit";
-	//攻撃する長さ
-	constexpr float kAttackRange = 150.0f;
-
-	//見える距離
-	constexpr float kSightRange = 500.0f;
-	//視野角
-	constexpr float kFov = 90.0f;
+	
 }
 
 Creature::Creature():
-	m_modelHandle(-1),
-	m_isDead(false),
-	m_isAttackHit(false),
-	m_attackCooldown(0),
-	m_forward(VGet(0.0f, 0.0f, 1.0f)),
-	m_isAttacking(false),
-	m_attackFrame(0),
 	m_currentState(CreatureState::Idle),
 	m_prevState(CreatureState::Idle),
-	m_isAttack(false),
-	m_attackDir(VGet(0.0f,0.0f,0.0f)),
 	m_modelDisplayOffsetY(0.0f)
 {
 }
 
 Creature::~Creature()
 {
-	CollisionManager::Instance().Unregister(this);
-
-	MV1DeleteModel(m_modelHandle);
 }
 
 void Creature::Init()
 {
-	Character::Init();
-
-	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+	Enemy::Init();
 
 	//本物の体力
 	//m_hp = 150;
@@ -65,21 +45,15 @@ void Creature::Init()
 	m_currentState = CreatureState::Idle;
 	m_prevState = CreatureState::Idle;
 
-	m_attackCooldown = 0;
-
 	//m_pos = VGet(0.0f, 500.0f, 250.0f);
 	m_modelHandle = Model::Instance().CreateCreatureModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
-
-
-
-	CollisionManager::Instance().Register(this);
 }
 
 void Creature::Update()
 {
 	//死んだら
-	if (m_hp == 0)
+	if (m_isDead)
 	{
 		return;
 	}
@@ -96,12 +70,10 @@ void Creature::Update()
 	{
 		m_attackFrame--;
 	}
-	//攻撃クールタイム
-	if (m_attackCooldown > 0)
-	{
-		//攻撃のクールタイムもウィッチタイムで遅くする
-		m_attackCooldown -= static_cast<int>(scale);
-	}
+	
+	//攻撃クールタイム//攻撃のクールタイムもウィッチタイムで遅くする
+	UpdateCooldown(scale);
+
 
 	//ステート
 	switch (m_currentState)
@@ -140,8 +112,7 @@ void Creature::Update()
 			if (m_attackCooldown <= 0)
 			{
 				//プレイヤーの方向に向く
-				m_forward = (m_pPlayer->GetPosition() - m_pos).Normalize();
-				m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+				FacePlayer();
 				//70％で弱攻撃
 				if (GetRand(99) < 70)
 				{
@@ -156,16 +127,7 @@ void Creature::Update()
 		else
 		{
 			//プレイヤーの方向に少しづつ向きを合わせる
-			float rotSpeed = 0.15f;
-			Vector3 targetDir = dir.Normalize();
-			//現在の向きから目標方向に少しずつ近づく
-			m_forward = m_forward + (targetDir - m_forward) * rotSpeed;
-			//正規化
-			m_forward = m_forward.Normalize();
-			//モデルの向きを更新
-			m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-			//速度を与えるウィッチタイムで遅くなるように
-			m_pos += m_forward * m_speed * scale;
+			ChasePlayer(0.15f, scale);
 		}
 	}
 		break;
@@ -176,8 +138,6 @@ void Creature::Update()
 		{
 			AttackUpdate();
 			m_isAttack = true;
-			//攻撃する方向を保存
-			m_attackDir = (m_pPlayer->GetPosition() - m_pos).Normalize();
 		}
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
@@ -208,10 +168,7 @@ void Creature::Update()
 		break;
 	}
 	// モデル行列更新
-	MATRIX rot = MGetRotY(m_angle);
-	Vector3 drawPos = m_pos;
-	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
-	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
+	UpdateModelMatrix();
 	
 }
 
@@ -227,120 +184,24 @@ void Creature::Draw()
 
 	MV1DrawModel(m_modelHandle);
 #ifdef _DEBUG
-	//当たり判定のデバッグ描画
-	Vector3 debugPos = GetCollisionPosition();
+	//デバッグ描画
+	DrawDebugCollision();
 
-	VECTOR start = VGet(
-		debugPos.x,
-		debugPos.y + GetCollisionRadius(),
-		debugPos.z);
-
-	VECTOR end = VGet(
-		debugPos.x,
-		debugPos.y + GetCollisionHeight() - GetCollisionRadius(),
-		debugPos.z);
-
-	DrawCapsule3D(start, end, GetCollisionRadius(), 16, 0xffffff, 0xffffff, false);
-
-	//攻撃の時に判定を表示
+	//攻撃判定表示
 	if (m_attackFrame > 0)
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 	}
 
+	//HP表示
 	DrawFormatString(300,50,GetColor(255, 255, 255),"CreatureHP:%d",m_hp);
 
-
-	//索敵範囲デバッグ描画
-	int color = GetColor(255, 255, 0);//黄色
-
-	//視野角の半分(ラジアン)
-	float halfFov = kFov * 0.5f * DX_PI_F / 180.0f;
-	//前方の角度
-	float baseAngle = atan2f(m_forward.x, m_forward.z);
-	//分割数
-	int segments = 16;
-	//線形の始点
-	VECTOR prevPoint = VGet(
-		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
-		m_pos.y + 160.0f,
-		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
-	);
-	//扇形の円弧を線分で描画
-	for (int i = 1; i <= segments; i++)
-	{
-		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
-		VECTOR point = VGet(
-			m_pos.x + kSightRange * sinf(angle),
-			m_pos.y + 160.0f,
-			m_pos.z + kSightRange * cosf(angle)
-		);
-		DrawLine3D(prevPoint, point, color);
-		prevPoint = point;
-	}
-
-	//扇の両辺(敵から視野端への線)
-	VECTOR center = VGet(m_pos.x, m_pos.y + 160.0f, m_pos.z);
-	VECTOR leftEdge = VGet(
-		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
-		m_pos.y + 160.0f,
-		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
-	);
-	VECTOR rightEdge = VGet(
-		m_pos.x + kSightRange * sinf(baseAngle + halfFov),
-		m_pos.y + 160.0f,
-		m_pos.z + kSightRange * cosf(baseAngle + halfFov)
-	);
-	//扇形の境界線を描画
-	DrawLine3D(center, leftEdge, color);
-	DrawLine3D(center, rightEdge, color);
-
-	//プレイヤーが視野内にいるとき色を変える
-	//敵からプレイヤーへのベクトル
-	Vector3 dir = (m_pPlayer->GetPosition() - m_pos);
-	float dist = dir.SqMagnitude();
-	if (dist <= kSightRange * kSightRange)
-	{
-		//内積の計算
-		float dot = m_forward.Dot(dir.Normalize());
-		//視野角の境界になる内積の値
-		float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
-		//視野の中ならプレイヤーまで赤い線を引く
-		if (dot >= halfFovCos)
-		{
-			// 発見中は赤で上書き
-			DrawLine3D(center, VGet(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 160.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
-		}
-	}
+	//視界のデバッグ
+	DrawDebugSight();
 #endif
 
 }
 
-void Creature::ApplyDamage(int damage)
-{
-	if (m_isDead)
-	{
-		return;
-	}
-
-	m_hp -= damage;
-
-	TransitionTo(CreatureState::Damage);
-
-	if (m_hp <= 0)
-	{
-		m_hp = 0;
-		//死んだ
-		m_isDead = true;
-
-		//当たり判定を消す
-		CollisionManager::Instance().Unregister(this);
-
-		//printfDx("Creature Dead!\n");
-	}
-
-	//printfDx("Creature HP = %d\n",m_hp);
-}
 
 void Creature::AttackUpdate()
 {
@@ -352,24 +213,6 @@ void Creature::AttackUpdate()
 	m_attackFrame = 30;
 }
 
-bool Creature::CanSeePlayer()
-{
-	//プレイヤーのまでのベクトル
-	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-	float distSq = dir.SqMagnitude();
-
-	//視認距離の外ならfalse
-	if (distSq > kSightRange * kSightRange)
-	{
-		return false;
-	}
-
-	//視野角内かを内積で判定
-	float dot = m_forward.Dot(dir.Normalize());
-	float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
-
-	return dot >= halfFovCos;
-}
 
 Vector3 Creature::GetCollisionPosition() const
 {
@@ -425,7 +268,8 @@ void Creature::TransitionTo(CreatureState nextState)
 	
 }
 
-CharacterType Creature::GetCharacterType() const
+void Creature::OnDamaged()
 {
-	return CharacterType::Ememy;
+	TransitionTo(CreatureState::Damage);
 }
+
