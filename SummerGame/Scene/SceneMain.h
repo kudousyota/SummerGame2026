@@ -5,19 +5,22 @@
 #include "../Game/Stage.h"
 #include "../Game/EnemyManager.h"
 #include "../Game/EnemySpawn.h"
+#include "Scene.h" //Sceneの基底クラスをインクルード
+
 class Input;
 class Timer;
-class SceneMain
+
+//SceneMainをSceneの派生クラスにする
+class SceneMain : public Scene
 {
 public:
-	SceneMain();
+	SceneMain(SceneController& controller);
 	~SceneMain();
 
 	void Init();
 	void Update(Input& input);
 	void Draw();
 
-	
 private:
 	void DrawGrid();
 
@@ -38,4 +41,3 @@ private:
 	EnemyManager m_enemyManager;
 	EnemySpawner m_enemySpawner;
 };
-

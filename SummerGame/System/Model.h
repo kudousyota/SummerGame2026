@@ -20,5 +20,6 @@ public:
 private:
 	int m_creatureBaseHandle = -1;
 	int m_angelBaseHandle = -1;
+	int m_alienBaseHandle = -1;
 };
 

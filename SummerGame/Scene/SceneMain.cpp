@@ -9,7 +9,8 @@ namespace
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
 }
 
-SceneMain::SceneMain():
+SceneMain::SceneMain(SceneController& controller):
+Scene(controller),
 m_frameCount(0),
 m_nidelHandle(-1),
 m_angle(0.0f),

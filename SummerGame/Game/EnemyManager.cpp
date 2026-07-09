@@ -1,6 +1,7 @@
 #include "EnemyManager.h"
 #include "Angel.h"
 #include "Creature.h"
+#include "Alien.h"
 #include <algorithm>
 EnemyManager::EnemyManager()
 {

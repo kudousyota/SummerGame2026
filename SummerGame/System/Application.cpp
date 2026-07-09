@@ -2,8 +2,8 @@
 #include "DxLib.h"
 #include <cassert>
 #include "../System/Input.h"
-//#include "../Scene/SceneController.h"
-//#include "../Scene/TitleScene.h"
+#include "../Scene/SceneController.h"
+#include "../Scene/TitleScene.h"
 #include "../Scene/SceneMain.h"
 #include "../Game.h"
 #include "EffekseerForDXLib.h"
@@ -74,12 +74,12 @@ bool Application::Init()
 void Application::Run()
 {
 	Input input;
-	//SceneController controller;
-	//controller.ChangeScene(std::make_shared<TitleScene>(controller));
+	SceneController controller;
+	controller.ChangeScene(std::make_shared<TitleScene>(controller));
 
 	//一旦SceneMainを表示する
-	SceneMain sceneMain;
-	sceneMain.Init();
+	//SceneMain sceneMain;
+	//sceneMain.Init();
 
 
 	while (ProcessMessage() != -1 && !m_IsRequstendExit)
@@ -91,8 +91,8 @@ void Application::Run()
 		ClearDrawScreen();
 		input.Update();
 
-		sceneMain.Update(input);
-		sceneMain.Draw();
+		controller.Update(input);
+		controller.Draw();
 
 		if (CheckHitKey(KEY_INPUT_ESCAPE))
 		{
