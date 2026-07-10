@@ -208,7 +208,7 @@ void Creature::AttackUpdate()
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 	//攻撃判定を出す
-	CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
+	CollisionManager::Instance().CheckAttackSphere(CharacterType::Ememy,m_attackPos,50.0f,m_attackPower);
 	m_isAttacking = true;
 	m_attackFrame = 30;
 }

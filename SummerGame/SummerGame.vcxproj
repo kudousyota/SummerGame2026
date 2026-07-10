@@ -110,6 +110,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../Dxlib_h</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,6 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../Dxlib_h</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,6 +144,7 @@
     <ClCompile Include="Game\EnemySpawn.cpp" />
     <ClCompile Include="Game\Angel.cpp" />
     <ClCompile Include="Game\Stage.cpp" />
+    <ClCompile Include="System\Projectile.cpp" />
     <ClCompile Include="System\Model.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\CollisionManager.cpp" />
@@ -168,6 +171,7 @@
     <ClInclude Include="Game\EnemySpawn.h" />
     <ClInclude Include="Game\Angel.h" />
     <ClInclude Include="Game\Stage.h" />
+    <ClInclude Include="System\Projectile.h" />
     <ClInclude Include="System\Model.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\CollisionManager.h" />

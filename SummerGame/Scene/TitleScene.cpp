@@ -135,7 +135,7 @@ void TitleScene::Init()
 	//SetBackgroundColor(100, 150, 255);
 
 	
-	//m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	
 	m_logoHandle = LoadGraph("data/kudonetta.png");

@@ -776,7 +776,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this,m_attackPos,50.0f,m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player,m_attackPos,50.0f,m_attackPower);
 
 			m_isAttackHit = true;
 		}
@@ -787,7 +787,7 @@ void Player::AttackUpdate()
 		{
 			if (!m_rushHit[i] && animTime >= kAttackDamageFrame[i])
 			{
-				CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+				CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
 
 				m_rushHit[i] = true;
 			}
@@ -799,7 +799,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
 
 			m_isAttackHit = true;
 		}
@@ -811,7 +811,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
 
 			m_isAttackHit = true;
 		}
@@ -823,7 +823,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(this, m_attackPos, 50.0f, m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
 
 			m_isAttackHit = true;
 		}

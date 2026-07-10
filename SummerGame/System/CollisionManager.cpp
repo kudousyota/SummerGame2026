@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 
+
 //シングルトンのCollisionManagerを取得
 CollisionManager& CollisionManager::Instance()
 {
@@ -26,24 +27,19 @@ void CollisionManager::Unregister(Character* character)
 	}
 }
 //球状の攻撃判定を行う
-void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos, float radius, int damage)
+void CollisionManager::CheckAttackSphere(CharacterType attackerType, const Vector3& pos, float radius, int damage)
 {
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
-		//自分自身には当たらない
-		if (character == attacker)
-		{
-			continue;
-		}
-		//同じタイプには当たらない
-		if (character->GetCharacterType() == attacker->GetCharacterType())
+		
+		//攻撃した側と同じタイプには当たらない
+		if (character->GetCharacterType() == attackerType)
 		{
 			continue;
 		}
 
 		// キャラクターのカプセル情報を取得
-		float capsuleRadius = character->GetCollisionRadius();
 		float capsuleHeight = character->GetCollisionHeight();
 
 		//カプセルの線分(a -> b)
@@ -90,6 +86,50 @@ void CollisionManager::CheckAttackSphere(Character* attacker, const Vector3& pos
 		if (dist2 <= combinedNormal * combinedNormal)
 		{
 			//通常の被弾
+			character->ApplyDamage(damage);
+		}
+	}
+}
+
+void CollisionManager::CheckAttackCapsule(CharacterType attackerType, const Vector3& start, const Vector3& end, float radius, int damage)
+{
+	//登録済みの全キャラクターを探す
+	for (auto& character : m_pCharacters)
+	{
+		//攻撃した側と同じタイプには当たらない
+		if (character->GetCharacterType() == attackerType)
+		{
+			continue;
+		}
+		float capsuleradius = character->GetCollisionRadius();
+		float capsuleheight = character->GetCollisionHeight();
+
+		Vector3 a = character->GetCollisionPosition();
+
+		Vector3 b = a + VGet(0.0f, capsuleheight, 0.0f);
+
+		float distance = Segment_Segment_MinLength(start, end, a, b);
+
+		//受付中なら100、普段は30
+		float justDodgeRadius = character->GetJustDodgeRadius();
+		float justRange = radius + justDodgeRadius;
+
+
+		if (distance <= justRange)
+		{
+			if (character->IsJustDodgeWindow())
+			{
+				// ジャスト回避成功
+				character->ApplyDamage(0);
+				continue;
+			}
+		}
+
+		// 通常の当たり判定
+		float hitRange = radius + capsuleradius;
+
+		if (distance <= hitRange)
+		{
 			character->ApplyDamage(damage);
 		}
 	}
@@ -218,5 +258,4 @@ bool CollisionManager::CheckCameraRay(const int stagehandle ,const Vector3& star
 	}
 	return false;
 }
-
 

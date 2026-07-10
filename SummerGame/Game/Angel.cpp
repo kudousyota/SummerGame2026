@@ -18,7 +18,7 @@ namespace
 
 	const char* const kDamageAnimName = "Angel|Hit";
 
-	constexpr int kDanicgAttackRadius = 180.0f;
+	constexpr int kDanicgAttackRadius = 180;
 
 	//ラッシュ攻撃回数
 	constexpr int kDancingAttackCount = 8;
@@ -136,7 +136,7 @@ void Angel::Update()
 			{
 				if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
 				{
-					CollisionManager::Instance().CheckAttackSphere(this, m_pos, kDanicgAttackRadius, m_attackPower);
+					CollisionManager::Instance().CheckAttackSphere(CharacterType::Ememy, m_pos, kDanicgAttackRadius, m_attackPower);
 
 					m_dancingAttackHit[i] = true;
 				
