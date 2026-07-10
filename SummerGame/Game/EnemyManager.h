@@ -5,6 +5,7 @@
 
 class Angel;
 class Creature;
+class Alien;
 class Player;
 class Stage;
 class EnemyManager
@@ -24,11 +25,12 @@ public:
 	//敵を追加する関数//別々にすることによって,AngelとCreatureを一体だけ出したりなどができる
 	void AddAngel(std::unique_ptr<Angel> angel,const Vector3& pos);
 	void AddCreature(std::unique_ptr<Creature> creature,const Vector3& pos);
-
+	void AddAlien(std::unique_ptr<Alien> alien, const Vector3& pos);
 private:
 	//敵のリスト
 	std::vector<std::unique_ptr<Angel>> m_pAngels;
 	std::vector<std::unique_ptr<Creature>> m_pCreatures;
+	std::vector<std::unique_ptr<Alien>> m_pAlien;
 
 	//依存しているクラスのポインタ
 	std::shared_ptr<Player> m_pPlayer;

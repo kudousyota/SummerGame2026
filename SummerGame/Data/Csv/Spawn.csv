@@ -2,3 +2,4 @@
 Creature,PlayerNear,0,0,500,300,0,300,600
 Angel,PlayerNear,-150,0,-4383,500,-150,300,-4383
 Creature,PlayerNear,-150,0,-4383,300,-200,300,-4583
+Alien,PlayerNear,0,0,500,300,0,300,600

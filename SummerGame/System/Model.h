@@ -13,7 +13,7 @@ public:
 
 	int CreateCreatureModel() const { return MV1DuplicateModel(m_creatureBaseHandle); }
 	int CreateAngelModel()    const { return MV1DuplicateModel(m_angelBaseHandle); }
-
+	int CreatAlienModel() const { return MV1DuplicateModel(m_alienBaseHandle); }
 
 	void ReleseAll();
 

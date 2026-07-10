@@ -1,9 +1,7 @@
 #pragma once
-#include "../System/Vector3.h"
-#include "Character.h"
-#include <memory>
+#include "Enemy.h"
 class Player;
-class Alien : public Character
+class Alien : public Enemy
 {
 public:
 	Alien();
@@ -11,9 +9,6 @@ public:
 	void Init()override;
 	void Update()override;
 	void Draw()override;
-	void ApplyDamage(int damage)override;
-
-	CharacterType GetCharacterType()const override;
 
 private:
 
@@ -24,7 +19,7 @@ private:
 		Attack,
 		Down,
 		StandUp,
-		Up
+		Up,
 	};
 
 	//現在の状態
@@ -33,12 +28,21 @@ private:
 	//前回の状態
 	AlienState m_prevState;
 
-	//ハンドル
-	int m_ailenHandle;
 
+	//攻撃処理
+	void AttackUpdate();
+	//当たり判定の位置を取得する関数
+	Vector3 GetCollisionPosition() const override;
+
+	//描画に使うモデルの垂直オフセット
+	float m_modelDisplayOffsetY;
+
+	//攻撃する場所
+	Vector3 m_attackPos;
 
 	void TransitionTo(AlienState nextState);
 
-	std::shared_ptr<Player>m_pPlayer;
+	//ダメージを受けたらDamageステートへ
+	//void OnDamaged() override;
 
 };

@@ -2,6 +2,7 @@
 #include "EnemyManager.h"
 #include "Angel.h"
 #include "Creature.h"
+#include "Alien.h"
 #include "../DataLoader/DataManager.h"
 
 namespace
@@ -73,6 +74,10 @@ void EnemySpawner::Update(EnemyManager& manager, float currentFrame, const Vecto
 			else if (info.enemyName == "Creature")
 			{
 				manager.AddCreature(std::make_unique<Creature>(), pos);
+			}
+			else if (info.enemyName == "Alien")
+			{
+				manager.AddAlien(std::make_unique<Alien>(), pos);
 			}
 		}
 

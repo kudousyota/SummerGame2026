@@ -216,7 +216,7 @@ void Creature::AttackUpdate()
 
 Vector3 Creature::GetCollisionPosition() const
 {
-	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);;
+	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
 }
 
 void Creature::TransitionTo(CreatureState nextState)

@@ -25,6 +25,11 @@ void EnemyManager::Update()
 		//creature‚ÌXVˆ—
 		creature->Update();
 	}
+
+	for (auto& alien : m_pAlien)
+	{
+		alien->Update();
+	}
 	//€‚ñ‚¾“G‚Ìíœˆ—
 	m_pAngels.erase(std::remove_if(m_pAngels.begin(), m_pAngels.end(),
 		[](const std::unique_ptr<Angel>& angel) {return angel->IsDead(); }),
@@ -33,6 +38,10 @@ void EnemyManager::Update()
 	m_pCreatures.erase(std::remove_if(m_pCreatures.begin(), m_pCreatures.end(),
 		[](const std::unique_ptr<Creature>& creature) {return creature->IsDead(); }),
 		m_pCreatures.end());
+
+	m_pAlien.erase(std::remove_if(m_pAlien.begin(), m_pAlien.end(),
+		[](const std::unique_ptr < Alien > & alien) {return alien->IsDead(); }),
+		m_pAlien.end());
 }
 
 void EnemyManager::Draw()
@@ -46,6 +55,10 @@ void EnemyManager::Draw()
 	{
 		//angel‚Ì•`‰æˆ—
 		creature->Draw();
+	}
+	for (auto& alien : m_pAlien)
+	{
+		alien->Draw();
 	}
 }
 
@@ -70,4 +83,12 @@ void EnemyManager::AddCreature(std::unique_ptr<Creature> creature, const Vector3
 	m_pCreatures.push_back(std::move(creature));
 }
 
+void EnemyManager::AddAlien(std::unique_ptr<Alien> alien, const Vector3& pos)
+{
+	alien->SetPlayer(m_pPlayer);
+	alien->SetStage(m_pStage);
+	alien->Init();
+	alien->SetPosition(pos);
 
+	m_pAlien.push_back(std::move(alien));
+}
