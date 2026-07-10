@@ -1,5 +1,5 @@
 #include "Breath.h"
-#include "System/CollisionManager.h"
+#include "../System/CollisionManager.h"
 
 Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, int attackPower):
 	//親に渡す
@@ -29,4 +29,6 @@ void Breath::Draw()
 {
 	//ここでエフェクト出してもいい
 	//デバッグ表示とかしたい
+
+	DrawCapsule3D(m_prevPos, m_pos, 25.0f, 4, 0xffffff, 0xffffff, false);
 }

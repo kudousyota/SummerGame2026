@@ -4,6 +4,7 @@
 #include "../System/Timer.h"
 #include "../DataLoader/DataManager.h"
 #include "../System/Model.h";
+#include "../System/ProjectileManager.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -90,7 +91,7 @@ void SceneMain::Update(Input& input)
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
 	
-
+	ProjectileManager::Instance().Update();
 	//プレイヤーがウィッチタイムかどうかを知る
 	bool currentwitch = m_pPlayer->GetWitchTime();
 	//ウィッチタイムに入ったときに演出をする
@@ -143,6 +144,8 @@ void SceneMain::Draw()
 	m_pPlayer->Draw();
 	
 	m_enemyManager.Draw();
+
+	ProjectileManager::Instance().Draw();
 
 	//ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())

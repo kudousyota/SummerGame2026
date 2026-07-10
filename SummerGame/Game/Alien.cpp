@@ -5,6 +5,9 @@
 #include "Player.h"
 #include "../System/Timer.h"
 #include "../System/Model.h"
+#include "../Game/Breath.h"
+#include "../System/ProjectileManager.h"
+
 
 namespace
 {
@@ -117,6 +120,8 @@ void Alien::Update()
 		break;
 	case AlienState::Attack:
 
+		AttackUpdate();
+
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
 		{
@@ -157,12 +162,20 @@ void Alien::Draw()
 
 void Alien::AttackUpdate()
 {
-	//前側に表示高さは微調整
-	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
-	//攻撃判定を出す
-	CollisionManager::Instance().CheckAttackSphere(CharacterType::Enemy, m_attackPos, 50.0f, m_attackPower);
-	m_isAttacking = true;
-	m_attackFrame = 30;
+	float animFrame = m_animation.GetCurrentAnimTime();
+
+	constexpr float kBreathFrame = 20.0f;
+
+	if (!m_isAttack && animFrame >= kBreathFrame)
+	{
+
+		Vector3 pos = m_pos + m_forward * 100.0f;
+
+		ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, m_forward, 10.0f, m_attackPower));
+		
+		m_isAttack = true;
+	}
+
 }
 
 Vector3 Alien::GetCollisionPosition() const

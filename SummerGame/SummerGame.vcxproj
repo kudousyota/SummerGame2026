@@ -137,7 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Breath.cpp" />
+    <ClCompile Include="Game\Breath.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Alien.cpp" />
     <ClCompile Include="DataLoader\DataManager.cpp" />
@@ -145,6 +145,7 @@
     <ClCompile Include="Game\EnemySpawn.cpp" />
     <ClCompile Include="Game\Angel.cpp" />
     <ClCompile Include="Game\Stage.cpp" />
+    <ClCompile Include="System\ProjectileManager.cpp" />
     <ClCompile Include="System\Projectile.cpp" />
     <ClCompile Include="System\Model.cpp" />
     <ClCompile Include="System\Animation.cpp" />
@@ -165,7 +166,7 @@
     <ClCompile Include="System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Breath.h" />
+    <ClInclude Include="Game\Breath.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Alien.h" />
     <ClInclude Include="DataLoader\DataManager.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Game\EnemySpawn.h" />
     <ClInclude Include="Game\Angel.h" />
     <ClInclude Include="Game\Stage.h" />
+    <ClInclude Include="System\ProjectileManager.h" />
     <ClInclude Include="System\Projectile.h" />
     <ClInclude Include="System\Model.h" />
     <ClInclude Include="System\Animation.h" />
