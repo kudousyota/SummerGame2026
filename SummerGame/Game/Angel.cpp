@@ -136,7 +136,7 @@ void Angel::Update()
 			{
 				if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
 				{
-					CollisionManager::Instance().CheckAttackSphere(CharacterType::Ememy, m_pos, kDanicgAttackRadius, m_attackPower);
+					CollisionManager::Instance().CheckAttackSphere(CharacterType::Enemy, m_pos, kDanicgAttackRadius, m_attackPower);
 
 					m_dancingAttackHit[i] = true;
 				

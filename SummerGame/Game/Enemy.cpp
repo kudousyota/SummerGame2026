@@ -53,7 +53,7 @@ void Enemy::ApplyDamage(int damage)
 
 CharacterType Enemy::GetCharacterType() const
 {
-	return CharacterType::Ememy;
+	return CharacterType::Enemy;
 }
 
 void Enemy::UpdateModelMatrix()

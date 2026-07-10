@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Breath.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Alien.cpp" />
     <ClCompile Include="DataLoader\DataManager.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Breath.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Alien.h" />
     <ClInclude Include="DataLoader\DataManager.h" />

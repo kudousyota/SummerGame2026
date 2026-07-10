@@ -7,7 +7,7 @@
 enum class CharacterType
 {
 	Player,
-	Ememy
+	Enemy
 };
 
 //プレイヤーとエネミーの基底クラス

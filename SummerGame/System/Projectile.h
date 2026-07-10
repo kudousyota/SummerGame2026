@@ -13,13 +13,20 @@ public:
 
 	bool IsDead()const { return m_isDead; }
 protected:
-
+	//位置
 	Vector3 m_pos;
+	//前の位置
+	Vector3 m_prevPos;
+	//前方
 	Vector3 m_forward;
-
-	float m_speed = 0.0f;
-	int m_attackPower = 0;
-	bool m_isDead = false;
+	//スピード
+	float m_speed;
+	//攻撃力
+	int m_attackPower;
+	//生存フレーム
+	int m_lifeFrame;
+	//まだあるか
+	bool m_isDead;
 
 	
 };
