@@ -28,6 +28,8 @@ private:
 	//‘O‰ñ‚Ìó‘Ô
 	AlienState m_prevState;
 
+	//ƒŠƒO
+	int m_headBone;
 
 	//UŒ‚ˆ—
 	void AttackUpdate();

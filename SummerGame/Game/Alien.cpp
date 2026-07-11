@@ -19,12 +19,16 @@ namespace
 	const char* const kDownAnimName = "Alien|Down";
 	const char* const kAttackAnimName = "Alien|Attack";
 
+	//ブレス攻撃するために口元付近のリグを取る
+	const char* const kAttackRig = "mixamorig1:Head";
+
 }
 
 Alien::Alien():
 	m_currentState(AlienState::Idle),
 	m_prevState(AlienState::Idle),
-	m_modelDisplayOffsetY(0.0f)
+	m_modelDisplayOffsetY(0.0f),
+	m_headBone(-1)
 {
 }
 
@@ -45,8 +49,12 @@ void Alien::Init()
 	//重力
 	m_gravity = 0.0;
 
+	
+
 	m_modelHandle = Model::Instance().CreatAlienModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
+	//モデルを読み込んでボーンを見つけてくる
+	m_headBone = MV1SearchFrame(m_modelHandle, kAttackRig);
 }
 
 void Alien::Update()
@@ -168,8 +176,9 @@ void Alien::AttackUpdate()
 
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
+		VECTOR headPos = MV1GetFramePosition(m_modelHandle, m_headBone);
 
-		Vector3 pos = m_pos + m_forward * 100.0f;
+		Vector3 pos = Vector3(headPos);
 
 		ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, m_forward, 10.0f, m_attackPower));
 		
