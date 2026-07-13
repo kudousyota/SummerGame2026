@@ -57,6 +57,7 @@ void Creature::Update()
 	//死んだら
 	if (m_isDead)
 	{
+		OnDead();
 		return;
 	}
 	//当たり判定の更新

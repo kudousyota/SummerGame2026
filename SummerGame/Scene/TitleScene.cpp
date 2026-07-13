@@ -60,17 +60,9 @@ void TitleScene::FadeOutUpdate(Input&)
 
 void TitleScene::NormalDraw()
 {
-	
 
-
-	MV1DrawModel(m_skyHandle);
 	//モデルの位置を反映してから描画
-	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
-	MV1DrawModel(m_playerHandle);
 	
-	MV1SetPosition(m_groundHandle, m_groundPos.ToDxLibVector());
-	MV1DrawModel(m_groundHandle);
-
     const int cx = Game::kScreenWidth / 2;
 	const int cy = Game::kScreenHeight / 2;
 	//カラー

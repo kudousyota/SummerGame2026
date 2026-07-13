@@ -16,7 +16,6 @@ namespace
 void SceneMain::FadeInUpdate(Input&)
 {
 
-
 	if (m_frame-- <= 0)
 	{
 		m_update = &SceneMain::NormalUpdate;
@@ -29,7 +28,6 @@ void SceneMain::FadeInUpdate(Input&)
 void SceneMain::NormalUpdate(Input& input)
 {
 	
-
 	Input::Instance().Update();
 
 	Timer::Instance().Update();
@@ -41,6 +39,11 @@ void SceneMain::NormalUpdate(Input& input)
 	m_frameCount++;
 	//敵の更新を任せる
 	m_enemyManager.Update();
+
+	if (m_enemyManager.IsCreatureDead())
+	{
+		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
+	}
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
 
@@ -76,7 +79,7 @@ void SceneMain::NormalUpdate(Input& input)
 		}
 
 	}
-
+	
 
 }
 
@@ -86,7 +89,7 @@ void SceneMain::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
-		m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
+		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
 		return;
 	}
 }
@@ -121,8 +124,6 @@ void SceneMain::NormalDraw()
 		}
 
 	}
-
-
 
 	DrawGrid();
 	//DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));

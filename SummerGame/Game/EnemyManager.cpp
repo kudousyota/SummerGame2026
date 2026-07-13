@@ -36,7 +36,15 @@ void EnemyManager::Update()
 		m_pAngels.end());
 
 	m_pCreatures.erase(std::remove_if(m_pCreatures.begin(), m_pCreatures.end(),
-		[](const std::unique_ptr<Creature>& creature) {return creature->IsDead(); }),
+		[this](const std::unique_ptr<Creature>& creature) 
+		{
+			if (creature->IsDead())
+			{
+				m_isCreatureDead = true;
+				return true;
+			}
+			return false;
+		}),
 		m_pCreatures.end());
 
 	m_pAlien.erase(std::remove_if(m_pAlien.begin(), m_pAlien.end(),
@@ -60,6 +68,16 @@ void EnemyManager::Draw()
 	{
 		alien->Draw();
 	}
+}
+
+bool EnemyManager::IsCreatureDead() const
+{
+	return m_isCreatureDead;
+}
+
+void EnemyManager::ResetCreatureDead()
+{
+	m_isCreatureDead = false;
 }
 
 void EnemyManager::AddAngel(std::unique_ptr<Angel> angel,const Vector3& pos)

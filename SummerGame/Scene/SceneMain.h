@@ -6,6 +6,7 @@
 #include "../Game/EnemyManager.h"
 #include "../Game/EnemySpawn.h"
 #include "Scene.h" //Sceneの基底クラスをインクルード
+#include "../Game/Creature.h"
 
 class Input;
 class Timer;
@@ -70,6 +71,7 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
+
 
 	EnemyManager m_enemyManager;
 	EnemySpawner m_enemySpawner;
