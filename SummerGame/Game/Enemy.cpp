@@ -11,7 +11,8 @@ Enemy::Enemy():
 	m_isAttacking(false),
 	m_attackFrame(0),
 	m_isAttack(false),
-	m_attackDir(VGet(0.0f, 0.0f, 0.0f))
+	m_attackDir(VGet(0.0f, 0.0f, 0.0f)),
+	m_scale(0.0f,0.0f,0.0f)
 {
 }
 
@@ -58,10 +59,11 @@ CharacterType Enemy::GetCharacterType() const
 
 void Enemy::UpdateModelMatrix()
 {
+	MATRIX scr = MGetScale(m_scale);
 	MATRIX rot = MGetRotY(m_angle);
 	Vector3 drawPos = m_pos;
 	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
-	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
+	MV1SetMatrix(m_modelHandle, MMult(MMult(scr, rot),trans));
 }
 
 bool Enemy::CanSeePlayer()

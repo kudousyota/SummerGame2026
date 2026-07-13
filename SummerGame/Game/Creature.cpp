@@ -47,6 +47,8 @@ void Creature::Init()
 
 	//m_pos = VGet(0.0f, 500.0f, 250.0f);
 	m_modelHandle = Model::Instance().CreateCreatureModel();
+	m_scale = VGet(3.0f, 3.0f, 3.0f);
+
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 }
 
@@ -200,6 +202,11 @@ void Creature::Draw()
 	DrawDebugSight();
 #endif
 
+}
+
+void Creature::OnDead()
+{
+	m_isDead = true;
 }
 
 

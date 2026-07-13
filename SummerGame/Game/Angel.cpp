@@ -59,6 +59,8 @@ void Angel::Init()
 	m_hp = 300;
 	m_attackPower = 20;
 
+	m_scale = VGet(1.0f, 1.0f, 1.0f);
+
 	m_modelHandle = Model::Instance().CreateAngelModel();
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
 }

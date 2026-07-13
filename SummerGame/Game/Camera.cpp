@@ -64,7 +64,7 @@ void Camera::Init()
 
 
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(), m_cameraTarget.ToDxLibVector());
-
+	MV1SetScale(m_skyDomeHandle, VGet(1.5f, 1.5f, 1.5f));
 }
 
 void Camera::End()
@@ -173,7 +173,7 @@ void Camera::Update()
 
 	MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
 
-	MV1SetScale(m_skyDomeHandle, VGet(1.5f, 1.5f, 1.5f));
+	
 	
 
 	

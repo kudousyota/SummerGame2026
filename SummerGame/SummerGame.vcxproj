@@ -153,7 +153,7 @@
     <ClCompile Include="Game\Creature.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Character.cpp" />
-    <ClCompile Include="Scene\ResultScene.cpp" />
+    <ClCompile Include="Scene\GameClearedScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneController.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
@@ -182,7 +182,7 @@
     <ClInclude Include="Game\Creature.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Character.h" />
-    <ClInclude Include="Scene\ResultScene.h" />
+    <ClInclude Include="Scene\GameClearedScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneController.h" />
     <ClInclude Include="Scene\TitleScene.h" />

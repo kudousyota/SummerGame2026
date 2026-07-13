@@ -32,6 +32,7 @@ protected:
     int m_attackFrame;
     bool m_isAttack;
     Vector3 m_attackDir;
+    Vector3 m_scale;
 
     //モデルの行列//ここはほかのとこでプレイヤーとまとめる可能性あり
     void UpdateModelMatrix();

@@ -49,7 +49,7 @@ void Alien::Init()
 	//èdóÕ
 	m_gravity = 0.0;
 
-	
+	m_scale = VGet(1.0f, 1.0f, 1.0f);
 
 	m_modelHandle = Model::Instance().CreatAlienModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);

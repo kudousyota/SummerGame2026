@@ -10,6 +10,8 @@ public:
 	void Update() override;
 	void Draw()override;
 
+	void OnDead();
+
 private:
 	enum class CreatureState
 	{
@@ -32,6 +34,8 @@ private:
 	float m_modelDisplayOffsetY;
 	//攻撃する場所
 	Vector3 m_attackPos;
+
+
 
 	void TransitionTo(CreatureState nextState);
 
