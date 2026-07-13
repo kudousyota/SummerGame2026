@@ -91,8 +91,6 @@ void GameClearedScene::NormalDraw()
 
 	DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
 
-
-	DrawFormatString2ToHandle(540, 300, white, black, m_fontHandle, "Dodge:%d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();

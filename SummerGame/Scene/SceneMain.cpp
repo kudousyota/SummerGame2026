@@ -42,7 +42,10 @@ void SceneMain::NormalUpdate(Input& input)
 
 	if (m_enemyManager.IsCreatureDead())
 	{
-		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
+		m_update = &SceneMain::FadeOutUpdate;
+		m_draw = &SceneMain::FadeDraw;
+		m_frame = 0;
+		return;
 	}
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
