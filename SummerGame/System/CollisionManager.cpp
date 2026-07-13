@@ -172,7 +172,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			//法線のY成分を無視してXZ平面に投射
 			Vector3 rawNormal(hit.Dim[i].Normal.x, 0.0f, hit.Dim[i].Normal.z);
 
-			//ほぼ水平なポリゴン(床・天井)は壁判定から除外
+			//ほぼ水平なポリゴン床は壁判定から除外
 			float lenSq = rawNormal.SqMagnitude();
 			if (lenSq < 0.0001f)
 			{

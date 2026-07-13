@@ -8,6 +8,10 @@ public:
 	Projectile(const Vector3& pos,const Vector3& forward,float speed,int attackPower);
 	virtual~Projectile() = default;
 
+	void SetPos(const Vector3& pos) { m_pos = pos; }
+	void SetForward(const Vector3& forwrd) { m_forward = forwrd; }
+
+
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 

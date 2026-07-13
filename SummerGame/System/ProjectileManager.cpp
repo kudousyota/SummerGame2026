@@ -8,9 +8,12 @@ ProjectileManager& ProjectileManager::Instance()
 	return manager;
 }
 
-void ProjectileManager::Add(std::unique_ptr<Projectile> projectile)
+Projectile* ProjectileManager::Add(std::unique_ptr<Projectile> projectile)
 {
+	Projectile* ptr = projectile.get();
+
 	m_pProjectiles.push_back(std::move(projectile));
+	return ptr;
 }
 
 void ProjectileManager::Update()

@@ -53,8 +53,10 @@ void Alien::Init()
 
 	m_modelHandle = Model::Instance().CreatAlienModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
+
 	//モデルを読み込んでボーンを見つけてくる
 	m_headBone = MV1SearchFrame(m_modelHandle, kAttackRig);
+
 }
 
 void Alien::Update()
@@ -71,6 +73,8 @@ void Alien::Update()
 	float scale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションの更新
 	m_animation.Update(scale);
+
+	
 
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
@@ -130,9 +134,15 @@ void Alien::Update()
 
 		AttackUpdate();
 
+
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
 		{
+			if(m_pBreath)
+			{
+				m_pBreath->Kill();
+				m_pBreath = nullptr;
+			}
 			TransitionTo(AlienState::Idle);
 		}
 		break;
@@ -154,7 +164,7 @@ void Alien::Draw()
 	//デバッグ描画
 	DrawDebugCollision();
 
-	////攻撃判定表示
+	////攻撃判定表示6
 	//if (m_attackFrame > 0)
 	//{
 	//	DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
@@ -162,6 +172,10 @@ void Alien::Draw()
 
 	//HP表示
 	DrawFormatString(300, 50, GetColor(255, 255, 255), "AlienHP:%d", m_hp);
+
+	//DrawLine3D(pos, pos + VScale(forward, 100.0f),GetColor(255, 0, 0));
+
+	
 
 	//視界のデバッグ
 	DrawDebugSight();
@@ -174,15 +188,35 @@ void Alien::AttackUpdate()
 
 	constexpr float kBreathFrame = 20.0f;
 
+	VECTOR headPos = MV1GetFramePosition(m_modelHandle, m_headBone);
+
+
+	Vector3 pos = Vector3(headPos);
+	MATRIX headMat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headBone);
+
+	VECTOR forward =
+	{
+		-headMat.m[2][0],
+		-headMat.m[2][1],
+		-headMat.m[2][2]
+	};
+	forward = VNorm(forward);
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
-		VECTOR headPos = MV1GetFramePosition(m_modelHandle, m_headBone);
+	
+		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, m_attackPower)));
 
-		Vector3 pos = Vector3(headPos);
-
-		ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, m_forward, 10.0f, m_attackPower));
-		
+		m_pBreath->SetPos(Vector3(pos));
+		m_pBreath->SetForward(Vector3(forward));
 		m_isAttack = true;
+	}
+
+	if (m_pBreath)
+	{
+		
+		m_pBreath->SetPos(Vector3(headPos));
+		m_pBreath->SetForward(Vector3(forward));
+
 	}
 
 }
@@ -215,6 +249,7 @@ void Alien::TransitionTo(AlienState nextState)
 		m_isAttack = false;
 		m_attackCooldown = 90;
 		m_attackDir = m_forward;
+	
 		break;
 	case AlienState::Down:
 		m_animation.ChangeAnim(kDeathAnimName, false, 0.5f);

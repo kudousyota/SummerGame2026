@@ -1,5 +1,6 @@
 #pragma once
 #include "Enemy.h"
+class Breath;
 class Player;
 class Alien : public Enemy
 {
@@ -43,6 +44,8 @@ private:
 	Vector3 m_attackPos;
 
 	void TransitionTo(AlienState nextState);
+
+	Breath* m_pBreath;
 
 	//ダメージを受けたらDamageステートへ
 	//void OnDamaged() override;

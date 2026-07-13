@@ -10,7 +10,7 @@ public:
 	static ProjectileManager& Instance();
 
 	//ê∂ê¨ÇµÇΩProjectileÇí«â¡
-	void Add(std::unique_ptr<Projectile>projectile);
+	Projectile* Add(std::unique_ptr<Projectile>projectile);
 
 	void Update();
 	void Draw();
