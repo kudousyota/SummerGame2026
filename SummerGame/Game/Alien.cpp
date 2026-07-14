@@ -47,7 +47,7 @@ void Alien::Init()
 	m_currentState = AlienState::Idle;
 	m_prevState = AlienState::Idle;
 	//重力
-	m_gravity = 0.0;
+	m_gravity = 0.0f;
 
 	m_scale = VGet(1.0f, 1.0f, 1.0f);
 
@@ -149,6 +149,8 @@ void Alien::Update()
 		break;
 	case AlienState::Down:
 		KickDown();
+
+		m_pos.y += m_gravity;
 	}
 	//モデル更新行列
 	UpdateModelMatrix();
@@ -245,10 +247,8 @@ void Alien::AttackUpdate()
 
 	if (m_pBreath)
 	{
-		
 		m_pBreath->SetPos(Vector3(headPos));
 		m_pBreath->SetForward(Vector3(forward));
-
 	}
 
 }
