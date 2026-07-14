@@ -110,6 +110,7 @@ void Alien::Update()
 		}
 		//プレイヤーまでのベクトル
 		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+		dir.y = 0.0f;
 		float distsq = dir.SqMagnitude();
 
 		//攻撃範囲に入ったら攻撃
@@ -146,6 +147,8 @@ void Alien::Update()
 			TransitionTo(AlienState::Idle);
 		}
 		break;
+	case AlienState::Down:
+		KickDown();
 	}
 	//モデル更新行列
 	UpdateModelMatrix();
@@ -180,6 +183,35 @@ void Alien::Draw()
 	//視界のデバッグ
 	DrawDebugSight();
 #endif
+}
+
+void Alien::ChasePlayer(float rotateSpeed, float scale)
+{
+	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	//エイリアンは高さ気にしない
+	dir.y = 0.0f;
+	Vector3 targetDir = dir.Normalize();
+
+	m_forward += (targetDir - m_forward) * rotateSpeed;
+	m_forward = m_forward.Normalize();
+
+	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+
+	m_pos += m_forward * m_speed * scale;
+}
+
+void Alien::FacePlayer()
+{
+	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	dir.y = 0.0f;
+
+	m_forward = dir.Normalize();
+	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+}
+
+void Alien::KickDown()
+{
+	TransitionTo(AlienState::Down);
 }
 
 void Alien::AttackUpdate()
@@ -252,7 +284,7 @@ void Alien::TransitionTo(AlienState nextState)
 	
 		break;
 	case AlienState::Down:
-		m_animation.ChangeAnim(kDeathAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kDownAnimName, false, 0.5f);
 		break;
 	case AlienState::StandUp:
 		m_animation.ChangeAnim(kStandUpAnimName, false, 0.5f);

@@ -10,6 +10,8 @@ void DataManager::LoadData()
 
 void DataManager::LoadSpawnData()
 {
+	m_spawnData.clear();
+
 	std::ifstream file("Data/Csv/Spawn.csv");
 	assert(file.is_open() && "Spwn.csv‚ª‚È‚¢");
 

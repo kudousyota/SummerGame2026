@@ -11,6 +11,8 @@ public:
 	void Update()override;
 	void Draw()override;
 
+
+
 private:
 
 	enum class AlienState
@@ -29,24 +31,30 @@ private:
 	//前回の状態
 	AlienState m_prevState;
 
-	//リグ
-	int m_headBone;
-
-	//攻撃処理
-	void AttackUpdate();
-	//当たり判定の位置を取得する関数
-	Vector3 GetCollisionPosition() const override;
-
 	//描画に使うモデルの垂直オフセット
 	float m_modelDisplayOffsetY;
 
 	//攻撃する場所
 	Vector3 m_attackPos;
 
-	void TransitionTo(AlienState nextState);
-
+	//リグ
+	int m_headBone;
 	Breath* m_pBreath;
 
+private:
+	//攻撃処理
+	void AttackUpdate();
+	//当たり判定の位置を取得する関数
+	Vector3 GetCollisionPosition() const override;
+	void ChasePlayer(float rotateSpeed, float scale)override;
+	void FacePlayer()override;
+	void KickDown();
+
+	void TransitionTo(AlienState nextState);
+
+
+
+	
 	//ダメージを受けたらDamageステートへ
 	//void OnDamaged() override;
 

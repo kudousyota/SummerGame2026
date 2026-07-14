@@ -17,6 +17,8 @@ EnemySpawner::EnemySpawner()
 
 void EnemySpawner::SetupCreateData()
 {
+	m_createInfoList.clear();
+
 	auto& spawnData = DataManager::GetInstance().GetSpawnData();
 	//“G‚ÌoŒ»ƒf[ƒ^‚ğCSV‚©‚ç“Ç‚İ‚ñ‚ÅEnemyCreateInfo‚É•ÏŠ·‚µ‚Äm_createInfoList‚ÉŠi”[‚·‚é
 	for (const auto& data : spawnData)
@@ -30,7 +32,7 @@ void EnemySpawner::SetupCreateData()
 		m_createInfoList.push_back(spawn);
 	}
 
-	
+	//printfDx("CreateInfo Size = %d\n", m_createInfoList.size());
 }
 
 void EnemySpawner::Update(EnemyManager& manager, float currentFrame, const Vector3& playerPos)

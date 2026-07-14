@@ -40,8 +40,11 @@ protected:
     bool CanSeePlayer();
     //索敵範囲のデバッグ描画
     void DrawDebugSight()const;
-    void FacePlayer();
-    void ChasePlayer(float rotateSpeed, float scale);
+    //プレイヤーの方を向く(敵ごとに調整可能)
+    virtual  void FacePlayer();
+    //プレイヤーの方に移動(敵ごとに調整可能)
+    virtual void ChasePlayer(float rotateSpeed, float scale);
+    //攻撃のクールタイム
     void UpdateCooldown(float scale);
     //ダメージ受けたときの処理
     virtual void OnDamaged() {}
