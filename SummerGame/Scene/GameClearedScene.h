@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.h"
-#include "../system/Vector3.h"
+#include "../System/Vector3.h"
 //#include "../system/EffectManager.h"
 
 class GameClearedScene :public Scene
