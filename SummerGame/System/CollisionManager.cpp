@@ -2,6 +2,7 @@
 #include "../Game/Character.h"
 #include <algorithm>
 #include <vector>
+#include "AttackData.h"
 
 
 //シングルトンのCollisionManagerを取得
@@ -27,14 +28,14 @@ void CollisionManager::Unregister(Character* character)
 	}
 }
 //球状の攻撃判定を行う
-void CollisionManager::CheckAttackSphere(CharacterType attackerType, const Vector3& pos, float radius, int damage)
+void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos, float radius)
 {
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
 		
 		//攻撃した側と同じタイプには当たらない
-		if (character->GetCharacterType() == attackerType)
+		if (character->GetCharacterType() == attackdata.GetAttacker())
 		{
 			continue;
 		}
@@ -86,18 +87,18 @@ void CollisionManager::CheckAttackSphere(CharacterType attackerType, const Vecto
 		if (dist2 <= combinedNormal * combinedNormal)
 		{
 			//通常の被弾
-			character->ApplyDamage(damage);
+			character->OnHit(attackdata);
 		}
 	}
 }
 
-void CollisionManager::CheckAttackCapsule(CharacterType attackerType, const Vector3& start, const Vector3& end, float radius, int damage)
+void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end, float radius)
 {
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
 		//攻撃した側と同じタイプには当たらない
-		if (character->GetCharacterType() == attackerType)
+		if (character->GetCharacterType() == attackdata.GetAttacker())
 		{
 			continue;
 		}
@@ -130,7 +131,7 @@ void CollisionManager::CheckAttackCapsule(CharacterType attackerType, const Vect
 
 		if (distance <= hitRange)
 		{
-			character->ApplyDamage(damage);
+			character->OnHit(attackdata);
 		}
 	}
 }

@@ -213,10 +213,13 @@ void Creature::OnDead()
 
 void Creature::AttackUpdate()
 {
+
+	//攻撃データを作成
+	AttackData attack(CharacterType::Enemy,m_currentState == CreatureState::Punch ? AttackType::Punch : AttackType::Attack,m_attackPower);
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 	//攻撃判定を出す
-	CollisionManager::Instance().CheckAttackSphere(CharacterType::Enemy,m_attackPos,50.0f,m_attackPower);
+	CollisionManager::Instance().CheckAttackSphere(attack,m_attackPos,50.0f);
 	m_isAttacking = true;
 	m_attackFrame = 30;
 }
@@ -274,6 +277,11 @@ void Creature::TransitionTo(CreatureState nextState)
 		break;
 	}
 	
+}
+
+void Creature::OnHit(const AttackData& attackdata)
+{
+	ApplyDamage(attackdata.GetDamage());
 }
 
 void Creature::OnDamaged()

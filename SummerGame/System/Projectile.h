@@ -1,11 +1,12 @@
 #pragma once
 #include "Vector3.h"
+#include "AttackData.h"
 //敵が使う投擲物や球などの基底クラス
 class Projectile
 {
 public:
 	//引数は変更しないからconst参照で受け取る
-	Projectile(const Vector3& pos,const Vector3& forward,float speed,int attackPower);
+	Projectile(const Vector3& pos,const Vector3& forward,float speed,const AttackData& attack);
 	virtual~Projectile() = default;
 
 	void SetPos(const Vector3& pos) { m_pos = pos; }
@@ -32,6 +33,7 @@ protected:
 	//まだあるか
 	bool m_isDead;
 
+	AttackData m_attackData;
 	
 };
 

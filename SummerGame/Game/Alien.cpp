@@ -218,6 +218,10 @@ void Alien::KickDown()
 
 void Alien::AttackUpdate()
 {
+	AttackData attack(CharacterType::Enemy, AttackType::Breath, m_attackPower);
+
+
+
 	float animFrame = m_animation.GetCurrentAnimTime();
 
 	constexpr float kBreathFrame = 20.0f;
@@ -238,7 +242,7 @@ void Alien::AttackUpdate()
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
 	
-		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, m_attackPower)));
+		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, attack)));
 
 		m_pBreath->SetPos(Vector3(pos));
 		m_pBreath->SetForward(Vector3(forward));

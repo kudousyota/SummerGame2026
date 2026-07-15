@@ -6,6 +6,7 @@
 #include "Stage.h"
 #include "../System/Timer.h"
 
+
 namespace
 {
 	//プレイヤーからカメラに向かうベクトル
@@ -759,6 +760,10 @@ float Player::GetJustDodgeRadius() const
 
 void Player::AttackUpdate()
 {
+
+	//攻撃データを作成
+	AttackData attack(CharacterType::Player,AttackType::SkyKick, m_attackPower);
+
 	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush && m_currentState != PlayerState::Kick && m_currentState != PlayerState::SkyAttack && m_currentState != PlayerState::SkyRush && m_currentState != PlayerState::SkyKick)
 	{
 		return;
@@ -776,7 +781,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player,m_attackPos,50.0f,m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
 
 			m_isAttackHit = true;
 		}
@@ -787,7 +792,7 @@ void Player::AttackUpdate()
 		{
 			if (!m_rushHit[i] && animTime >= kAttackDamageFrame[i])
 			{
-				CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
+				CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
 
 				m_rushHit[i] = true;
 			}
@@ -799,7 +804,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
 
 			m_isAttackHit = true;
 		}
@@ -811,7 +816,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
 
 			m_isAttackHit = true;
 		}
@@ -823,7 +828,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CharacterType::Player, m_attackPos, 50.0f, m_attackPower);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
 
 			m_isAttackHit = true;
 		}
@@ -956,6 +961,34 @@ void Player::TransitionTo(PlayerState nextState)
 	default:
 		break;
 	}
+}
+
+AttackType Player::GetAttackType()const
+{
+	switch (m_currentState)
+	{
+	case PlayerState::Attack:
+	case PlayerState::SkyAttack:
+		return AttackType::Punch;
+
+	case PlayerState::Rush:
+	case PlayerState::SkyRush:
+		return AttackType::Rush;
+
+	case PlayerState::Kick:
+		return AttackType::Kick;
+
+	case PlayerState::SkyKick:
+		return AttackType::SkyKick;
+
+	default:
+		return AttackType::Punch;
+	}
+}
+
+AttackData Player::CreateAttackData()
+{
+	return AttackData(CharacterType::Player,GetAttackType(),m_attackPower);
 }
 
 void Player::MoveAttack(float distance)

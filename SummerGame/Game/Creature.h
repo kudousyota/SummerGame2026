@@ -10,6 +10,7 @@ public:
 	void Update() override;
 	void Draw()override;
 
+	void OnHit(const AttackData& attackdata);
 	void OnDead();
 
 private:

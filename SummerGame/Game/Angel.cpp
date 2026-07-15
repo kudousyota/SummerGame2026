@@ -6,6 +6,7 @@
 #include "../System/Timer.h"
 #include "../System/Model.h"
 
+
 namespace
 {
 	const char* const kShoutAnimName = "Angel|Shout";
@@ -133,12 +134,14 @@ void Angel::Update()
 		break;
 	case AngelState::DancingAttack:
 		{
+		//攻撃データを作成
+		AttackData attack(CharacterType::Enemy,AttackType::Punch,m_attackPower);
 		
 			for (int i = 0; i < kDancingAttackCount; i++)
 			{
 				if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
 				{
-					CollisionManager::Instance().CheckAttackSphere(CharacterType::Enemy, m_pos, kDanicgAttackRadius, m_attackPower);
+					CollisionManager::Instance().CheckAttackSphere(attack, m_pos, kDanicgAttackRadius);
 
 					m_dancingAttackHit[i] = true;
 				

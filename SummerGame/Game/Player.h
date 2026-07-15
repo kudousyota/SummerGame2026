@@ -112,7 +112,11 @@ private:
 	
 	void TransitionTo(PlayerState nextState);
 	//ウィッチタイム
-	void WitchTime();
+	//void WitchTime();
+
+	AttackType GetAttackType()const;
+
+	AttackData CreateAttackData();
 
 	//攻撃で進む処理
 	void MoveAttack(float distance);

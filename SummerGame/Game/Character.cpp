@@ -104,3 +104,8 @@ void Character::SetStage(std::shared_ptr<Stage> stage)
 {
 	m_pStage = stage;
 }
+
+void Character::OnHit(const AttackData& attackdata)
+{
+	ApplyDamage(attackdata.GetDamage());
+}

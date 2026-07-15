@@ -2,13 +2,8 @@
 #include "../System/Vector3.h"
 #include "../System/Animation.h"
 #include <memory>
-
-//キャラクタータイプ
-enum class CharacterType
-{
-	Player,
-	Enemy
-};
+#include "../System/CharacterType.h"
+#include "../System/AttackData.h"
 
 //プレイヤーとエネミーの基底クラス
 class Input;
@@ -50,6 +45,7 @@ public:
 	
 	void SetStage(std::shared_ptr<Stage> stage);
 	
+	virtual void OnHit(const AttackData& attackdata);
 
 protected:
 	//共通のデータや関数を入れる
@@ -64,7 +60,6 @@ protected:
 	Vector3 m_velocity;
 	bool m_isGround;
 	std::shared_ptr<Stage> m_pStage;
-private:
 	
 	
 };
