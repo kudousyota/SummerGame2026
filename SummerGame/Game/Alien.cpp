@@ -148,9 +148,33 @@ void Alien::Update()
 		}
 		break;
 	case AlienState::Down:
-		KickDown();
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(AlienState::StandUp);
+		}
+		break;
 
-		m_pos.y += m_gravity;
+	case AlienState::StandUp:
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(AlienState::Up);
+		}
+		break;
+
+	case AlienState::Up:
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(AlienState::Idle);
+		}
+		break;
+	case AlienState::Hit:
+		//ダメージアニメーションが終わったらIdleに戻る
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(AlienState::Idle);
+		}
+		break;
+
 	}
 	//モデル更新行列
 	UpdateModelMatrix();
@@ -185,6 +209,20 @@ void Alien::Draw()
 	//視界のデバッグ
 	DrawDebugSight();
 #endif
+}
+
+void Alien::OnHit(const AttackData& attackdata)
+{
+	m_hp -= attackdata.GetDamage();
+	if (attackdata.GetAttackType() == AttackType::SkyKick)
+	{
+		TransitionTo(AlienState::Down);
+		return;
+	}
+	else
+	{
+		TransitionTo(AlienState::Hit);
+	}
 }
 
 void Alien::ChasePlayer(float rotateSpeed, float scale)
@@ -289,12 +327,22 @@ void Alien::TransitionTo(AlienState nextState)
 		break;
 	case AlienState::Down:
 		m_animation.ChangeAnim(kDownAnimName, false, 0.5f);
+		//スカイキックを食らったら落ちる
+		m_gravity = 0.5f;
+		m_velocity.y = 0.0f;
 		break;
 	case AlienState::StandUp:
 		m_animation.ChangeAnim(kStandUpAnimName, false, 0.5f);
+		//立ち上がったら戻す
+		m_gravity = 0.0f;
+		m_velocity.y = 0.0f;
 		break;
 	case AlienState::Up:
 		m_animation.ChangeAnim(kUPAnimName, false, 0.5f);
+		break;
+	case AlienState::Hit:
+		//ヒットアニメーションがないので今は適当にほかのモーションを渡す
+		m_animation.ChangeAnim(kDownAnimName, false, 0.8f);
 		break;
 	
 	}

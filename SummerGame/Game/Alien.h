@@ -11,7 +11,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
-
+	void OnHit(const AttackData& attackdata)override;
 
 private:
 
@@ -23,6 +23,7 @@ private:
 		Down,
 		StandUp,
 		Up,
+		Hit,
 	};
 
 	//Œ»İ‚Ìó‘Ô
