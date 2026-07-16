@@ -38,6 +38,7 @@ Alien::~Alien()
 
 void Alien::Init()
 {
+	//基底クラスの初期化
 	Enemy::Init();
 	//HP
 	m_hp = 200;
@@ -48,7 +49,7 @@ void Alien::Init()
 	m_prevState = AlienState::Idle;
 	//重力
 	m_gravity = 0.0f;
-
+	//モデルのスケール
 	m_scale = VGet(1.0f, 1.0f, 1.0f);
 
 	m_modelHandle = Model::Instance().CreatAlienModel();
@@ -134,8 +135,6 @@ void Alien::Update()
 	case AlienState::Attack:
 
 		AttackUpdate();
-
-		
 
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
@@ -270,37 +269,39 @@ void Alien::KickDown()
 
 void Alien::AttackUpdate()
 {
+	//ブレス攻撃情報
 	AttackData attack(CharacterType::Enemy, AttackType::Breath, m_attackPower);
 
-
-
+	//現在のアニメーションを取得
 	float animFrame = m_animation.GetCurrentAnimTime();
-
+	//このフレーム数でブレスを発射する
 	constexpr float kBreathFrame = 20.0f;
-
+	//頭のボーンの位置
 	VECTOR headPos = MV1GetFramePosition(m_modelHandle, m_headBone);
 
-
 	Vector3 pos = Vector3(headPos);
+	//ボーンの行列から前の方向を取得
 	MATRIX headMat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headBone);
-
+	//後ろ向きに伸びたのでーにして前側にした
 	VECTOR forward =
 	{
 		-headMat.m[2][0],
 		-headMat.m[2][1],
 		-headMat.m[2][2]
 	};
+	//正規化
 	forward = VNorm(forward);
+	//指定したフレーム数でブレスを生成
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
-	
 		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, attack)));
-
+		//発射位置と向きを正規化
 		m_pBreath->SetPos(Vector3(pos));
 		m_pBreath->SetForward(Vector3(forward));
+		//いっぱい生成されるのを防ぐ
 		m_isAttack = true;
 	}
-
+	//ブレスがある間は頭のボーンから生成される
 	if (m_pBreath)
 	{
 		m_pBreath->SetPos(Vector3(headPos));

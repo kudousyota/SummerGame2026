@@ -14,6 +14,7 @@ enum class AttackType
 class AttackData
 {
 public:
+	//’N‚©//UŒ‚ƒ^ƒCƒv//UŒ‚—Í‚ğ“n‚·
 	AttackData(CharacterType attacker, AttackType type, int damage);
 
 	//UŒ‚‚µ‚½‚Ì‚Í’N‚È‚Ì‚©

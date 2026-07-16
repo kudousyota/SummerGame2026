@@ -91,6 +91,9 @@ namespace
 	//落ちるスピード
 	constexpr float kSkyKickFallSpeed = -8.0f;
 
+	//攻撃の時に徐々に回転
+	constexpr float kRotateSpeed = 0.03f;
+
 	constexpr int kGaugeWidth = 200;
 }
 
@@ -147,9 +150,11 @@ void Player::Init()
 	m_pos = VGet(0.0f, 500.0f, 0.0f);
 	//移動速度
 	m_speed = 13.0f;
-	
+	//ステータス
 	m_hp = 100;
 	m_jumpPower = 15;
+	//攻撃力
+	m_attackPower = 20;
 	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("Data/Player.mv1");
 	m_hakutoHandle = LoadGraph("Data/kudonetta.png");
@@ -207,9 +212,10 @@ void Player::Update()
 
 		if (input.IsTriggered("Attack"))
 		{
-			TurnToInputDirection(right, forward);
 			TransitionTo(PlayerState::Attack);
 		}
+		//攻撃方向を入力方向に変える
+		TurnToInputDirection(right, forward);
 		if (input.IsPressed("up")	||
 			input.IsPressed("down") ||
 			input.IsPressed("left") ||
@@ -282,7 +288,6 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
-			TurnToInputDirection(right, forward);
 		}
 		//回避できる
 		if (input.IsTriggered("Dodge"))
@@ -312,7 +317,6 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
-			TurnToInputDirection(right, forward);
 		}
 		if (input.IsTriggered("Dodge"))
 		{
@@ -339,7 +343,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
-			TurnToInputDirection(right, forward);
+		
 		}
 		if (input.IsTriggered("Dodge"))
 		{
@@ -348,7 +352,7 @@ void Player::Update()
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
-			m_attackPower = 10;
+			m_attackPower = 20;
 		}
 		break;
 
@@ -424,9 +428,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
-			TurnToInputDirection(right, forward);
 		}
-
 		if (m_animation.GetAnimEndFlag())
 		{
 			if (m_isNextAttack)
@@ -450,7 +452,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
-			TurnToInputDirection(right, forward);
+			
 		}
 
 		if (m_animation.GetAnimEndFlag())
@@ -477,9 +479,7 @@ void Player::Update()
 		if (input.IsTriggered("Attack"))
 		{
 			m_isNextAttack = true;
-			TurnToInputDirection(right, forward);
 		}
-
 		if (input.IsTriggered("Dodge"))
 		{
 			TransitionTo(PlayerState::Dodge);
@@ -487,7 +487,7 @@ void Player::Update()
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
-			m_attackPower = 10;
+			m_attackPower = 20;
 		}
 		break;
 	case PlayerState::Dodge:
@@ -565,7 +565,16 @@ void Player::Update()
 		}
 	}
 
-	
+	//攻撃の時も向きをかえるようにする
+	if (m_currentState == PlayerState::Attack ||
+		m_currentState == PlayerState::Rush ||
+		m_currentState == PlayerState::Kick ||
+		m_currentState == PlayerState::SkyAttack ||
+		m_currentState == PlayerState::SkyRush ||
+		m_currentState == PlayerState::SkyKick)
+	{
+		TurnToInputDirection(right, forward);
+	}
 
 	//攻撃位置は垂直成分を除いた前方で決める
 	m_attackForward = m_forward;
@@ -859,7 +868,7 @@ void Player::TransitionTo(PlayerState nextState)
 		//重力を戻す
 		m_gravity = kGravity;
 
-		m_attackPower = 10;
+		m_attackPower = 20;
 
 		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
@@ -1021,16 +1030,40 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 {
 	float stickX = Input::Instance().GetStickLX();
 	float stickY = Input::Instance().GetStickLY();
+
 	Vector3 moveVec = right * stickX + forward * stickY;
 	moveVec.y = 0.0f;
-	if (moveVec.SqMagnitude() > 0.0001f)
+
+	if (moveVec.SqMagnitude() <= 0.0001f)
 	{
-		Vector3 dir = moveVec.Normalize();
-		m_angle = atan2f(dir.x, dir.z) + DX_PI_F;
-		m_forward.x = sinf(m_angle - DX_PI_F);
-		m_forward.y = 0.0f;
-		m_forward.z = cosf(m_angle - DX_PI_F);
+		return;
 	}
+
+	Vector3 moveDir = moveVec.Normalize();
+
+	//目標角度
+	float targetAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
+
+	//現在との差
+	float diff = targetAngle - m_angle;
+
+	//最短角度に補正
+	while (diff > DX_PI_F)
+	{
+		diff -= DX_TWO_PI_F;
+	}
+	while (diff < -DX_PI_F)
+	{
+		diff += DX_TWO_PI_F;
+	}
+
+	
+	m_angle += diff * kRotateSpeed;
+
+	//向きを更新
+	m_forward.x = sinf(m_angle - DX_PI_F);
+	m_forward.y = 0.0f;
+	m_forward.z = cosf(m_angle - DX_PI_F);
 }
 
 Vector3 Player::GetCollisionPosition() const
