@@ -229,7 +229,7 @@ void Player::Update()
 			TransitionTo(PlayerState::Jump);
 
 			//上にジャンプパワーを入れる
-			m_velocity.y = static_cast<int>(m_jumpPower);
+			m_velocity.y = static_cast<float>(m_jumpPower);
 
 			//ジャンプしたら空中ってことにする
 			m_isGround = false;
@@ -266,7 +266,7 @@ void Player::Update()
 			TransitionTo(PlayerState::Jump);
 
 			//上にジャンプパワーを入れる
-			m_velocity.y = static_cast<int>(m_jumpPower);
+			m_velocity.y = static_cast<float>(m_jumpPower);
 
 			//ジャンプしたら空中ってことにする
 			m_isGround = false;
