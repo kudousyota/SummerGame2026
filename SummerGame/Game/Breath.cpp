@@ -3,7 +3,7 @@
 
 namespace
 {
-	constexpr float kBreathRange = 80.0f;
+	constexpr float kBreathRange = 190.0f;
 }
 
 Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const AttackData& attack):

@@ -416,7 +416,7 @@ void Player::Update()
 		}
 		if (input.IsTriggered("Dodge"))
 		{
-			TransitionTo(PlayerState::Dodge);
+			TransitionTo(PlayerState::SkyDodge);
 		}
 		break;
 	case PlayerState::SkyAttack:
@@ -441,7 +441,7 @@ void Player::Update()
 		}
 		if (input.IsTriggered("Dodge"))
 		{
-			TransitionTo(PlayerState::Dodge);
+			TransitionTo(PlayerState::SkyDodge);
 		}
 		break;
 
@@ -497,6 +497,13 @@ void Player::Update()
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
+		}
+		break;
+	case PlayerState::SkyDodge:
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(PlayerState::Sky);
 		}
 		break;
 	}
@@ -957,7 +964,13 @@ void Player::TransitionTo(PlayerState nextState)
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
 		break;
-
+	case PlayerState::SkyDodge:
+		//フレームをリセット
+		m_dodgeFrame = 0;
+		//慣性のために移動速度をリセット
+		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
+		break;
 	default:
 		break;
 	}

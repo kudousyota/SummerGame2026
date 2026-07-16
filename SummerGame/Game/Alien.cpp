@@ -135,6 +135,7 @@ void Alien::Update()
 
 		AttackUpdate();
 
+		
 
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
@@ -162,16 +163,29 @@ void Alien::Update()
 		break;
 
 	case AlienState::Up:
+		//上昇
+		m_pos.y += m_velocity.y;
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(AlienState::Idle);
+			//アニメーションが終わると止まる
+			m_velocity.y = 0.0f;
 		}
+		
 		break;
 	case AlienState::Hit:
+
+		//攻撃中に被弾したら攻撃を消す
+		if (m_pBreath)
+		{
+			m_pBreath->Kill();
+		}
+		
 		//ダメージアニメーションが終わったらIdleに戻る
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(AlienState::Idle);
+		
 		}
 		break;
 
@@ -339,6 +353,7 @@ void Alien::TransitionTo(AlienState nextState)
 		break;
 	case AlienState::Up:
 		m_animation.ChangeAnim(kUPAnimName, false, 0.5f);
+		m_velocity.y = 0.3f;
 		break;
 	case AlienState::Hit:
 		//ヒットアニメーションがないので今は適当にほかのモーションを渡す

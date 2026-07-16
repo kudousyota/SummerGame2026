@@ -47,6 +47,7 @@ private:
 		Jump,
 		Dodge,
 		Sky,
+		SkyDodge,
 		SkyAttack,
 		SkyRush,
 		SkyKick,
