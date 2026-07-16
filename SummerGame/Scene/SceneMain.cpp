@@ -3,7 +3,7 @@
 #include "../System/Input.h"
 #include "../System/Timer.h"
 #include "../DataLoader/DataManager.h"
-#include "../System/Model.h";
+#include "../System/Model.h"
 #include "../System/ProjectileManager.h"
 #include "GameClearedScene.h"
 #include "SceneController.h"
