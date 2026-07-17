@@ -729,6 +729,10 @@ void Player::ApplyDamage(int damage)
 		//例1: プレイヤーのステートをウィッチタイム中に変える場合
 		//TransitionTo(PlayerState::WitchTime); 
 
+
+		
+
+
 		//敵のアニメーションを遅くする
 		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 300);
 

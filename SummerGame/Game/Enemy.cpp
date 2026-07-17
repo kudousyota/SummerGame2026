@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "../System/CollisionManager.h"
 #include "Player.h"
+#include "../System/Timer.h"
 
 Enemy::Enemy():
 	m_modelHandle(-1),
@@ -12,7 +13,8 @@ Enemy::Enemy():
 	m_attackFrame(0),
 	m_isAttack(false),
 	m_attackDir(VGet(0.0f, 0.0f, 0.0f)),
-	m_scale(0.0f,0.0f,0.0f)
+	m_scale(0.0f,0.0f,0.0f),
+	m_timeScale(0.0f)
 {
 }
 
@@ -29,6 +31,9 @@ void Enemy::Init()
 
 	//最初は正面を向く
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+
+	//タイムスケールの取得
+	m_timeScale = Timer::Instance().GetEnemyTimeScale();
 
 	CollisionManager::Instance().Register(this);
 }

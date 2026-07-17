@@ -28,7 +28,8 @@ Alien::Alien():
 	m_currentState(AlienState::Idle),
 	m_prevState(AlienState::Idle),
 	m_modelDisplayOffsetY(0.0f),
-	m_headBone(-1)
+	m_headBone(-1),
+	m_pBreath(nullptr)
 {
 }
 
@@ -70,10 +71,8 @@ void Alien::Update()
 	//当たり判定
 	Character::Collision();
 
-	//タイムスケールの取得
-	float scale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションの更新
-	m_animation.Update(scale);
+	m_animation.Update(m_timeScale);
 
 	
 
@@ -84,7 +83,7 @@ void Alien::Update()
 	}
 
 	//攻撃クールタイム//攻撃のクールタイムもウィッチタイムで遅くする
-	UpdateCooldown(scale);
+	UpdateCooldown(m_timeScale);
 
 	//ステート
 	switch (m_currentState)
@@ -128,7 +127,7 @@ void Alien::Update()
 		else
 		{
 			//プレイヤーの方向に少しづつ向きを合わせる
-			ChasePlayer(0.15f, scale);
+			ChasePlayer(0.15f, m_timeScale);
 		}
 	}
 		break;
@@ -227,6 +226,10 @@ void Alien::Draw()
 void Alien::OnHit(const AttackData& attackdata)
 {
 	m_hp -= attackdata.GetDamage();
+
+	//攻撃されたらプレイヤーの方を向く
+	FacePlayer();
+
 	if (attackdata.GetAttackType() == AttackType::SkyKick)
 	{
 		TransitionTo(AlienState::Down);

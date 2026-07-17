@@ -74,15 +74,13 @@ void Angel::Update()
 	}
 
 	Character::Collision();
-	//敵用のタイムスケールを取得
-	float scale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションのフレーム
 	float animTime = m_animation.GetCurrentAnimTime();
 
 	//攻撃クールタイム
-	UpdateCooldown(scale);
+	UpdateCooldown(m_timeScale);
 
-	m_animation.Update(scale);
+	m_animation.Update(m_timeScale);
 
 	//float animpos = MV1GetFramePosition(m_modelHandle,50);
 
@@ -127,7 +125,7 @@ void Angel::Update()
 		else
 		{
 			//追跡
-			ChasePlayer(0.15f, scale);
+			ChasePlayer(0.15f, m_timeScale);
 		}
 		
 	}

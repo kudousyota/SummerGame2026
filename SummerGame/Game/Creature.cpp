@@ -41,6 +41,8 @@ void Creature::Init()
 
 	m_attackPower = 20;
 	
+	m_collisionRadius = 130.0f;
+	m_collisionHeight = 530.0f;
 
 	m_currentState = CreatureState::Idle;
 	m_prevState = CreatureState::Idle;
@@ -63,10 +65,8 @@ void Creature::Update()
 	//当たり判定の更新
 	Character::Collision();
 
-	//タイムスケールの取得
-	float scale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションの更新
-	m_animation.Update(scale);
+	m_animation.Update(m_timeScale);
 
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
@@ -75,7 +75,7 @@ void Creature::Update()
 	}
 	
 	//攻撃クールタイム//攻撃のクールタイムもウィッチタイムで遅くする
-	UpdateCooldown(scale);
+	UpdateCooldown(m_timeScale);
 
 
 	//ステート
@@ -130,7 +130,7 @@ void Creature::Update()
 		else
 		{
 			//プレイヤーの方向に少しづつ向きを合わせる
-			ChasePlayer(0.15f, scale);
+			ChasePlayer(0.15f, m_timeScale);
 		}
 	}
 		break;

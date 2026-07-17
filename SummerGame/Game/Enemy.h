@@ -16,8 +16,8 @@ public:
     void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; }
     bool IsDead() const { return m_isDead; }
 
-    float GetCollisionRadius() const override { return 70.0f; }
-    float GetCollisionHeight() const override { return 100.0f; }
+    float GetCollisionRadius() const override { return m_collisionRadius; }
+    float GetCollisionHeight() const override { return m_collisionHeight; }
 protected:
     //共通の値
     static constexpr float kAttackRange = 150.0f;
@@ -33,6 +33,9 @@ protected:
     bool m_isAttack;
     Vector3 m_attackDir;
     Vector3 m_scale;
+
+    //タイムスケールの取得
+    float m_timeScale;
 
     //モデルの行列//ここはほかのとこでプレイヤーとまとめる可能性あり
     void UpdateModelMatrix();

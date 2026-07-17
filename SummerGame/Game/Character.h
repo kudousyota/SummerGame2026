@@ -30,9 +30,9 @@ public:
 	virtual Vector3 GetPosition() const { return m_pos; }
 
 	//カプセルの半径(XZ方向)
-	virtual float GetCollisionRadius() const;
+	virtual float GetCollisionRadius() const { return m_collisionRadius; }
 	//カプセルの高さ(Y方向の長さ)
-	virtual float GetCollisionHeight() const;
+	virtual float GetCollisionHeight() const { return m_collisionHeight; };
 
 	//ジャスト回避用の半径を取得するための関数(通常の半径と同じにしとく)
 	virtual float GetJustDodgeRadius() const { return GetCollisionRadius(); }
@@ -59,6 +59,10 @@ protected:
 	Vector3 m_pos;
 	Vector3 m_velocity;
 	bool m_isGround;
+	//カプセルの半径(XZ方向)
+	float m_collisionRadius;
+	//カプセルの高さ(Y方向の長さ)
+	float m_collisionHeight;
 	std::shared_ptr<Stage> m_pStage;
 	
 	

@@ -11,7 +11,9 @@ Character::Character():
 	m_angle(0),
 	m_modelHandle(-1),
 	m_velocity(VGet(0.0f,0.0f,0.0f)),
-	m_isGround(false)
+	m_isGround(false),
+	m_collisionRadius(0.0f),
+	m_collisionHeight(0.0f)
 {
 }
 
@@ -27,7 +29,8 @@ void Character::Init()
 	m_gravity = 0.5f;
 	m_pos = VGet(0.0f, 0.0f, 0.0f);
 	m_angle = 0.0f;
-	
+	m_collisionRadius = 30.0f;
+	m_collisionHeight = 100.0f;
 }
 
 void Character::Collision()
@@ -83,16 +86,6 @@ void Character::ApplyDamage(int damage)
 	{
 		m_hp = 0;
 	}
-}
-
-float Character::GetCollisionRadius() const
-{
-	return 30.0f;
-}
-
-float Character::GetCollisionHeight() const
-{
-	return 100.0f;
 }
 
 Vector3 Character::GetCollisionPosition() const
