@@ -32,8 +32,7 @@ void Enemy::Init()
 	//最初は正面を向く
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
-	//タイムスケールの取得
-	m_timeScale = Timer::Instance().GetEnemyTimeScale();
+	
 
 	CollisionManager::Instance().Register(this);
 }
@@ -75,6 +74,7 @@ bool Enemy::CanSeePlayer()
 {
 	//プレイヤーまでのベクトル
 	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	dir.y = 0.0f;
 	float distSq = dir.SqMagnitude();
 
 	//視認距離の外ならfalse
@@ -156,6 +156,15 @@ void Enemy::DrawDebugSight() const
 
 void Enemy::FacePlayer()
 {
+	
+	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	dir.y = 0.0f;
+
+	if (dir.SqMagnitude() < 0.00001f)
+	{
+		return;
+	}
+
 	m_forward = (m_pPlayer->GetPosition() - m_pos).Normalize();
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 }
@@ -163,6 +172,7 @@ void Enemy::FacePlayer()
 void Enemy::ChasePlayer(float rotateSpeed, float scale)
 {
 	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
+	dir.y = 0.0f;
 	Vector3 targetDir = dir.Normalize();
 
 	m_forward += (targetDir - m_forward) * rotateSpeed;

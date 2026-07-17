@@ -21,6 +21,7 @@ namespace
 
 	//ブレス攻撃するために口元付近のリグを取る
 	const char* const kAttackRig = "mixamorig1:Head";
+	constexpr float kBreathRadius = 80.0f;
 
 }
 
@@ -53,6 +54,9 @@ void Alien::Init()
 	//モデルのスケール
 	m_scale = VGet(1.0f, 1.0f, 1.0f);
 
+	m_collisionRadius = 50.0f;
+	m_collisionHeight = 160.0f;
+
 	m_modelHandle = Model::Instance().CreatAlienModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 
@@ -70,7 +74,8 @@ void Alien::Update()
 	}
 	//当たり判定
 	Character::Collision();
-
+	//タイムスケールの取得
+	m_timeScale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションの更新
 	m_animation.Update(m_timeScale);
 
@@ -256,15 +261,6 @@ void Alien::ChasePlayer(float rotateSpeed, float scale)
 	m_pos += m_forward * m_speed * scale;
 }
 
-void Alien::FacePlayer()
-{
-	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-	dir.y = 0.0f;
-
-	m_forward = dir.Normalize();
-	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-}
-
 void Alien::KickDown()
 {
 	TransitionTo(AlienState::Down);
@@ -273,7 +269,7 @@ void Alien::KickDown()
 void Alien::AttackUpdate()
 {
 	//ブレス攻撃情報
-	AttackData attack(CharacterType::Enemy, AttackType::Breath, m_attackPower);
+	AttackData attack(CharacterType::Enemy, AttackType::Breath, m_attackPower, kBreathRadius);
 
 	//現在のアニメーションを取得
 	float animFrame = m_animation.GetCurrentAnimTime();

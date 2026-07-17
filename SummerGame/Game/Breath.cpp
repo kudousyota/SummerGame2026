@@ -17,7 +17,7 @@ void Breath::Update()
 	//前のフレームを保存
 	Vector3 endpos = m_pos + m_forward * kBreathRange;
 
-	CollisionManager::Instance().CheckAttackCapsule(m_attackData, m_pos, endpos, 25.0f);
+	CollisionManager::Instance().CheckAttackCapsule(m_attackData, m_pos, endpos);
 
 	//寿命
 	m_lifeFrame++;
@@ -31,7 +31,7 @@ void Breath::Draw()
 	//前のフレームを保存
 	Vector3 endpos = m_pos + m_forward * kBreathRange;
 
-	DrawCapsule3D(m_pos, endpos, 25.0f, 4, 0xffffff, 0xffffff, false);
+	DrawCapsule3D(m_pos, endpos, m_attackData.GetRadius(), 4, 0xffffff, 0xffffff, false);
 }
 
 void Breath::Kill()

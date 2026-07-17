@@ -90,7 +90,7 @@ namespace
 	constexpr float kSkyKickMove = 15.0f;
 	//落ちるスピード
 	constexpr float kSkyKickFallSpeed = -8.0f;
-
+	constexpr float kSkyKickRadius = 140.0f;
 	//攻撃の時に徐々に回転
 	constexpr float kRotateSpeed = 0.03f;
 
@@ -643,34 +643,6 @@ void Player::Draw()
 
 	DrawCapsule3D(start,end,GetCollisionRadius(),16,0xffffff,0xffffff,false);
 
-	float animTime = m_animation.GetCurrentAnimTime();
-	//攻撃判定
-	if (m_currentState == PlayerState::Attack && animTime >= kAttackStartFrame && animTime <= kAttackEndFrame)
-	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
-	}
-	if (m_currentState == PlayerState::Rush)
-	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
-	}
-	if (m_currentState == PlayerState::Kick && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
-	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x0000ff, 0x0000ff, false);
-	}
-
-	//空中攻撃の判定描画(地上と同じ色分けにする)
-	if (m_currentState == PlayerState::SkyAttack)
-	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0xffffff, 0xffffff, false);
-	}
-	if (m_currentState == PlayerState::SkyRush)
-	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x00ffff, 0x00ffff, false);
-	}
-	if (m_currentState == PlayerState::SkyKick && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
-	{
-		DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 6, 0x0000ff, 0x0000ff, false);
-	}
 
 	//プレイヤーの状態によって、表示する半径と色を変える
 	float drawRadius = 100.0f; //デフォルトの半径
@@ -780,10 +752,6 @@ float Player::GetJustDodgeRadius() const
 
 void Player::AttackUpdate()
 {
-
-	//攻撃データを作成
-	AttackData attack(CharacterType::Player,AttackType::SkyKick, m_attackPower);
-
 	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush && m_currentState != PlayerState::Kick && m_currentState != PlayerState::SkyAttack && m_currentState != PlayerState::SkyRush && m_currentState != PlayerState::SkyKick)
 	{
 		return;
@@ -801,7 +769,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
 
 			m_isAttackHit = true;
 		}
@@ -812,7 +780,7 @@ void Player::AttackUpdate()
 		{
 			if (!m_rushHit[i] && animTime >= kAttackDamageFrame[i])
 			{
-				CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
+				CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
 
 				m_rushHit[i] = true;
 			}
@@ -824,7 +792,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
 
 			m_isAttackHit = true;
 		}
@@ -836,7 +804,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
 
 			m_isAttackHit = true;
 		}
@@ -848,7 +816,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos, 50.0f);
+			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
 
 			m_isAttackHit = true;
 		}
@@ -1014,7 +982,26 @@ AttackType Player::GetAttackType()const
 
 AttackData Player::CreateAttackData()
 {
-	return AttackData(CharacterType::Player,GetAttackType(),m_attackPower);
+	//攻撃ごとに半径をかえれるようにする
+	float radius = 0.0f;
+	switch (GetAttackType())
+	{
+	case AttackType::Punch:
+		radius = 80.0f;
+		break;
+	case AttackType::Rush:
+		radius = 60.0f;
+		break;
+	case AttackType::Kick:
+		radius = 90.0f;
+		break;
+	case AttackType::SkyKick:
+		radius = 140.0f;
+		break;
+
+	}
+
+	return AttackData(CharacterType::Player,GetAttackType(),m_attackPower,radius);
 }
 
 void Player::MoveAttack(float distance)

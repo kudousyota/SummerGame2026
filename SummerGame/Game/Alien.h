@@ -48,7 +48,6 @@ private:
 	//“–‚½‚è”»’è‚ÌˆÊ’u‚ğæ“¾‚·‚éŠÖ”
 	Vector3 GetCollisionPosition() const override;
 	void ChasePlayer(float rotateSpeed, float scale)override;
-	void FacePlayer()override;
 	void KickDown();
 
 	void TransitionTo(AlienState nextState);

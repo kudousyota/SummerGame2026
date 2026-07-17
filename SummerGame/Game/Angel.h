@@ -10,6 +10,8 @@ public:
 	void Init()override;
 	void Update() override;
 	void Draw()override;
+	//被弾処理
+	void OnHit(const AttackData& attackdata);
 
 private:
 

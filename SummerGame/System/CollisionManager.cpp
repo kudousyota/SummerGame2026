@@ -28,12 +28,15 @@ void CollisionManager::Unregister(Character* character)
 	}
 }
 //球状の攻撃判定を行う
-void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos, float radius)
+void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos)
 {
+#ifdef _DEBUG
+	DrawSphere3D(pos.ToDxLibVector(), attackdata.GetRadius(), 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
+#endif //_DEBUG
+
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
-		
 		//攻撃した側と同じタイプには当たらない
 		if (character->GetCharacterType() == attackdata.GetAttacker())
 		{
@@ -66,7 +69,7 @@ void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vec
 		//ジャスト回避
 		//受付中なら100、普段は30
 		float justDodgeRadius = character->GetJustDodgeRadius(); 
-		float combinedJust = radius + justDodgeRadius;
+		float combinedJust = attackdata.GetRadius() + justDodgeRadius;
 
 		if (dist2 <= combinedJust * combinedJust)
 		{
@@ -82,7 +85,7 @@ void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vec
 
 		//ジャスト回避が不発、または受付時間外だった場合、通常の判定でチェック
 		float normalRadius = character->GetCollisionRadius(); //30.0f
-		float combinedNormal = radius + normalRadius;
+		float combinedNormal = attackdata.GetRadius() + normalRadius;
 
 		if (dist2 <= combinedNormal * combinedNormal)
 		{
@@ -92,8 +95,12 @@ void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vec
 	}
 }
 
-void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end, float radius)
+void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end)
 {
+
+#ifdef _DEBUG
+	DrawCapsule3D(start.ToDxLibVector(), end.ToDxLibVector(), attackdata.GetRadius(), 4, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
+#endif //_DEBUG
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
@@ -102,18 +109,18 @@ void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Ve
 		{
 			continue;
 		}
-		float capsuleradius = character->GetCollisionRadius();
-		float capsuleheight = character->GetCollisionHeight();
+		float capsuleRadius = character->GetCollisionRadius();
+		float capsuleHeight = character->GetCollisionHeight();
 
 		Vector3 a = character->GetCollisionPosition();
 
-		Vector3 b = a + VGet(0.0f, capsuleheight, 0.0f);
+		Vector3 b = a + VGet(0.0f, capsuleHeight, 0.0f);
 
 		float distance = Segment_Segment_MinLength(start, end, a, b);
 
-		//受付中なら100、普段は30
+		
 		float justDodgeRadius = character->GetJustDodgeRadius();
-		float justRange = radius + justDodgeRadius;
+		float justRange = attackdata.GetRadius() + justDodgeRadius;
 
 
 		if (distance <= justRange)
@@ -127,7 +134,7 @@ void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Ve
 		}
 
 		// 通常の当たり判定
-		float hitRange = radius + capsuleradius;
+		float hitRange = attackdata.GetRadius() + capsuleRadius;
 
 		if (distance <= hitRange)
 		{

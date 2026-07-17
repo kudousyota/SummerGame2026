@@ -14,8 +14,8 @@ enum class AttackType
 class AttackData
 {
 public:
-	//’N‚©//UŒ‚ƒ^ƒCƒv//UŒ‚—Í‚ğ“n‚·
-	AttackData(CharacterType attacker, AttackType type, int damage);
+	//’N‚©//UŒ‚ƒ^ƒCƒv//UŒ‚—Í//”¼Œa
+	AttackData(CharacterType attacker, AttackType type, int damage,float radius);
 
 	//UŒ‚‚µ‚½‚Ì‚Í’N‚È‚Ì‚©
 	void SetAttacker(CharacterType attacker) { m_attacker = attacker; }
@@ -29,10 +29,13 @@ public:
 	void SetDamage(int damage) { m_damage = damage; }
 	int GetDamage()const { return m_damage; }
 
+	float GetRadius() const { return m_radius; }
+
 private:
 	CharacterType m_attacker = CharacterType::Player;
 	AttackType m_attackType = AttackType::Punch;
 	int m_damage = 0;
+	float m_radius = 0;
 	
 };
 

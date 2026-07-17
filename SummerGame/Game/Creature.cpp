@@ -17,7 +17,9 @@ namespace
 	const char* const kPunchAnimName = "Enemy|Punch";
 
 	const char* const kDamageAnimName = "Enemy|Hit";
-	
+
+	constexpr float kAttackRadius = 180.0f;
+	constexpr float kPumncRadius = 130.0f;
 }
 
 Creature::Creature():
@@ -64,6 +66,9 @@ void Creature::Update()
 	}
 	//当たり判定の更新
 	Character::Collision();
+
+	//タイムスケールの取得
+	m_timeScale = Timer::Instance().GetEnemyTimeScale();
 
 	//アニメーションの更新
 	m_animation.Update(m_timeScale);
@@ -191,10 +196,10 @@ void Creature::Draw()
 	DrawDebugCollision();
 
 	//攻撃判定表示
-	if (m_attackFrame > 0)
+	/*if (m_attackFrame > 0)
 	{
 		DrawSphere3D(m_attackPos.ToDxLibVector(),50.0f,16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
-	}
+	}*/
 
 	//HP表示
 	DrawFormatString(300,50,GetColor(255, 255, 255),"CreatureHP:%d",m_hp);
@@ -214,12 +219,25 @@ void Creature::OnDead()
 void Creature::AttackUpdate()
 {
 
+	AttackType type;
+	float radius;
+	if (m_currentState == CreatureState::Punch)
+	{
+		type = AttackType::Punch;
+		radius = kPumncRadius;
+	}
+	else
+	{
+		type = AttackType::Attack;
+		radius = kAttackRadius;
+	}
+
 	//攻撃データを作成
-	AttackData attack(CharacterType::Enemy,m_currentState == CreatureState::Punch ? AttackType::Punch : AttackType::Attack,m_attackPower);
+	AttackData attack(CharacterType::Enemy,m_currentState == CreatureState::Punch ? AttackType::Punch : AttackType::Attack,m_attackPower, kAttackRadius);
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
 	//攻撃判定を出す
-	CollisionManager::Instance().CheckAttackSphere(attack,m_attackPos,50.0f);
+	CollisionManager::Instance().CheckAttackSphere(attack,m_attackPos);
 	m_isAttacking = true;
 	m_attackFrame = 30;
 }
@@ -282,6 +300,9 @@ void Creature::TransitionTo(CreatureState nextState)
 void Creature::OnHit(const AttackData& attackdata)
 {
 	ApplyDamage(attackdata.GetDamage());
+
+	//攻撃されたらプレイヤーの方を向く
+	FacePlayer();
 }
 
 void Creature::OnDamaged()

@@ -12,9 +12,9 @@ public:
 	void Unregister(Character* character);
 
 	//攻撃用の球判定
-	void CheckAttackSphere(const AttackData& attackdata, const Vector3& pos, float radius);
+	void CheckAttackSphere(const AttackData& attackdata, const Vector3& pos);
 	//攻撃用のカプセル判定
-	void CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end, float radius);
+	void CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end);
 	//ステージとの判定
 	bool CheckStageWall(Character* caracter,int stagehandle);
 	//ステージの地面

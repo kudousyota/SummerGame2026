@@ -37,6 +37,8 @@ namespace
 		160
 	};
 
+
+	constexpr float kAttackRadius = 80.0f;
 }
 
 Angel::Angel():
@@ -57,10 +59,14 @@ void Angel::Init()
 	m_currentState = AngelState::Shout;
 	m_prevState = AngelState::Shout;
 
+	//ステータス
 	m_hp = 300;
 	m_attackPower = 20;
 
 	m_scale = VGet(1.0f, 1.0f, 1.0f);
+
+	m_collisionRadius = 50.0f;
+	m_collisionHeight = 160.0f;
 
 	m_modelHandle = Model::Instance().CreateAngelModel();
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
@@ -76,6 +82,9 @@ void Angel::Update()
 	Character::Collision();
 	//アニメーションのフレーム
 	float animTime = m_animation.GetCurrentAnimTime();
+
+	//タイムスケールの取得
+	m_timeScale = Timer::Instance().GetEnemyTimeScale();
 
 	//攻撃クールタイム
 	UpdateCooldown(m_timeScale);
@@ -133,13 +142,13 @@ void Angel::Update()
 	case AngelState::DancingAttack:
 		{
 		//攻撃データを作成
-		AttackData attack(CharacterType::Enemy,AttackType::Punch,m_attackPower);
+		AttackData attack(CharacterType::Enemy,AttackType::Punch,m_attackPower, kAttackRadius);
 		
 			for (int i = 0; i < kDancingAttackCount; i++)
 			{
 				if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
 				{
-					CollisionManager::Instance().CheckAttackSphere(attack, m_pos, kDanicgAttackRadius);
+					CollisionManager::Instance().CheckAttackSphere(attack, m_pos);
 
 					m_dancingAttackHit[i] = true;
 				
@@ -225,3 +234,10 @@ void Angel::OnDamaged()
 	TransitionTo(AngelState::Damage);
 }
 
+void Angel::OnHit(const AttackData& attackdata)
+{
+	ApplyDamage(attackdata.GetDamage());
+
+	//攻撃されたらプレイヤーの方を向く
+	FacePlayer();
+}
