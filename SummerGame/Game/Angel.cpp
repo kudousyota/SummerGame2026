@@ -80,8 +80,6 @@ void Angel::Update()
 	}
 
 	Character::Collision();
-	//アニメーションのフレーム
-	float animTime = m_animation.GetCurrentAnimTime();
 
 	//タイムスケールの取得
 	m_timeScale = Timer::Instance().GetEnemyTimeScale();
@@ -90,6 +88,8 @@ void Angel::Update()
 	UpdateCooldown(m_timeScale);
 
 	m_animation.Update(m_timeScale);
+	//アニメーションのフレーム
+	float animTime = m_animation.GetCurrentAnimTime();
 
 	//float animpos = MV1GetFramePosition(m_modelHandle,50);
 
@@ -144,16 +144,16 @@ void Angel::Update()
 		//攻撃データを作成
 		AttackData attack(CharacterType::Enemy,AttackType::Punch,m_attackPower, kAttackRadius);
 		
-			for (int i = 0; i < kDancingAttackCount; i++)
+		for (int i = 0; i < kDancingAttackCount; i++)
+		{
+			if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
 			{
-				if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
-				{
-					CollisionManager::Instance().CheckAttackSphere(attack, m_pos);
+				CollisionManager::Instance().CheckAttackSphere(
+					CreateAttackData(), m_pos);
 
-					m_dancingAttackHit[i] = true;
-				
-				}
+				m_dancingAttackHit[i] = true;
 			}
+		}
 			//アニメーションが終わったら追跡に戻る
 			if (m_animation.GetAnimEndFlag())
 			{
@@ -240,4 +240,14 @@ void Angel::OnHit(const AttackData& attackdata)
 
 	//攻撃されたらプレイヤーの方を向く
 	FacePlayer();
+}
+
+AttackType Angel::GetAttackType() const
+{
+	return AttackType::Punch;
+}
+
+float Angel::GetAttackRadius() const
+{
+	return 80.0f;
 }

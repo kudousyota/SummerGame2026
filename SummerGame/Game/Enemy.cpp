@@ -61,6 +61,11 @@ CharacterType Enemy::GetCharacterType() const
 	return CharacterType::Enemy;
 }
 
+AttackData Enemy::CreateAttackData() const
+{
+	return AttackData(CharacterType::Enemy,GetAttackType(),m_attackPower,GetAttackRadius());
+}
+
 void Enemy::UpdateModelMatrix()
 {
 	MATRIX scr = MGetScale(m_scale);

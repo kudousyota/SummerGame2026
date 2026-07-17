@@ -310,3 +310,13 @@ void Creature::OnDamaged()
 	TransitionTo(CreatureState::Damage);
 }
 
+AttackType Creature::GetAttackType() const
+{
+	return AttackType::Breath;
+}
+
+float Creature::GetAttackRadius() const
+{
+	return 80.0f;
+}
+

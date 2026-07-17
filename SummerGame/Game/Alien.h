@@ -13,6 +13,9 @@ public:
 
 	void OnHit(const AttackData& attackdata)override;
 
+	AttackType GetAttackType() const override;
+	float GetAttackRadius() const override;
+
 private:
 
 	enum class AlienState

@@ -23,6 +23,9 @@ namespace
 	const char* const kAttackRig = "mixamorig1:Head";
 	constexpr float kBreathRadius = 80.0f;
 
+	//このフレーム数でブレスを発射する
+	constexpr float kBreathFrame = 20.0f;
+
 }
 
 Alien::Alien():
@@ -230,7 +233,7 @@ void Alien::Draw()
 
 void Alien::OnHit(const AttackData& attackdata)
 {
-	m_hp -= attackdata.GetDamage();
+	ApplyDamage(attackdata.GetDamage());
 
 	//攻撃されたらプレイヤーの方を向く
 	FacePlayer();
@@ -268,13 +271,10 @@ void Alien::KickDown()
 
 void Alien::AttackUpdate()
 {
-	//ブレス攻撃情報
-	AttackData attack(CharacterType::Enemy, AttackType::Breath, m_attackPower, kBreathRadius);
 
 	//現在のアニメーションを取得
 	float animFrame = m_animation.GetCurrentAnimTime();
-	//このフレーム数でブレスを発射する
-	constexpr float kBreathFrame = 20.0f;
+	
 	//頭のボーンの位置
 	VECTOR headPos = MV1GetFramePosition(m_modelHandle, m_headBone);
 
@@ -293,7 +293,7 @@ void Alien::AttackUpdate()
 	//指定したフレーム数でブレスを生成
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
-		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, attack)));
+		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, CreateAttackData())));
 		//発射位置と向きを正規化
 		m_pBreath->SetPos(Vector3(pos));
 		m_pBreath->SetForward(Vector3(forward));
@@ -363,3 +363,12 @@ void Alien::TransitionTo(AlienState nextState)
 	}
 }
 
+AttackType Alien::GetAttackType() const
+{
+	return AttackType::Breath;
+}
+
+float Alien::GetAttackRadius() const
+{
+	return kBreathRadius;
+}

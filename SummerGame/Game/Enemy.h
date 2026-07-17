@@ -18,6 +18,10 @@ public:
 
     float GetCollisionRadius() const override { return m_collisionRadius; }
     float GetCollisionHeight() const override { return m_collisionHeight; }
+
+    virtual AttackType GetAttackType() const = 0;
+    virtual float GetAttackRadius()const = 0;
+    AttackData CreateAttackData()const;
 protected:
     //‹¤’Ê‚Ì’l
     static constexpr float kAttackRange = 150.0f;

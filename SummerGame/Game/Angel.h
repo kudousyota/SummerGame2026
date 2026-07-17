@@ -13,6 +13,9 @@ public:
 	//被弾処理
 	void OnHit(const AttackData& attackdata);
 
+	AttackType GetAttackType() const override;
+	float GetAttackRadius() const override;
+
 private:
 
 	enum class AngelState

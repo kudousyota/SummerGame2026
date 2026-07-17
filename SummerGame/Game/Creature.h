@@ -13,6 +13,9 @@ public:
 	void OnHit(const AttackData& attackdata);
 	void OnDead();
 
+	virtual AttackType GetAttackType() const override;
+	virtual float GetAttackRadius() const override;
+
 private:
 	enum class CreatureState
 	{
