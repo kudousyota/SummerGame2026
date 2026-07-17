@@ -659,6 +659,25 @@ void Player::Draw()
 	//プレイヤーのジャスト回避判定を描画
 	DrawSphere3D(VGet(m_pos.x, m_pos.y + GetCollisionHeight() * 0.5f, m_pos.z), drawRadius, 16, drawColor, drawColor, false);
 	
+	//当たり判定の描画
+	if (m_currentState == PlayerState::Attack ||
+		m_currentState == PlayerState::Rush ||
+		m_currentState == PlayerState::Kick ||
+		m_currentState == PlayerState::SkyAttack ||
+		m_currentState == PlayerState::SkyRush ||
+		m_currentState == PlayerState::SkyKick)
+	{
+		AttackData data = CreateAttackData();
+
+		DrawSphere3D(
+			m_attackPos.ToDxLibVector(),
+			data.GetRadius(),
+			16,
+			GetColor(0, 255, 0),
+			GetColor(0, 255, 0),
+			false);
+	}
+
 
 	//printfDx("CollisionHeight = %f\n", GetCollisionHeight());
 	//HP

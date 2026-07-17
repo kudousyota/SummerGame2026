@@ -30,9 +30,9 @@ void CollisionManager::Unregister(Character* character)
 //球状の攻撃判定を行う
 void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos)
 {
-#ifdef _DEBUG
-	DrawSphere3D(pos.ToDxLibVector(), attackdata.GetRadius(), 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
-#endif //_DEBUG
+//#ifdef _DEBUG
+//	DrawSphere3D(pos.ToDxLibVector(), attackdata.GetRadius(), 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
+//#endif //_DEBUG
 
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)

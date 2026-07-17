@@ -19,7 +19,7 @@ namespace
 
 	const char* const kDamageAnimName = "Angel|Hit";
 
-	constexpr int kDanicgAttackRadius = 180;
+	//constexpr int kDanicgAttackRadius = 180;
 
 	//ラッシュ攻撃回数
 	constexpr int kDancingAttackCount = 8;
@@ -38,7 +38,7 @@ namespace
 	};
 
 
-	constexpr float kAttackRadius = 80.0f;
+	constexpr float kAttackRadius = 180.0f;
 }
 
 Angel::Angel():
@@ -141,8 +141,6 @@ void Angel::Update()
 		break;
 	case AngelState::DancingAttack:
 		{
-		//攻撃データを作成
-		AttackData attack(CharacterType::Enemy,AttackType::Punch,m_attackPower, kAttackRadius);
 		
 		for (int i = 0; i < kDancingAttackCount; i++)
 		{
@@ -185,6 +183,24 @@ void Angel::Draw()
 #ifdef _DEBUG
 	DrawDebugCollision();
 	DrawFormatString(300, 120, GetColor(255, 255, 255), "AngelHP:%d", m_hp);
+
+	float animTime = m_animation.GetCurrentAnimTime();
+
+	bool drawAttack = false;
+
+	for (int i = 0; i < kDancingAttackCount; i++)
+	{
+		if (animTime >= kAttackDamageFrame[i] &&animTime < kAttackDamageFrame[i] + 5)//表示するフレーム
+		{
+			drawAttack = true;
+			break;
+		}
+	}
+	//敵の攻撃タイミングでデバッグ表示
+	if (m_currentState ==AngelState::DancingAttack && drawAttack)
+	{
+		DrawSphere3D(m_pos.ToDxLibVector(),CreateAttackData().GetRadius(),16,0xffffff,0xffffff,false);
+	}
 
 	DrawDebugSight();
 #endif
@@ -249,5 +265,5 @@ AttackType Angel::GetAttackType() const
 
 float Angel::GetAttackRadius() const
 {
-	return 80.0f;
+	return kAttackRadius;
 }

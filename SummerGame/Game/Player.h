@@ -119,8 +119,7 @@ private:
 
 	AttackData CreateAttackData();
 
-	float m_radius;
-
+	
 	//攻撃で進む処理
 	void MoveAttack(float distance);
 	//攻撃時に方向を変えるための関数
