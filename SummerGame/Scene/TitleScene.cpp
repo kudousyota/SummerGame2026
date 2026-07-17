@@ -93,7 +93,7 @@ void TitleScene::FadeDraw()
 
 	//値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(fade_interval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA,255 * rate); //αブレンド
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate)); //αブレンド
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);	//画面全体に黒フィルムをかける
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//ブレンドしない
 

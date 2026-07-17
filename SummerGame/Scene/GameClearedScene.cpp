@@ -107,7 +107,7 @@ void GameClearedScene::FadeDraw()
 	NormalDraw();
 	//値の範囲を一旦0.0~1.0fにしておくといろいろと扱いやすい
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * rate);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate));
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
