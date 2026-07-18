@@ -2,7 +2,7 @@
 #include "../Game/Character.h"
 #include <algorithm>
 #include <vector>
-#include "AttackData.h"
+#include "../DataLoader/AttackData.h"
 
 
 //シングルトンのCollisionManagerを取得

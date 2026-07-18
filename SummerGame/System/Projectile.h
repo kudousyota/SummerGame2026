@@ -1,6 +1,6 @@
 #pragma once
 #include "Vector3.h"
-#include "AttackData.h"
+#include "../DataLoader/AttackData.h"
 //“G‚ªg‚¤“Š±•¨‚â‹…‚È‚Ç‚ÌŠî’êƒNƒ‰ƒX
 class Projectile
 {

@@ -2,8 +2,8 @@
 #include "../System/Vector3.h"
 #include "../System/Animation.h"
 #include <memory>
-#include "../System/CharacterType.h"
-#include "../System/AttackData.h"
+#include "../DataLoader/CharacterType.h"
+#include "../DataLoader/AttackData.h"
 
 //プレイヤーとエネミーの基底クラス
 class Input;
