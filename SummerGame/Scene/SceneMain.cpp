@@ -33,7 +33,7 @@ void SceneMain::NormalUpdate(Input& input)
 	Timer::Instance().Update();
 
 	m_pPlayer->Update();
-	m_pCamera->Update();
+	m_pCamera->Update(m_pPlayer->GetCameraTarget(),m_pPlayer->GetLockOnManager().GetLockOnPos());
 
 
 	m_frameCount++;
@@ -180,9 +180,8 @@ void SceneMain::Init()
 
 	//Ÿ‚ÉCamera¶¬
 	m_pCamera = std::make_shared<Camera>();
-	m_pCamera->SetPlayer(m_pPlayer);
 	m_pCamera->SetStage(m_pStage);
-	m_pCamera->Init();
+	m_pCamera->Init(m_pPlayer->GetCameraTarget(),m_pPlayer->GetAngle());
 
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pPlayer->SetStage(m_pStage);

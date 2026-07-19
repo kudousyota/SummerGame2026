@@ -14,7 +14,7 @@ public:
     CharacterType GetCharacterType() const override;
 
     void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; }
-    bool IsDead() const { return m_isDead; }
+    bool IsDead() const override{ return m_isDead; }
 
     float GetCollisionRadius() const override { return m_collisionRadius; }
     float GetCollisionHeight() const override { return m_collisionHeight; }

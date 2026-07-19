@@ -91,16 +91,16 @@ void Input::Update()
 			// このループをInputState配列のループなので、まず入力種別をチェックします
 			switch (state.type)
 			{
-			case PeripheralType::keyboard:	// キーボードだったら
-				// GetHitKeyStateAllで取ってきた配列の中身を見て入力されているかどうかチェック
+			case PeripheralType::keyboard:	//キーボードだったら
+				//GetHitKeyStateAllで取ってきた配列の中身を見て入力されているかどうかチェック
 				input = keyState[state.id];
 				break;
-			case PeripheralType::pad1:	// PADだったら
-				// GetJoypadStateで取ってきたビット情報を見て登録されているビット情報と&を取り、そのビットが立っているかどうかをチェック
+			case PeripheralType::pad1:	//PADだったら
+				//GetJoypadStateで取ってきたビット情報を見て登録されているビット情報と&を取り、そのビットが立っているかどうかをチェック
 				input = (padState & state.id);
 				break;
 			}
-			if (input)	// 必須！
+			if (input)	//必須！
 			{
 				// ここでbreakしないと、最後のチェックで押されてないとfalseになる
 				break;

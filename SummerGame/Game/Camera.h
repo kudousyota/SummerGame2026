@@ -1,18 +1,16 @@
 #pragma once
 #include <memory>
 #include "../system/Vector3.h"
-class Player;
 class Stage;
 class Camera
 {
 public:
 	Camera();
 	~Camera();
-	void Init();
+	void Init(const Vector3& initialTarget, float initialAngle);
 	void End();
-	void Update();
+	void Update(const Vector3& targetpos, const Vector3* lockonpos = nullptr);
 	void Draw();
-	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; }
 	void SetStage(std::shared_ptr<Stage> stage) { m_pStage = stage; }
 	Vector3 GetForward() const;
 	Vector3 GetRight() const;
@@ -21,7 +19,6 @@ public:
 
 private:
 	//プレイヤーへの参照を保持
-	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Stage> m_pStage;
 
 	//カメラの位置

@@ -46,6 +46,8 @@ public:
 	void SetStage(std::shared_ptr<Stage> stage);
 	
 	virtual void OnHit(const AttackData& attackdata);
+	//死
+	virtual bool IsDead()const { return false; }
 
 protected:
 	//共通のデータや関数を入れる

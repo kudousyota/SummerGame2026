@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataLoader\AttackData.cpp" />
+    <ClCompile Include="System\LockOnManager.cpp" />
     <ClCompile Include="Scene\GameOverScene.cpp" />
     <ClCompile Include="Game\Breath.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
@@ -173,6 +174,7 @@
   <ItemGroup>
     <ClInclude Include="DataLoader\CharacterType.h" />
     <ClInclude Include="DataLoader\AttackData.h" />
+    <ClInclude Include="System\LockOnManager.h" />
     <ClInclude Include="Scene\GameOverScene.h" />
     <ClInclude Include="Game\Breath.h" />
     <ClInclude Include="Game\Enemy.h" />

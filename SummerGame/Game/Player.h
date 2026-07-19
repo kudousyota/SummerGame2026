@@ -2,6 +2,7 @@
 #include "../System/Vector3.h"
 #include "Character.h"
 #include <memory> 
+#include "../System/LockOnManager.h"
 
 class Camera;
 class Input;
@@ -31,6 +32,8 @@ public:
 
 	float GetJustDodgeRadius() const override;
 	bool IsJustDodgeWindow() const override;
+
+	LockOnManager& GetLockOnManager() { return m_lockOnManager; }
 
 
 private:
@@ -128,5 +131,9 @@ private:
 
 	//描画に使うモデルの垂直オフセット
 	float m_modelDisplayOffsetY;
+
+	LockOnManager m_lockOnManager;
+	//CheckAttackSphereを呼び、当たったらロックオンにセットする共通処理
+	void TryAttackHit(); 
 };
 

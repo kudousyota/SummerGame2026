@@ -3,6 +3,8 @@
 #include "Creature.h"
 #include "Alien.h"
 #include <algorithm>
+#include "../Game/Player.h"
+
 EnemyManager::EnemyManager()
 {
 }
@@ -30,6 +32,30 @@ void EnemyManager::Update()
 	{
 		alien->Update();
 	}
+
+	//破棄される前に、ロックオン対象なら解除しておく(これが無いとダングリングポインタになる)
+	for (auto& angel : m_pAngels)
+	{
+		if (angel->IsDead())
+		{
+			m_pPlayer->GetLockOnManager().ClearIfTarget(angel.get());
+		}
+	}
+	for (auto& creature : m_pCreatures)
+	{
+		if (creature->IsDead())
+		{
+			m_pPlayer->GetLockOnManager().ClearIfTarget(creature.get());
+		}
+	}
+	for (auto& alien : m_pAlien)
+	{
+		if (alien->IsDead())
+		{
+			m_pPlayer->GetLockOnManager().ClearIfTarget(alien.get());
+		}
+	}
+
 	//死んだ敵の削除処理
 	m_pAngels.erase(std::remove_if(m_pAngels.begin(), m_pAngels.end(),
 		[](const std::unique_ptr<Angel>& angel) {return angel->IsDead(); }),

@@ -28,11 +28,13 @@ void CollisionManager::Unregister(Character* character)
 	}
 }
 //球状の攻撃判定を行う
-void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos)
+std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos)
 {
 //#ifdef _DEBUG
 //	DrawSphere3D(pos.ToDxLibVector(), attackdata.GetRadius(), 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
 //#endif //_DEBUG
+
+	std::vector<Character*> hitCharacters;
 
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
@@ -91,16 +93,20 @@ void CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vec
 		{
 			//通常の被弾
 			character->OnHit(attackdata);
+			hitCharacters.push_back(character);
 		}
 	}
+	return hitCharacters;
 }
 
-void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end)
+std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end)
 {
 
 #ifdef _DEBUG
 	DrawCapsule3D(start.ToDxLibVector(), end.ToDxLibVector(), attackdata.GetRadius(), 4, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
 #endif //_DEBUG
+	std::vector<Character*> hitCharacters;
+
 	//登録済みの全キャラクターを探す
 	for (auto& character : m_pCharacters)
 	{
@@ -141,6 +147,7 @@ void CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Ve
 			character->OnHit(attackdata);
 		}
 	}
+	return hitCharacters;
 }
 
 bool CollisionManager::CheckStageWall(Character* character, int stagehandle)

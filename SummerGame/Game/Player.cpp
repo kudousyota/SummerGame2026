@@ -113,15 +113,15 @@ Player::Player() :
 	m_dodgeFrame(0),
 	m_rushHit{false, false, false, false},
 	m_isWitchTime(false),
-	m_uiHandle(-1),
+	//m_uiHandle(-1),
 	m_attackForward(VGet(0.0f,0.0f,0.0f)),
 	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_modelDisplayOffsetY(0.0f),
-	m_hpGaugeHandle(-1),
-	m_hpGaugeBackHandle(-1),
-	m_hpX(0),
-	m_hpY(0),
+	//m_hpGaugeHandle(-1),
+	//m_hpGaugeBackHandle(-1),
+	//m_hpX(0),
+	//m_hpY(0),
 	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f))
 {
 	
@@ -159,8 +159,8 @@ void Player::Init()
 	m_modelHandle = MV1LoadModel("Data/Player.mv1");
 	m_hakutoHandle = LoadGraph("Data/kudonetta.png");
 
-	m_hpGaugeHandle = LoadGraph("Data/gauge_green.png");
-	m_hpGaugeBackHandle = LoadGraph("Data/HPberfrem.png");
+	//m_hpGaugeHandle = LoadGraph("Data/gauge_green.png");
+	//m_hpGaugeBackHandle = LoadGraph("Data/HPberfrem.png");
 
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
@@ -204,7 +204,10 @@ void Player::Update()
 		m_invincibleTime--;
 	}
 
-	GetGraphSize(m_hpGaugeHandle, &m_hpX, &m_hpY);
+	m_lockOnManager.Update();
+
+	//GetGraphSize(m_hpGaugeHandle, &m_hpX, &m_hpY);
+
 
 	switch (m_currentState)
 	{
@@ -618,11 +621,11 @@ void Player::Draw()
 	}
 
 	MV1DrawModel(m_modelHandle);
-	DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
+	//DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
 	//HPゲージの描画
 	//HPの割合に応じてゲージの幅を計算 //最大HP
-	int hpWidth = kGaugeWidth * m_hp / 100;
-	DrawExtendGraph(80, 70, 80 + hpWidth, 70 + m_hpY, m_hpGaugeHandle, true);
+	//int hpWidth = kGaugeWidth * m_hp / 100;
+	//DrawExtendGraph(80, 70, 80 + hpWidth, 70 + m_hpY, m_hpGaugeHandle, true);
 
 #ifdef _DEBUG
 
@@ -788,8 +791,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
-
+			TryAttackHit();
 			m_isAttackHit = true;
 		}
 	}
@@ -799,8 +801,7 @@ void Player::AttackUpdate()
 		{
 			if (!m_rushHit[i] && animTime >= kAttackDamageFrame[i])
 			{
-				CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
-
+				TryAttackHit();
 				m_rushHit[i] = true;
 			}
 		}
@@ -811,8 +812,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
-
+			TryAttackHit();
 			m_isAttackHit = true;
 		}
 	}
@@ -823,8 +823,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
-
+			TryAttackHit();
 			m_isAttackHit = true;
 		}
 	}
@@ -835,8 +834,7 @@ void Player::AttackUpdate()
 		if (!m_isAttackHit && animTime >= kKickStartFrame && animTime <= kKickEndFrame)
 		{
 			//攻撃判定を出す
-			CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
-
+			TryAttackHit();
 			m_isAttackHit = true;
 		}
 	}
@@ -1067,7 +1065,7 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 		diff += DX_TWO_PI_F;
 	}
 
-	
+
 	m_angle += diff * kRotateSpeed;
 
 	//向きを更新
@@ -1079,4 +1077,15 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 Vector3 Player::GetCollisionPosition() const
 {
 	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
+}
+
+void Player::TryAttackHit()
+{
+	auto hitList = CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
+
+	if (!hitList.empty())
+	{
+		// 一番最初に当たったキャラクターをロックオン対象にする
+		m_lockOnManager.OnAttackHit(hitList.front());
+	}
 }
