@@ -62,12 +62,9 @@ private:
 
 	// 前回の状態
 	PlayerState m_prevState;
-
+	//ジャンプ攻撃
 	int m_jumpPower;
 
-	int m_hakutoHandle;
-
-	
 	//攻撃処理
 	void AttackUpdate();
 	//回避処理

@@ -1,6 +1,16 @@
 #include "HPUI.h"
+#include "DxLib.h"
 
-HPUI::HPUI()
+namespace
+{
+	constexpr int kGaugeWidth = 200;
+}
+
+HPUI::HPUI():
+	m_hpGaugeHandle(-1),
+	m_hpGaugeBackHandle(-1),
+	m_hpX(0),
+	m_hpY(0)
 {
 
 }
@@ -11,15 +21,18 @@ HPUI::~HPUI()
 
 void HPUI::Init()
 {
-
+	m_hpGaugeHandle = LoadGraph("Data/gauge_green.png");
+	m_hpGaugeBackHandle = LoadGraph("Data/HPberfrem.png");
 }
 
 void HPUI::Update()
 {
-
+	//HPゲージの描画
+	//HPの割合に応じてゲージの幅を計算 //最大HP
+	m_hpWidth = kGaugeWidth * m_hp / 100;
 }
 
 void HPUI::Draw()
 {
-
+	DrawExtendGraph(80, 70, 80 + m_hpWidth, 70 + m_hpY, m_hpGaugeHandle, true);
 }

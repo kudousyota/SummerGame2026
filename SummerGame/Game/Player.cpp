@@ -96,15 +96,12 @@ namespace
 	constexpr float kSkyKickRadius = 140.0f;
 	//攻撃の時に徐々に回転
 	constexpr float kRotateSpeed = 0.03f;
-
-
 }
 
 Player::Player() :
 	m_pCamera(nullptr),
 	m_jumpPower(0),
 	m_forward(VGet(0.0f, 0.0f, 1.0f)),
-	m_hakutoHandle(-1),
 	m_isAttackHit(false),
 	m_isNextAttack(false),
 	m_attackPos(VGet(0.0f,0.0f,0.0f)),
@@ -116,15 +113,10 @@ Player::Player() :
 	m_dodgeFrame(0),
 	m_rushHit{false, false, false, false},
 	m_isWitchTime(false),
-	//m_uiHandle(-1),
 	m_attackForward(VGet(0.0f,0.0f,0.0f)),
 	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_modelDisplayOffsetY(0.0f),
-	//m_hpGaugeHandle(-1),
-	//m_hpGaugeBackHandle(-1),
-	//m_hpX(0),
-	//m_hpY(0),
 	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f))
 {
 	
@@ -160,9 +152,6 @@ void Player::Init()
 	m_attackPower = 20;
 	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("Data/Player.mv1");
-	m_hakutoHandle = LoadGraph("Data/kudonetta.png");
-
-	
 
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
@@ -637,9 +626,6 @@ void Player::Draw()
 	
 #ifdef _DEBUG
 
-	/*int num = MV1GetAnimNum(m_modelHandle);
-	printfDx("%d\n", num);*/
-
 	Vector3 debugPos = GetCollisionPosition();
 
 	VECTOR start = VGet(
@@ -697,9 +683,6 @@ void Player::Draw()
 	DrawFormatString(300,100, GetColor(255, 255, 255),"PlayerPos = (%f, %f, %f)\n", m_pos.x, m_pos.y, m_pos.z);
 	
 #endif  //DEBUG
-	//DrawBillboard3D(VGet(100.0f, 300.0f, 30.0f), 0.0f, 1.0f, 450.0f, 0.0f,m_hakutoHandle, true);
-
-	
 
 }
 
@@ -968,7 +951,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_dodgeFrame = 0;
 		//慣性のために移動速度をリセット
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
-		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
+		m_animation.ChangeAnim(kDodgeAnimName, false, 1.35f);
 		break;
 	case PlayerState::SkyDodge:
 		//フレームをリセット
