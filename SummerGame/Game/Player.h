@@ -34,7 +34,9 @@ public:
 	bool IsJustDodgeWindow() const override;
 
 	LockOnManager& GetLockOnManager() { return m_lockOnManager; }
-
+	//HPの現在値を渡す
+	int GetHP()const { return m_hp; }
+	int GetMaxHP()const { return m_maxHp; }
 
 private:
 	
@@ -64,6 +66,8 @@ private:
 	PlayerState m_prevState;
 	//ジャンプ攻撃
 	int m_jumpPower;
+	//HPの最大値
+	int m_maxHp;
 
 	//攻撃処理
 	void AttackUpdate();

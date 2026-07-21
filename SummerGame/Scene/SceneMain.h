@@ -8,8 +8,10 @@
 #include "Scene.h" //Sceneの基底クラスをインクルード
 #include "../Game/Creature.h"
 
+
 class Input;
 class Timer;
+class UIManager;
 
 //SceneMainをSceneの派生クラスにする
 class SceneMain : public Scene
@@ -71,7 +73,8 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
-
+	//所有権
+	std::unique_ptr<UIManager> m_pUiManager;
 
 	EnemyManager m_enemyManager;
 	EnemySpawner m_enemySpawner;

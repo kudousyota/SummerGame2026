@@ -1,13 +1,22 @@
 #pragma once
+#include <vector>
+#include <memory>
+#include "UIBase.h"
+//UIをまとめて管理するクラス
+//継承はせずにUIbaseのインスタンスとして保持する
 class UIManager
 {
 public:
-	UIManager();
-	~UIManager();
-	virtual void Init();
-	virtual void Update();
-	virtual void Draw();
+	UIManager() = default;
+	~UIManager() = default;
+
+	void Add(std::unique_ptr<UIBase> ui);
+	void Init();
+	void Update();
+	void Draw();
 private:
-	
+	//管理しているUI
+	//unique_ptr<UIBase>なので、中身はHPUIでもWitchTimeNeedleUIでも何でも入る
+	std::vector<std::unique_ptr<UIBase>> m_pUiList;
 };
 

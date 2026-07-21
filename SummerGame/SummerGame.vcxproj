@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataLoader\AttackData.cpp" />
+    <ClCompile Include="UI\UIBase.cpp" />
     <ClCompile Include="UI\HPUI.cpp" />
     <ClCompile Include="System\LockOnManager.cpp" />
     <ClCompile Include="Scene\GameOverScene.cpp" />
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="DataLoader\CharacterType.h" />
     <ClInclude Include="DataLoader\AttackData.h" />
+    <ClInclude Include="UI\UIBase.h" />
     <ClInclude Include="UI\HPUI.h" />
     <ClInclude Include="System\LockOnManager.h" />
     <ClInclude Include="Scene\GameOverScene.h" />

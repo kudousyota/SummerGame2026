@@ -7,6 +7,8 @@
 #include "../System/ProjectileManager.h"
 #include "GameClearedScene.h"
 #include "SceneController.h"
+#include "../UI/UIManager.h"
+#include "../UI/HPUI.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -39,6 +41,8 @@ void SceneMain::NormalUpdate(Input& input)
 	m_frameCount++;
 	//“G‚ÌXV‚ð”C‚¹‚é
 	m_enemyManager.Update();
+
+	m_pUiManager->Update();
 
 	if (m_enemyManager.IsCreatureDead())
 	{
@@ -113,6 +117,8 @@ void SceneMain::NormalDraw()
 	m_pPlayer->Draw();
 
 	m_enemyManager.Draw();
+
+	m_pUiManager->Draw();
 
 	ProjectileManager::Instance().Draw();
 
@@ -195,7 +201,13 @@ void SceneMain::Init()
 
 	m_enemySpawner.SetupCreateData();
 
+	m_pUiManager = std::make_unique<UIManager>();
 
+	auto hpUI = std::make_unique<HPUI>();
+	hpUI->SetPlayerHP(m_pPlayer);
+
+	m_pUiManager->Add(std::move(hpUI));
+	m_pUiManager->Init();
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 

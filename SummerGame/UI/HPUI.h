@@ -1,6 +1,8 @@
 #pragma once
-#include "UIManager.h"
-class HPUI : public UIManager
+#include "UIBase.h"
+#include <memory>
+class Player;
+class HPUI : public UIBase
 {
 public:
 	HPUI();
@@ -8,19 +10,19 @@ public:
 	void Init()override;
 	void Update()override;
 	void Draw()override;
-
+	//プレイヤーを受け取ってメンバ変数に保存
+	void SetPlayerHP(const std::shared_ptr<Player>& player) { m_pPlayer = player; }
 private:
 	//ハンドル
-	int m_uiHandle;
 	int m_hpGaugeHandle;
 	int m_hpGaugeBackHandle;
-	int m_hpX;
-	int m_hpY;
-
-	int m_hp;
-
-	int m_hpWidth;
-
 	
+	//現在のHP
+	int m_hp;
+	//HPの最大値
+	int m_maxHp;
+	int m_hpWidth;
+	//プレイヤー
+	std::weak_ptr<Player> m_pPlayer;
 };
 

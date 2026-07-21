@@ -117,7 +117,8 @@ Player::Player() :
 	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_modelDisplayOffsetY(0.0f),
-	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f))
+	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_maxHp(0)
 {
 	
 }
@@ -146,6 +147,7 @@ void Player::Init()
 	//移動速度
 	m_speed = 13.0f;
 	//ステータス
+	m_maxHp = 100;
 	m_hp = 100;
 	m_jumpPower = 15;
 	//攻撃力
