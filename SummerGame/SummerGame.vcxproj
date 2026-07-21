@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataLoader\AttackData.cpp" />
+    <ClCompile Include="UI\HPUI.cpp" />
     <ClCompile Include="System\LockOnManager.cpp" />
     <ClCompile Include="Scene\GameOverScene.cpp" />
     <ClCompile Include="Game\Breath.cpp" />
@@ -169,11 +170,12 @@
     <ClCompile Include="Scene\SceneMain.cpp" />
     <ClCompile Include="System\Vector3.cpp" />
     <ClCompile Include="System\Timer.cpp" />
-    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="UI\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataLoader\CharacterType.h" />
     <ClInclude Include="DataLoader\AttackData.h" />
+    <ClInclude Include="UI\HPUI.h" />
     <ClInclude Include="System\LockOnManager.h" />
     <ClInclude Include="Scene\GameOverScene.h" />
     <ClInclude Include="Game\Breath.h" />
@@ -203,7 +205,7 @@
     <ClInclude Include="Scene\SceneMain.h" />
     <ClInclude Include="System\Vector3.h" />
     <ClInclude Include="System\Timer.h" />
-    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UI\UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />

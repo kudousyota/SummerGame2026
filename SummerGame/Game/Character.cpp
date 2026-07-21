@@ -37,7 +37,8 @@ void Character::Collision()
 {
 
 	// 落下速度の上限を設ける
-	const float kMaxFallSpeed = -5.0f; // 値は要調整
+	//値は要調整
+	const float kMaxFallSpeed = -7.0f;
 
 	//当たり判定
 	if (!m_isGround)
@@ -90,15 +91,18 @@ void Character::ApplyDamage(int damage)
 
 Vector3 Character::GetCollisionPosition() const
 {
+	//現在地を返す
 	return m_pos;
 }
 
 void Character::SetStage(std::shared_ptr<Stage> stage)
 {
+	//ステージをもらう
 	m_pStage = stage;
 }
 
 void Character::OnHit(const AttackData& attackdata)
 {
+	//攻撃データ
 	ApplyDamage(attackdata.GetDamage());
 }

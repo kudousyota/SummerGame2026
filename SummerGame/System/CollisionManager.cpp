@@ -124,8 +124,9 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 
 		float distance = Segment_Segment_MinLength(start, end, a, b);
 
-		
+		//ジャスト回避の半径を知る
 		float justDodgeRadius = character->GetJustDodgeRadius();
+
 		float justRange = attackdata.GetRadius() + justDodgeRadius;
 
 
@@ -162,6 +163,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 	bool hitAny = false;
 
 	//当たっていたら
+	//4回判定する
 	const int kMaxIteration = 4;
 	for (int iter = 0; iter < kMaxIteration; iter++)
 	{

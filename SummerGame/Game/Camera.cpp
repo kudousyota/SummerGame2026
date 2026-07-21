@@ -182,10 +182,6 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 		SetLightDirection(LightDir);
 
 		MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
-
-
-	
-
 	
 }
 

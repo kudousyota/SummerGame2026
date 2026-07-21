@@ -11,7 +11,7 @@ public:
 	void Register(Character* character);
 	void Unregister(Character* character);
 
-	//攻撃用の球判定
+	//攻撃用の球判定　//キャラクター事の攻撃当たり判定
 	std::vector<Character*> CheckAttackSphere(const AttackData& attackdata, const Vector3& pos);
 	//攻撃用のカプセル判定
 	std::vector<Character*> CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end);

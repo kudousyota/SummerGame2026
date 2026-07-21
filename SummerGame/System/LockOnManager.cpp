@@ -4,7 +4,8 @@ namespace
 {
 	static constexpr int kLockOnDurationFrame = 90;
 }
-LockOnManager::LockOnManager()
+LockOnManager::LockOnManager():
+	m_timerFrame(0)
 {
 }
 
@@ -21,6 +22,7 @@ void LockOnManager::Update()
 	{
 		return;
 	}
+	//ターゲットしてる奴が死んだらぬるぽにする
 	if (m_pTarget->IsDead())
 	{
 		m_pTarget = nullptr;
@@ -37,6 +39,7 @@ void LockOnManager::Update()
 
 void LockOnManager::ClearIfTarget(Character* character)
 {
+	//消す
 	if (m_pTarget == character)
 	{
 		m_pTarget = nullptr;
@@ -54,7 +57,7 @@ const Vector3* LockOnManager::GetLockOnPos()
 	{
 		return nullptr;
 	}
-
+	//カメラの見ている場所
 	m_cachadPos = m_pTarget->GetPosition();
 	return &m_cachadPos;
 }

@@ -1,14 +1,13 @@
 #pragma once
-class UIManager
+#include "UIManager.h"
+class HPUI : public UIManager
 {
 public:
-	UIManager();
-	~UIManager();
+	HPUI();
+	~HPUI();
 	void Init();
 	void Update();
 	void Draw();
-	//プレイヤーのHPから値を渡してもらう
-	void SetPleyerHpGauge(int hp,int maxhp);
 
 private:
 	int m_uiHandle;

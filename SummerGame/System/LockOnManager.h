@@ -5,7 +5,6 @@ class LockOnManager
 {
 public:
 	LockOnManager();
-
 	void OnAttackHit(Character* hitcharacter);
 	void Update();
 	void ClearIfTarget(Character* character);
@@ -14,6 +13,7 @@ public:
 	
 private:
 	Character* m_pTarget = nullptr;
+	//Œ©‚Ä‚¢‚éêŠ
 	Vector3 m_cachadPos;
 	int m_timerFrame;
 };

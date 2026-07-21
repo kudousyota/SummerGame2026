@@ -72,6 +72,9 @@ namespace
 	//キックのダメージ
 	constexpr int kKickPower = 50;
 
+	//プレイヤーの前方のどこに攻撃を出すか
+	constexpr float kAttackOffset = 70.0f;
+	
 	//ジャスト回避の受付フレーム
 	constexpr int kDodgeFrame = 30;
 	//無敵時間
@@ -81,7 +84,7 @@ namespace
 	constexpr float kJustDodgeRadius = 100.0f;
 
 	//攻撃した時に進む距離
-	constexpr float kAttackMove = 15.0f;
+	constexpr float kAttackMove = 35.0f;
 	constexpr float kRushMove = 4.0f;
 	constexpr float kKickMove = 25.0f;
 
@@ -94,7 +97,7 @@ namespace
 	//攻撃の時に徐々に回転
 	constexpr float kRotateSpeed = 0.03f;
 
-	constexpr int kGaugeWidth = 200;
+
 }
 
 Player::Player() :
@@ -159,8 +162,7 @@ void Player::Init()
 	m_modelHandle = MV1LoadModel("Data/Player.mv1");
 	m_hakutoHandle = LoadGraph("Data/kudonetta.png");
 
-	//m_hpGaugeHandle = LoadGraph("Data/gauge_green.png");
-	//m_hpGaugeBackHandle = LoadGraph("Data/HPberfrem.png");
+	
 
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
@@ -170,9 +172,20 @@ void Player::Init()
 
 void Player::Update()
 {
+
+	auto& input = Input::Instance();
 	//HPがゼロになったら
 	if (m_isDead)
 	{
+#ifdef _DEBUG
+		if (input.IsTriggered("pause"))
+		{
+			m_isDead = false;
+
+		}
+#endif // _DEBUG
+
+
 		return;
 	}
 
@@ -193,7 +206,7 @@ void Player::Update()
 	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
 
-	auto& input = Input::Instance();
+	
 
 	float scale = Timer::Instance().GetTimeScale();
 
@@ -597,7 +610,7 @@ void Player::Update()
 
 	Character::Collision();
 	//ここで攻撃位置を更新
-	m_attackPos = m_pos + m_attackForward * 70.0f + VGet(0.0f, GetCollisionHeight() * 0.5f, 0.0f);
+	m_attackPos = m_pos + m_attackForward * kAttackOffset + VGet(0.0f, GetCollisionHeight() * 0.5f, 0.0f);
 
 	//攻撃判定
 	AttackUpdate();
@@ -621,12 +634,7 @@ void Player::Draw()
 	}
 
 	MV1DrawModel(m_modelHandle);
-	//DrawRotaGraph(170, 70, 0.5,0.0f,m_hpGaugeBackHandle, true);
-	//HPゲージの描画
-	//HPの割合に応じてゲージの幅を計算 //最大HP
-	//int hpWidth = kGaugeWidth * m_hp / 100;
-	//DrawExtendGraph(80, 70, 80 + hpWidth, 70 + m_hpY, m_hpGaugeHandle, true);
-
+	
 #ifdef _DEBUG
 
 	/*int num = MV1GetAnimNum(m_modelHandle);
@@ -712,9 +720,14 @@ void Player::ApplyDamage(int damage)
 	//damage = 0 でこの関数が呼ばれる
 	if (damage == 0 && m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
+#ifdef DEBUG
+
 		//ジャスト回避成功時の処理
 		printfDx("Just Dodge (Witch Time!)\n");
 
+#endif // DEBUG
+
+		
 		//直ぐに無敵を付与連続ヒット防止にもなる
 		m_invincibleTime = kInvincibleFrame;
 
@@ -722,11 +735,6 @@ void Player::ApplyDamage(int damage)
 		m_isWitchTime = true;
 		//例1: プレイヤーのステートをウィッチタイム中に変える場合
 		//TransitionTo(PlayerState::WitchTime); 
-
-
-		
-
-
 		//敵のアニメーションを遅くする
 		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 300);
 
@@ -976,6 +984,7 @@ void Player::TransitionTo(PlayerState nextState)
 
 AttackType Player::GetAttackType()const
 {
+	//攻撃タイプを保存
 	switch (m_currentState)
 	{
 	case PlayerState::Attack:

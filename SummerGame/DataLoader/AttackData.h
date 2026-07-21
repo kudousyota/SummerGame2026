@@ -28,7 +28,7 @@ public:
 	//ƒ_ƒ[ƒWŒn
 	void SetDamage(int damage) { m_damage = damage; }
 	int GetDamage()const { return m_damage; }
-
+	//UŒ‚‚Ì”¼Œa
 	float GetRadius() const { return m_radius; }
 
 private:

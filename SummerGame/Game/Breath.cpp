@@ -16,7 +16,7 @@ void Breath::Update()
 {
 	//前のフレームを保存
 	Vector3 endpos = m_pos + m_forward * kBreathRange;
-
+	//カプセルの判定
 	CollisionManager::Instance().CheckAttackCapsule(m_attackData, m_pos, endpos);
 
 	//寿命

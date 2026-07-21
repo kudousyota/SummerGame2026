@@ -26,13 +26,11 @@ protected:
 	Vector3 m_forward;
 	//スピード
 	float m_speed;
-	//攻撃力
-	int m_attackPower;
 	//生存フレーム
 	int m_lifeFrame;
 	//まだあるか
 	bool m_isDead;
-
+	//アタックデータ
 	AttackData m_attackData;
 	
 };

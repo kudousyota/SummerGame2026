@@ -140,7 +140,36 @@ GameClearedScene::GameClearedScene(SceneController& controller) :
 }
 GameClearedScene::~GameClearedScene()
 {
-	//何もしない
+    // フォントやモデルハンドルが残っていれば解放する
+	if (m_fontHandle != -1)
+	{
+		DeleteFontToHandle(m_fontHandle);
+		m_fontHandle = -1;
+	}
+
+	if (m_skyHandle != -1)
+	{
+		MV1DeleteModel(m_skyHandle);
+		m_skyHandle = -1;
+	}
+
+	if (m_playerHandle != -1)
+	{
+		MV1DeleteModel(m_playerHandle);
+		m_playerHandle = -1;
+	}
+
+	if (m_enemyHandle != -1)
+	{
+		MV1DeleteModel(m_enemyHandle);
+		m_enemyHandle = -1;
+	}
+
+	if (m_groundHandle != -1)
+	{
+		MV1DeleteModel(m_groundHandle);
+		m_groundHandle = -1;
+	}
 }
 
 void GameClearedScene::Init()

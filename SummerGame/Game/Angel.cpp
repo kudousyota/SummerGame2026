@@ -201,7 +201,7 @@ void Angel::Draw()
 	{
 		DrawSphere3D(m_pos.ToDxLibVector(),CreateAttackData().GetRadius(),16,0xffffff,0xffffff,false);
 	}
-
+	//索敵デバッグ表示
 	DrawDebugSight();
 #endif
 }
