@@ -35,6 +35,7 @@ private:
 	void FadeInUpdate(Input&);	//フェードインUpdate
 	void NormalUpdate(Input&);	//通常Update
 	void FadeOutUpdate(Input&);	//フェードアウトUpdate
+	void GameOverFadeOutUpdate(Input&);
 	using UpdateFunc_t = void(SceneMain::*)(Input&);
 	UpdateFunc_t m_update;	//Updateメンバ関数を代入できるメンバ関数ポインタ
 
@@ -62,11 +63,11 @@ private:
 	int m_cureentAnimHandle;
 
 	int m_frameCount;
-	int m_witchEffectFrame;
+	
 
-	bool m_isPrevWitchTime;
+	
 
-	float m_angle;
+	
 
 	int m_nidelHandle;
 

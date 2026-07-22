@@ -7,8 +7,10 @@
 #include "../System/ProjectileManager.h"
 #include "GameClearedScene.h"
 #include "SceneController.h"
+#include "GameOverScene.h"
 #include "../UI/UIManager.h"
 #include "../UI/HPUI.h"
+#include "../UI/WitchTimeNeedleUI.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -43,7 +45,7 @@ void SceneMain::NormalUpdate(Input& input)
 	m_enemyManager.Update();
 
 	m_pUiManager->Update();
-
+	//ボスを倒したら
 	if (m_enemyManager.IsCreatureDead())
 	{
 		m_update = &SceneMain::FadeOutUpdate;
@@ -51,52 +53,44 @@ void SceneMain::NormalUpdate(Input& input)
 		m_frame = 0;
 		return;
 	}
+	//プレイヤーが死んだら
+	if (m_pPlayer->IsDead())
+	{
+		m_update = &SceneMain::GameOverFadeOutUpdate;
+		m_draw = &SceneMain::FadeDraw;
+		m_frame = 0;
+		return;
+	}
+
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
 
 	ProjectileManager::Instance().Update();
-	//プレイヤーがウィッチタイムかどうかを知る
-	bool currentwitch = m_pPlayer->GetWitchTime();
-	//ウィッチタイムに入ったときに演出をする
-	//今の状態&&前の状態
-	if (currentwitch && !m_isPrevWitchTime)
-	{
-		//表示する時間
-		m_witchEffectFrame = 80;
-		//回転角度
-		m_angle = 0.0f;
-	}
-
-	//次のフレームで判定するために保存
-	m_isPrevWitchTime = currentwitch;
-	//演出中だったら回転させる
-	if (m_witchEffectFrame > 0)
-	{
-		//演出フレームをここで減らす
-		m_witchEffectFrame--;
-
-		//回転角度を増やす
-		m_angle += DX_PI_F / 40.0f;
-
-		//0から360度まで回転させる
-		//360度以上にならないように
-		if (m_angle > DX_TWO_PI_F)
-		{
-			m_angle -= DX_TWO_PI_F;
-		}
-
-	}
+	
 	
 
 }
 
 void SceneMain::FadeOutUpdate(Input&)
 {
+	//ボスを倒すとゲームクリアシーンに行く
 	if (m_frame++ >= kFadeInterval)
 	{
 		//フェードアウト完了
 		m_finished = true;
 		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
+		return;
+	}
+}
+
+void SceneMain::GameOverFadeOutUpdate(Input&)
+{
+	//プレイヤーが死ぬとゲームオーバーシーンに行く
+	if (m_frame++ >= kFadeInterval)
+	{
+		//フェードアウト完了
+		m_finished = true;
+		m_controller.ChangeScene(std::make_shared<GameOverScene>(m_controller));
 		return;
 	}
 }
@@ -122,17 +116,7 @@ void SceneMain::NormalDraw()
 
 	ProjectileManager::Instance().Draw();
 
-	//ウィッチタイムだったら
-	if (m_pPlayer->GetWitchTime())
-	{
-		//DrawBox(0, 0, 1280, 720, GetColor(255, 0, 255), true);
-		if (m_witchEffectFrame > 0)
-		{
-			//画面の真ん中に回転する画像を描画する
-			DrawRectRotaGraph2(1280 / 2, 720 / 2, 0, 0, 256, 512, 128, 256, 1.5f, m_angle, m_nidelHandle, true, false);
-		}
-
-	}
+	
 
 	DrawGrid();
 	//DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
@@ -146,11 +130,8 @@ void SceneMain::FadeDraw()
 
 SceneMain::SceneMain(SceneController& controller):
 Scene(controller),
-m_frameCount(0),
-m_nidelHandle(-1),
-m_angle(0.0f),
-m_witchEffectFrame(0),
-m_isPrevWitchTime(false)
+m_frameCount(0)
+
 {
 	Init();
 	m_update = &SceneMain::FadeInUpdate;
@@ -200,22 +181,22 @@ void SceneMain::Init()
 	m_enemyManager.SetStage(m_pStage);
 
 	m_enemySpawner.SetupCreateData();
-
+	//UI
 	m_pUiManager = std::make_unique<UIManager>();
-
+	//プレイヤーのHPUI
 	auto hpUI = std::make_unique<HPUI>();
 	hpUI->SetPlayerHP(m_pPlayer);
-
 	m_pUiManager->Add(std::move(hpUI));
+	//ウィッチタイムの針
+	auto witchTimeUI = std::make_unique<WitchTimeNeedleUI>();
+	witchTimeUI->SetPlayerWitchTime(m_pPlayer);
+	m_pUiManager->Add(std::move(witchTimeUI));
+
 	m_pUiManager->Init();
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 
 	Model::Instance().PreloadAll();
-	//m_nidelHandle = LoadGraph("data/ui_niidle.png");
-	
-	m_nidelHandle = LoadGraph("data/ui_niidle_flower.png");
-	//m_nidelHandle = LoadGraph("data/ui_niidle_test.png");
 	
 }
 

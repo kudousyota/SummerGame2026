@@ -18,102 +18,6 @@ namespace
 
 }
 
-
-void GameClearedScene::FadeInUpdate(Input& input)
-{
-	//フェードイン中でもエンター("ok")でフェードアウトを開始できるようにする
-	if (input.IsTriggered("ok"))
-	{
-		m_update = &GameClearedScene::FadeOutUpdate;
-		m_draw = &GameClearedScene::FadeDraw;
-		m_frame = 0;	//フェードアウトの最初
-		//SoundManager::PlaySE("Ok");
-		return;
-	
-	}
-
-
-	if (m_frame-- <= 0)
-	{
-		m_update = &GameClearedScene::NormalUpdate;
-		m_draw = &GameClearedScene::NormalDraw;
-		return;
-	}
-}
-
-
-
-void GameClearedScene::NormalUpdate(Input& input)
-{
-
-	
-	if (input.IsTriggered("ok"))
-	{
-		m_update = &GameClearedScene::FadeOutUpdate;
-		m_draw = &GameClearedScene::FadeDraw;
-		m_frame = 0;	//フェードアウトの最初
-		//SoundManager::PlaySE("Ok");
-		return;
-		
-	}
-
-	
-}
-
-void GameClearedScene::FadeOutUpdate(Input&)
-{
-	if (m_frame++ >= kFadeInterval)
-	{
-		//フェードアウト完了
-		m_finished = true;
-		m_controller.ChangeScene(std::make_shared<TitleScene>(m_controller));
-		return;
-	}
-}
-void GameClearedScene::NormalDraw()
-{
- //   MV1DrawModel(m_skyHandle);
-	////モデルの位置を反映してから描画
-	//MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
-	//MV1DrawModel(m_playerHandle);
-	////モデルの位置を反映してから描画
-	//MV1SetPosition(m_enemyHandle, m_enemyPos.ToDxLibVector());
-	//MV1DrawModel(m_enemyHandle);
-	////モデルの位置を反映してから描画
-	//MV1SetPosition(m_groundHandle, m_groundPos.ToDxLibVector());
-	//MV1DrawModel(m_groundHandle);
-
-	
-	const int white = GetColor(255,255,255);
-	const int Cyan	= GetColor(0,255,255);
-	const int Color = GetColor(224,255,255);
-	const int black = GetColor(0,	0,	0);
-
-	DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
-
-	//点滅頻度
-	const int intervar = 650;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-	if (visible)
-	{
-		//操作説明表示
-		DrawStringToHandle(470, 580, "Press B to Title", white, m_fontHandle);
-	}
-}
-
-void GameClearedScene::FadeDraw()
-{
-	NormalDraw();
-	//値の範囲を一旦0.0~1.0fにしておくといろいろと扱いやすい
-	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate));
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-}
-
-
 GameClearedScene::GameClearedScene(SceneController& controller) :
 	m_draw(0),
 	m_fontHandle(-1),
@@ -231,4 +135,87 @@ void GameClearedScene::Draw()
 	
     (this->*m_draw)();
 	//m_effectManger.Draw();
+}
+
+void GameClearedScene::FadeInUpdate(Input& input)
+{
+	//フェードイン中でもエンター("ok")でフェードアウトを開始できるようにする
+	if (input.IsTriggered("ok"))
+	{
+		m_update = &GameClearedScene::FadeOutUpdate;
+		m_draw = &GameClearedScene::FadeDraw;
+		m_frame = 0;	//フェードアウトの最初
+		//SoundManager::PlaySE("Ok");
+		return;
+
+	}
+
+
+	if (m_frame-- <= 0)
+	{
+		m_update = &GameClearedScene::NormalUpdate;
+		m_draw = &GameClearedScene::NormalDraw;
+		return;
+	}
+}
+
+
+
+void GameClearedScene::NormalUpdate(Input& input)
+{
+
+
+	if (input.IsTriggered("ok"))
+	{
+		m_update = &GameClearedScene::FadeOutUpdate;
+		m_draw = &GameClearedScene::FadeDraw;
+		m_frame = 0;	//フェードアウトの最初
+		//SoundManager::PlaySE("Ok");
+		return;
+
+	}
+
+
+}
+
+void GameClearedScene::FadeOutUpdate(Input&)
+{
+	if (m_frame++ >= kFadeInterval)
+	{
+		//フェードアウト完了
+		m_finished = true;
+		m_controller.ChangeScene(std::make_shared<TitleScene>(m_controller));
+		return;
+	}
+}
+void GameClearedScene::NormalDraw()
+{
+
+	const int white = GetColor(255, 255, 255);
+	const int Cyan = GetColor(0, 255, 255);
+	const int Color = GetColor(224, 255, 255);
+	const int black = GetColor(0, 0, 0);
+
+	DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
+
+	//点滅頻度
+	const int intervar = 650;
+	int now = GetNowCount();
+	bool visible = (now / intervar) % 2;
+	if (visible)
+	{
+		//操作説明表示
+		DrawStringToHandle(470, 580, "Press A to Title", white, m_fontHandle);
+	}
+}
+
+void GameClearedScene::FadeDraw()
+{
+	NormalDraw();
+	//値の範囲を一旦0.0~1.0fにしておくといろいろと扱いやすい
+	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate));
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 }

@@ -147,8 +147,12 @@ void Player::Init()
 	//移動速度
 	m_speed = 13.0f;
 	//ステータス
-	m_maxHp = 300;
-	m_hp = 300;
+	//m_maxHp = 300;
+	//m_hp = 300;
+
+	m_maxHp = 50;
+	m_hp = 50;
+
 	m_jumpPower = 15;
 	//攻撃力
 	m_attackPower = 20;
@@ -753,6 +757,11 @@ Vector3 Player::GetCameraTarget() const
 bool Player::IsJustDodgeWindow() const
 {
 	return (m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame);
+}
+
+bool Player::IsDead() const
+{
+	return m_isDead;
 }
 
 //今ジャスト回避を受け付ける状態にいるかを返す

@@ -81,7 +81,7 @@ void TitleScene::NormalDraw()
 	if (visible)
 	{
 		//ëÄçÏê‡ñæï\é¶
-		DrawStringToHandle(470, 580, "Press B to Game", white, m_fontHandle);
+		DrawStringToHandle(470, 580, "Press A to Game", white, m_fontHandle);
 	}
 
 }
@@ -109,8 +109,6 @@ TitleScene::TitleScene(SceneController& controller):
 	m_currentAnimCount(0.0f),
 	m_playerPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_currentAnimIndex(-1),
-	m_groundHandle(-1),
-	m_groundPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_logoHandle(-1),
 	m_playerAngle(0.0f),
 	m_logoPos(VGet(0.0f, 0.0f, 0.0f))
@@ -132,8 +130,6 @@ void TitleScene::Init()
 	
 	m_logoHandle = LoadGraph("data/kudonetta.png");
 
-	m_playerPos = VGet(0.0f, -80.0f, -10.0f);
-	m_groundPos = VGet(0.0f, -100.0f, 150.0f);
 	m_logoPos = VGet(130.0f, -270.0f, 0.0f);
 
 	//SoundManager::Load();

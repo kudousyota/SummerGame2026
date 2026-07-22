@@ -37,6 +37,8 @@ public:
 	//HPの現在値を渡す
 	int GetHP()const { return m_hp; }
 	int GetMaxHP()const { return m_maxHp; }
+	//死ぬ
+	bool IsDead()const override;
 
 private:
 	

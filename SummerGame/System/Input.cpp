@@ -26,7 +26,7 @@ Input& Input::Instance()
 void Input::InitializeInputTable()
 {
 	m_inputTable["ok"] = { { PeripheralType::keyboard,KEY_INPUT_RETURN},
-					  { PeripheralType::pad1,PAD_INPUT_B } };	// PADのBボタン
+					  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
 	m_inputTable["pause"] = { { PeripheralType::keyboard,KEY_INPUT_P},
 					   { PeripheralType::pad1,PAD_INPUT_START } };	// PADのSTARTボタン
 
