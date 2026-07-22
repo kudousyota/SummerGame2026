@@ -172,6 +172,7 @@
     <ClCompile Include="System\Vector3.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="UI\UIManager.cpp" />
+    <ClCompile Include="UI\WitchTimeNeedleUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataLoader\CharacterType.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="System\Vector3.h" />
     <ClInclude Include="System\Timer.h" />
     <ClInclude Include="UI\UIManager.h" />
+    <ClInclude Include="UI\WitchTimeNeedleUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />

@@ -38,6 +38,9 @@ HPUI::HPUI():
 
 HPUI::~HPUI()
 {
+	DeleteGraph(m_hpGaugeHandle);
+	DeleteGraph(m_hpGaugeBackHandle);
+	DeleteGraph(m_hplidHandle);
 }
 
 void HPUI::Init()
