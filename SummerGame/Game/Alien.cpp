@@ -46,7 +46,7 @@ void Alien::Init()
 	//基底クラスの初期化
 	Enemy::Init();
 	//HP
-	m_hp = 200;
+	m_hp = 500;
 	//攻撃力
 	m_attackPower = 10;
 	//現在のステート

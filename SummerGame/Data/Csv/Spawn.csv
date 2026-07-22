@@ -1,6 +1,6 @@
 #name,triggerType,triggerposX,triggerposY,triggerposZ,triggerradius,spawnposX,spawnposY,spawnposZ
-Alien,PlayerNear,0,0,500,300,0,300,600
-Angel,PlayerNear,-150,0,-4383,500,-150,300,-4383
-Alien,PlayerNear,-150,0,-4383,300,-200,300,-4583
-Angel,PlayerNear,0,0,500,300,0,300,600
-Creature,PlayerNear,-5400,0,-7280,600,-5400,200,-7280
+Alien,PlayerNear,0,0,500,800,0,300,600
+Angel,PlayerNear,-150,0,-4383,800,-150,300,-4383
+Alien,PlayerNear,-150,0,-4383,800,-200,300,-4583
+Angel,PlayerNear,0,0,500,800,0,300,600
+Creature,PlayerNear,-5400,0,-7280,800,-5400,200,-7280

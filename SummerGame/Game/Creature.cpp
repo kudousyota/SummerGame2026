@@ -39,7 +39,7 @@ void Creature::Init()
 
 	//本物の体力
 	//m_hp = 150;
-	m_hp = 500;
+	m_hp = 700;
 
 	m_attackPower = 20;
 	

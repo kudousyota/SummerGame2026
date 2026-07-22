@@ -147,8 +147,8 @@ void Player::Init()
 	//移動速度
 	m_speed = 13.0f;
 	//ステータス
-	m_maxHp = 100;
-	m_hp = 100;
+	m_maxHp = 300;
+	m_hp = 300;
 	m_jumpPower = 15;
 	//攻撃力
 	m_attackPower = 20;

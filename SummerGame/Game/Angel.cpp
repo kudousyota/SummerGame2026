@@ -60,7 +60,7 @@ void Angel::Init()
 	m_prevState = AngelState::Shout;
 
 	//ステータス
-	m_hp = 300;
+	m_hp = 500;
 	m_attackPower = 20;
 
 	m_scale = VGet(1.0f, 1.0f, 1.0f);

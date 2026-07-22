@@ -161,6 +161,6 @@ void TitleScene::Update(Input& input)
 
 void TitleScene::Draw()
 {
-	DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
+	//DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
 	(this->*m_draw)();
 }

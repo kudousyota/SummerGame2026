@@ -16,6 +16,7 @@ private:
 	//ƒnƒ“ƒhƒ‹
 	int m_hpGaugeHandle;
 	int m_hpGaugeBackHandle;
+	int m_hplidHandle;
 	
 	//Œ»İ‚ÌHP
 	int m_hp;
