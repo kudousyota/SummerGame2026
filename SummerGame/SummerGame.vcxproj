@@ -140,6 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataLoader\AttackData.cpp" />
+    <ClCompile Include="Effect\Effect.cpp" />
+    <ClCompile Include="Effect\EffectManager.cpp" />
     <ClCompile Include="UI\UIBase.cpp" />
     <ClCompile Include="UI\HPUI.cpp" />
     <ClCompile Include="System\LockOnManager.cpp" />
@@ -177,6 +179,8 @@
   <ItemGroup>
     <ClInclude Include="DataLoader\CharacterType.h" />
     <ClInclude Include="DataLoader\AttackData.h" />
+    <ClInclude Include="Effect\Effect.h" />
+    <ClInclude Include="Effect\EffectManager.h" />
     <ClInclude Include="UI\UIBase.h" />
     <ClInclude Include="UI\HPUI.h" />
     <ClInclude Include="System\LockOnManager.h" />

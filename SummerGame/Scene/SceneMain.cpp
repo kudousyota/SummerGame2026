@@ -11,122 +11,13 @@
 #include "../UI/UIManager.h"
 #include "../UI/HPUI.h"
 #include "../UI/WitchTimeNeedleUI.h"
+#include "../Game.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
 	constexpr int kFadeInterval = 60;
 }
 
-void SceneMain::FadeInUpdate(Input&)
-{
-
-	if (m_frame-- <= 0)
-	{
-		m_update = &SceneMain::NormalUpdate;
-		m_draw = &SceneMain::NormalDraw;
-		m_frame = 0;	//念のためフレームを0にしておく
-		return;
-	}
-}
-
-void SceneMain::NormalUpdate(Input& input)
-{
-	
-	Input::Instance().Update();
-
-	Timer::Instance().Update();
-
-	m_pPlayer->Update();
-	m_pCamera->Update(m_pPlayer->GetCameraTarget(),m_pPlayer->GetLockOnManager().GetLockOnPos());
-
-
-	m_frameCount++;
-	//敵の更新を任せる
-	m_enemyManager.Update();
-
-	m_pUiManager->Update();
-	//ボスを倒したら
-	if (m_enemyManager.IsCreatureDead())
-	{
-		m_update = &SceneMain::FadeOutUpdate;
-		m_draw = &SceneMain::FadeDraw;
-		m_frame = 0;
-		return;
-	}
-	//プレイヤーが死んだら
-	if (m_pPlayer->IsDead())
-	{
-		m_update = &SceneMain::GameOverFadeOutUpdate;
-		m_draw = &SceneMain::FadeDraw;
-		m_frame = 0;
-		return;
-	}
-
-	//敵のスポーンを管理するクラスに更新を任せる
-	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
-
-	ProjectileManager::Instance().Update();
-	
-	
-
-}
-
-void SceneMain::FadeOutUpdate(Input&)
-{
-	//ボスを倒すとゲームクリアシーンに行く
-	if (m_frame++ >= kFadeInterval)
-	{
-		//フェードアウト完了
-		m_finished = true;
-		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
-		return;
-	}
-}
-
-void SceneMain::GameOverFadeOutUpdate(Input&)
-{
-	//プレイヤーが死ぬとゲームオーバーシーンに行く
-	if (m_frame++ >= kFadeInterval)
-	{
-		//フェードアウト完了
-		m_finished = true;
-		m_controller.ChangeScene(std::make_shared<GameOverScene>(m_controller));
-		return;
-	}
-}
-
-void SceneMain::NormalDraw()
-{
-	m_pCamera->Draw();
-	m_pStage->Draw();
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-
-	//ウィッチタイムだったら
-	if (m_pPlayer->GetWitchTime())
-	{
-		DrawBox(0, 0, 1280, 720, GetColor(125, 0, 185), true);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	m_pPlayer->Draw();
-
-	m_enemyManager.Draw();
-
-	m_pUiManager->Draw();
-
-	ProjectileManager::Instance().Draw();
-
-	
-
-	DrawGrid();
-	//DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
-	//DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
-}
-
-void SceneMain::FadeDraw()
-{
-
-}
 
 SceneMain::SceneMain(SceneController& controller):
 Scene(controller),
@@ -174,8 +65,6 @@ void SceneMain::Init()
 	m_pPlayer->SetStage(m_pStage);
 	
 
-	
-
 	//敵の管理に依存するプレイヤーとステージをセット
 	m_enemyManager.SetPlayer(m_pPlayer);
 	m_enemyManager.SetStage(m_pStage);
@@ -213,6 +102,7 @@ void SceneMain::Draw()
 
 void SceneMain::DrawGrid()
 {
+#ifdef _DEBUG
 	// 直線の始点と終点
 	VECTOR startPos;
 	VECTOR endPos;
@@ -229,4 +119,119 @@ void SceneMain::DrawGrid()
 		endPos = VGet(static_cast<float>(x), 0.0f, 300.0f);
 		DrawLine3D(startPos, endPos, 0x0000ff);
 	}
+#endif // _DEBUG
+
+	
+}
+void SceneMain::FadeInUpdate(Input&)
+{
+
+	if (m_frame-- <= 0)
+	{
+		m_update = &SceneMain::NormalUpdate;
+		m_draw = &SceneMain::NormalDraw;
+		m_frame = 0;	//念のためフレームを0にしておく
+		return;
+	}
+}
+
+void SceneMain::NormalUpdate(Input& input)
+{
+
+	Input::Instance().Update();
+
+	Timer::Instance().Update();
+
+	m_pPlayer->Update();
+	m_pCamera->Update(m_pPlayer->GetCameraTarget(), m_pPlayer->GetLockOnManager().GetLockOnPos());
+
+
+	m_frameCount++;
+	//敵の更新を任せる
+	m_enemyManager.Update();
+
+	m_pUiManager->Update();
+	//ボスを倒したら
+	if (m_enemyManager.IsCreatureDead())
+	{
+		m_update = &SceneMain::FadeOutUpdate;
+		m_draw = &SceneMain::FadeDraw;
+		m_frame = 0;
+		return;
+	}
+	//プレイヤーが死んだら
+	if (m_pPlayer->IsDead())
+	{
+		m_update = &SceneMain::GameOverFadeOutUpdate;
+		m_draw = &SceneMain::FadeDraw;
+		m_frame = 0;
+		return;
+	}
+
+	//敵のスポーンを管理するクラスに更新を任せる
+	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
+
+	ProjectileManager::Instance().Update();
+}
+
+void SceneMain::FadeOutUpdate(Input&)
+{
+	//ボスを倒すとゲームクリアシーンに行く
+	if (m_frame++ >= kFadeInterval)
+	{
+		//フェードアウト完了
+		m_finished = true;
+		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
+		return;
+	}
+}
+
+void SceneMain::GameOverFadeOutUpdate(Input&)
+{
+	//プレイヤーが死ぬとゲームオーバーシーンに行く
+	if (m_frame++ >= kFadeInterval)
+	{
+		//フェードアウト完了
+		m_finished = true;
+		m_controller.ChangeScene(std::make_shared<GameOverScene>(m_controller));
+		return;
+	}
+}
+
+void SceneMain::NormalDraw()
+{
+	m_pCamera->Draw();
+	m_pStage->Draw();
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+
+	//ウィッチタイムだったら
+	if (m_pPlayer->GetWitchTime())
+	{
+		DrawBox(0, 0, 1280, 720, GetColor(125, 0, 185), true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	m_pPlayer->Draw();
+
+	m_enemyManager.Draw();
+
+	m_pUiManager->Draw();
+
+	ProjectileManager::Instance().Draw();
+
+
+
+	DrawGrid();
+	//DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
+	//DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
+}
+
+void SceneMain::FadeDraw()
+{
+	NormalDraw();
+
+	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * rate);
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

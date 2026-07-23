@@ -5,7 +5,7 @@
 #include "../System/CollisionManager.h"
 #include "Stage.h"
 #include "../System/Timer.h"
-
+#include "../Effect/EffectManager.h"
 
 namespace
 {
@@ -143,7 +143,7 @@ void Player::Init()
 	m_currentState = PlayerState::Idle;
 	m_prevState = PlayerState::Idle;
 
-	m_pos = VGet(0.0f, 500.0f, 0.0f);
+	m_pos = Vector3(0.0f, 500.0f, 0.0f);
 	//移動速度
 	m_speed = 13.0f;
 	//ステータス
@@ -709,7 +709,7 @@ void Player::ApplyDamage(int damage)
 	//damage = 0 でこの関数が呼ばれる
 	if (damage == 0 && m_currentState == PlayerState::Dodge && m_dodgeFrame <= kDodgeFrame)
 	{
-#ifdef DEBUG
+#ifdef _DEBUG
 
 		//ジャスト回避成功時の処理
 		printfDx("Just Dodge (Witch Time!)\n");
@@ -733,6 +733,8 @@ void Player::ApplyDamage(int damage)
 	//通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
 	m_hp -= damage;
 	TransitionTo(PlayerState::Damage);
+
+
 
 	//無敵時間を設定
 	m_invincibleTime = 120;
