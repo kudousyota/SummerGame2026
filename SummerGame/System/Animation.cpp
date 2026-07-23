@@ -37,6 +37,10 @@ void Animation::Init(int modelHandle, std::string name, bool isRoop, float timeS
 	//animation名からアニメーションのインデックスを取得
 	int animNo = MV1GetAnimIndex(modelHandle, name.c_str());
 
+
+	
+
+
 	//m_animHandleに入れることで,アニメーションを変えるときや、ブレンドするときにm_animHandleを使う
 	//アニメーションをアタッチする
 	m_currentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);

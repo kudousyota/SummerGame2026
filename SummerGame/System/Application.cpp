@@ -6,7 +6,7 @@
 #include "../Scene/TitleScene.h"
 #include "../Scene/SceneMain.h"
 #include "../Game.h"
-//#include "EffekseerForDXLib.h"
+#include "EffekseerForDXLib.h"
 
 
 
@@ -47,14 +47,14 @@ bool Application::Init()
 
 	//DirectX11をしようするための初期化
 	//Effecseerを使用するには必ず設定する
-	//SetUseDirect3DVersion(DX_DIRECT3D_11);
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
 
 	//Effekseer使用の初期化
 	//引数には画面に表示する最大パーティクルを設定する
-	//if (Effekseer_Init(8000) == -1)
-	//{
-	//	return -1;			//エラーが起きたら直ちに終了
-	//}
+	if (Effekseer_Init(8000) == -1)
+	{
+		return -1;			//エラーが起きたら直ちに終了
+	}
 
 	//フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ
 	SetChangeScreenModeGraphicsSystemResetFlag(false);
@@ -113,7 +113,7 @@ void Application::Terminate()
 	//フォントの解放
 	RemoveFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
 	//Effekseer使用の終了処理
-	//Effkseer_End();
+	Effkseer_End();
 	DxLib_End();
 }
 

@@ -2,11 +2,15 @@
 #include "EffekseerForDXLib.h"
 #include "Effect.h"
 
+EffectManager& EffectManager::Instns()
+{
+    static EffectManager effect;
+    return effect;
+}
+
 void EffectManager::Init()
 {
-	m_resourceHandles[static_cast<int>(EffectType::Hit)] =
-		LoadEffekseerEffect("Data/eff/Hit.efk");
-
+	m_resourceHandles[static_cast<int>(EffectType::Hit)] = LoadEffekseerEffect("Data/eff/HIt3.efk");
 }
 
 void EffectManager::Update()

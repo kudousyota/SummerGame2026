@@ -12,6 +12,7 @@
 #include "../UI/HPUI.h"
 #include "../UI/WitchTimeNeedleUI.h"
 #include "../Game.h"
+#include "../Effect/EffectManager.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -83,6 +84,8 @@ void SceneMain::Init()
 
 	m_pUiManager->Init();
 
+	EffectManager::Instns().Init();
+
 	SetUseAlphaChannelGraphCreateFlag(true);
 
 	Model::Instance().PreloadAll();
@@ -151,6 +154,8 @@ void SceneMain::NormalUpdate(Input& input)
 	m_enemyManager.Update();
 
 	m_pUiManager->Update();
+
+	EffectManager::Instns().Update();
 	//ƒ{ƒX‚ð“|‚µ‚½‚ç
 	if (m_enemyManager.IsCreatureDead())
 	{
@@ -216,6 +221,8 @@ void SceneMain::NormalDraw()
 	m_enemyManager.Draw();
 
 	m_pUiManager->Draw();
+
+	EffectManager::Instns().Draw();
 
 	ProjectileManager::Instance().Draw();
 

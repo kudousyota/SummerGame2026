@@ -81,7 +81,7 @@ GameClearedScene::~GameClearedScene()
 void GameClearedScene::Init()
 {
 	//フォントの読み込み
-	m_fontHandle	= CreateFontToHandle("x10y12pxDonguriDuel", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+	m_fontHandle	= CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	//UI
 	m_pUiManager = std::make_unique<UIManager>();

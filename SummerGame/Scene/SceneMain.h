@@ -9,10 +9,11 @@
 #include "../Game/Creature.h"
 
 
+
 class Input;
 class Timer;
 class UIManager;
-
+class EffectManager;
 //SceneMain‚ğScene‚Ì”h¶ƒNƒ‰ƒX‚É‚·‚é
 class SceneMain : public Scene
 {

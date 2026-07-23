@@ -714,6 +714,7 @@ void Player::ApplyDamage(int damage)
 
 		//ジャスト回避成功時の処理
 		printfDx("Just Dodge (Witch Time!)\n");
+		
 
 #endif // DEBUG
 
@@ -735,7 +736,7 @@ void Player::ApplyDamage(int damage)
 	m_hp -= damage;
 	TransitionTo(PlayerState::Damage);
 
-
+	EffectManager::Instns().PlayEffect(EffectType::Hit, m_pos);
 
 	//無敵時間を設定
 	m_invincibleTime = 120;
