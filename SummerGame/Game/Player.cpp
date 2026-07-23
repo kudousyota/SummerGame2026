@@ -12,38 +12,47 @@ namespace
 	//プレイヤーからカメラに向かうベクトル
 	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 	//重力加速度
-	const float kGravity				 = 0.6f;
+	const float kGravity = 0.6f;
+
+	//====== 初期ステータス ======
+	//初期座標
+	const Vector3 kInitPos = VGet(0.0f, 500.0f, 0.0f);
+	//移動速度
+	constexpr float kSpeed = 33.0f;
+	//最大HP
+	constexpr int kMaxHp = 50;
+	//ジャンプ力
+	constexpr int kJumpPower = 15;
+	//初期攻撃力(通常時に戻す値としても使う)
+	constexpr int kBaseAttackPower = 20;
+
+	//====== 落下・リスポーン関連 ======
+	//この高さより下に落ちたらリスポーン扱いにする
+	constexpr float kFallRespawnPosY = -250.0f;
+	//リスポーン時に地面より少し浮かせる高さ
+	constexpr float kRespawnOffsetY = 10.0f;
+	//落下した時に受けるダメージ
+	constexpr int kFallDamage = 10;
+
 	//アニメーションの名前
-	const char* const kIdleAnimName		 = "Player|Idle";
-	
-	const char* const kWalkAnimName		 = "Player|Walk";
-
-	const char* const kPunchAnimName	 = "Player|Punch";
-
+	const char* const kIdleAnimName = "Player|Idle";
+	const char* const kWalkAnimName = "Player|Walk";
+	const char* const kPunchAnimName = "Player|Punch";
 	const char* const kPunchRushAnimName = "Player|Punchrush";
-
-	const char* const kJumpAnimName		 = "Player|Jump";
-
-	const char* const kDodgeAnimName	 = "Player|Dodge";
-
-	const char* const kKickAnimName		 = "Player|Kick";
-
-	const char* const kSkyAnimName		 = "Player|Sky";
-
-	const char* const kSkyKickAnimName	 = "Player|kakatootosi_TEST";
-
-	const char* const kRunAnimName		 = "Player|Run";
-
-	const char* const kHitAnimName 		 = "Player|Hit";
+	const char* const kJumpAnimName = "Player|Jump";
+	const char* const kDodgeAnimName = "Player|Dodge";
+	const char* const kKickAnimName = "Player|Kick";
+	const char* const kSkyAnimName = "Player|Sky";
+	const char* const kSkyKickAnimName = "Player|kakatootosi_TEST";
+	const char* const kRunAnimName = "Player|Run";
+	const char* const kHitAnimName = "Player|Hit";
 
 	//攻撃中のフレーム
-	constexpr float kPunchAnimFrame		 = 10.0f;
-
-	constexpr int   kAnimBlendFrame		 = 10;
+	constexpr float kPunchAnimFrame = 10.0f;
+	constexpr int   kAnimBlendFrame = 10;
 	//最初の攻撃の判定フレーム
-	constexpr float kAttackStartFrame	 = 10.0f;
-
-	constexpr float kAttackEndFrame		 = 15.0f;
+	constexpr float kAttackStartFrame = 10.0f;
+	constexpr float kAttackEndFrame = 15.0f;
 
 	//攻撃の一回目のダメージを与えるフレーム
 	constexpr int kAttackDamageFrame1 = 5;
@@ -66,22 +75,24 @@ namespace
 
 	//キックのダメージを与えれるフレーム
 	constexpr float kKickStartFrame = 15.0f;
-
 	constexpr float kKickEndFrame = 25.0f;
-
 	//キックのダメージ
 	constexpr int kKickPower = 50;
 
 	//プレイヤーの前方のどこに攻撃を出すか
 	constexpr float kAttackOffset = 70.0f;
-	
+
 	//ジャスト回避の受付フレーム
 	constexpr int kDodgeFrame = 30;
-	//無敵時間
+	//無敵時間(ジャスト回避成功時)
 	constexpr int kInvincibleFrame = 30;
+	//無敵時間(被弾時)
+	constexpr int kDamageInvincibleFrame = 120;
 
 	//ジャスト回避の範囲
 	constexpr float kJustDodgeRadius = 100.0f;
+	//通常時(ジャスト回避受付外)の当たり判定半径
+	constexpr float kDefaultDodgeRadius = 30.0f;
 
 	//攻撃した時に進む距離
 	constexpr float kAttackMove = 35.0f;
@@ -96,6 +107,27 @@ namespace
 	constexpr float kSkyKickRadius = 140.0f;
 	//攻撃の時に徐々に回転
 	constexpr float kRotateSpeed = 0.03f;
+	//通常移動時の向き補正速度
+	constexpr float kMoveRotateSpeed = 0.2f;
+
+	//ジャンプ開始時、地面判定から浮かせる距離
+	constexpr float kJumpStartOffsetY = 1.0f;
+
+	//====== ウィッチタイム関連 ======
+	//敵の時間スケール
+	constexpr float kWitchTimeScale = 0.2f;
+	//ウィッチタイムの持続フレーム
+	constexpr int kWitchTimeFrame = 300;
+
+	//====== 攻撃判定の半径 ======
+	constexpr float kPunchRadius = 80.0f;
+	constexpr float kRushRadius = 60.0f;
+	constexpr float kKickRadius = 90.0f;
+
+#ifdef _DEBUG
+	//デバッグ表示用のジャスト回避半径
+	constexpr float kDebugDodgeRadius = 100.0f;
+#endif
 }
 
 Player::Player() :
@@ -143,20 +175,20 @@ void Player::Init()
 	m_currentState = PlayerState::Idle;
 	m_prevState = PlayerState::Idle;
 
-	m_pos = Vector3(0.0f, 500.0f, 0.0f);
+	m_pos = kInitPos;
 	//移動速度
 	//m_speed = 13.0f;
-	 m_speed = 33.0f;
+	 m_speed = kSpeed;
 	//ステータス
 	//m_maxHp = 300;
 	//m_hp = 300;
 
-	m_maxHp = 50;
-	m_hp = 50;
+	m_maxHp = kMaxHp;
+	m_hp = kMaxHp;
 
-	m_jumpPower = 15;
+	m_jumpPower = kJumpPower;
 	//攻撃力
-	m_attackPower = 20;
+	m_attackPower = kBaseAttackPower;
 	m_invincibleTime = 0;
 	m_modelHandle = MV1LoadModel("Data/Player.mv1");
 
@@ -192,11 +224,11 @@ void Player::Update()
 	}
 
 	//地面より下に行ったらリスポーンさせる
-	if(m_pos.y < -250.0f)
+	if(m_pos.y < kFallRespawnPosY)
 	{
-		m_lastGroundPos.y += 10.0f;
+		m_lastGroundPos.y += kRespawnOffsetY;
 		m_pos = m_lastGroundPos;
-		m_hp -= 10;
+		m_hp -= kFallDamage;
 	}
 
 	Vector3 forward = m_pCamera->GetForward();
@@ -247,7 +279,7 @@ void Player::Update()
 			m_isGround = false;
 
 			//地面判定から1ピクセルだけ浮かす
-			m_pos.y += 1.0f;
+			m_pos.y += kJumpStartOffsetY;
 
 		}
 
@@ -547,8 +579,6 @@ void Player::Update()
 			m_moveVelocity.x = moveDir.x * m_speed * length;
 			m_moveVelocity.z = moveDir.z * m_speed * length;
 
-			float rotSpeed = 0.2f;
-
 			float targetAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
 
 			float diff = targetAngle - m_angle;
@@ -563,7 +593,7 @@ void Player::Update()
 				diff += DX_TWO_PI_F;
 			}
 
-			m_angle += diff * 0.2f;
+			m_angle += diff * kMoveRotateSpeed;
 
 			//角度から向きを生成
 			m_forward.x = sinf(m_angle - DX_PI_F);
@@ -649,7 +679,7 @@ void Player::Draw()
 
 
 	//プレイヤーの状態によって、表示する半径と色を変える
-	float drawRadius = 100.0f; //デフォルトの半径
+	float drawRadius = kDebugDodgeRadius; //デフォルトの半径
 	unsigned int drawColor = GetColor(255, 0, 0); //通常は赤
 
 	//今ジャスト回避の受付時間か？
@@ -727,7 +757,7 @@ void Player::ApplyDamage(int damage)
 		//例1: プレイヤーのステートをウィッチタイム中に変える場合
 		//TransitionTo(PlayerState::WitchTime); 
 		//敵のアニメーションを遅くする
-		Timer::Instance().SetEnemyTimeScaleForFrames(0.2f, 300);
+		Timer::Instance().SetEnemyTimeScaleForFrames(kWitchTimeScale, kWitchTimeFrame);
 
 		return; // ダメージを受けずに処理を抜ける
 	}
@@ -736,10 +766,11 @@ void Player::ApplyDamage(int damage)
 	m_hp -= damage;
 	TransitionTo(PlayerState::Damage);
 
-	EffectManager::Instns().PlayEffect(EffectType::Hit, m_pos);
+	//エフェクトの再生
+	EffectManager::Instns().PlayEffect(EffectType::Hit, m_pos + Vector3(0.0f,GetCollisionHeight(),0.0f));
 
 	//無敵時間を設定
-	m_invincibleTime = 120;
+	m_invincibleTime = kDamageInvincibleFrame;
 
 	
 	if (m_hp <= 0)
@@ -775,12 +806,18 @@ float Player::GetJustDodgeRadius() const
 	{
 		return kJustDodgeRadius;
 	}
-	return 30.0f; //通常時の半径(GetCollisionRadius()の戻り値など)
+	return kDefaultDodgeRadius; //通常時の半径(GetCollisionRadius()の戻り値など)
 }
 
 void Player::AttackUpdate()
 {
-	if (m_currentState != PlayerState::Attack && m_currentState != PlayerState::Rush && m_currentState != PlayerState::Kick && m_currentState != PlayerState::SkyAttack && m_currentState != PlayerState::SkyRush && m_currentState != PlayerState::SkyKick)
+	//攻撃意外だとリターン
+	if (m_currentState != PlayerState::Attack &&
+		m_currentState != PlayerState::Rush &&
+		m_currentState != PlayerState::Kick &&
+		m_currentState != PlayerState::SkyAttack &&
+		m_currentState != PlayerState::SkyRush &&
+		m_currentState != PlayerState::SkyKick)
 	{
 		return;
 	}
@@ -863,7 +900,7 @@ void Player::TransitionTo(PlayerState nextState)
 		//重力を戻す
 		m_gravity = kGravity;
 
-		m_attackPower = 20;
+		m_attackPower = kBaseAttackPower;
 
 		m_animation.ChangeAnim(kIdleAnimName,true,0.5f);
 		break;
@@ -1011,16 +1048,16 @@ AttackData Player::CreateAttackData()
 	switch (GetAttackType())
 	{
 	case AttackType::Punch:
-		radius = 80.0f;
+		radius = kPunchRadius;
 		break;
 	case AttackType::Rush:
-		radius = 60.0f;
+		radius = kRushRadius;
 		break;
 	case AttackType::Kick:
-		radius = 90.0f;
+		radius = kKickRadius;
 		break;
 	case AttackType::SkyKick:
-		radius = 140.0f;
+		radius = kSkyKickRadius;
 		break;
 
 	}

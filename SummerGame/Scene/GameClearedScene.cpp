@@ -207,7 +207,7 @@ void GameClearedScene::NormalDraw()
 	const int Color = GetColor(224, 255, 255);
 	const int black = GetColor(0, 0, 0);
 
-	DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
+	//DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
 	m_pUiManager->Draw();
 	//点滅頻度
 	const int intervar = 650;

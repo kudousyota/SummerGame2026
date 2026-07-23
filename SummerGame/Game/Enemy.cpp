@@ -3,6 +3,7 @@
 #include "../System/CollisionManager.h"
 #include "Player.h"
 #include "../System/Timer.h"
+#include "../Effect/EffectManager.h"
 
 Enemy::Enemy():
 	m_modelHandle(-1),
@@ -45,6 +46,8 @@ void Enemy::ApplyDamage(int damage)
 	}
 
 	m_hp -= damage;
+
+	EffectManager::Instns().PlayEffect(EffectType::Hit, GetCollisionPosition());
 
 	if (m_hp <= 0)
 	{

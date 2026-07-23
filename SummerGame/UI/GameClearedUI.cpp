@@ -30,8 +30,9 @@ void GameClearedUI::Update()
 
 void GameClearedUI::Draw()
 {
+
+	DrawRotaGraph(550, 200, 0.5f, 0, m_TimerUIHandle, true);
+	DrawRotaGraph(700, 400, 0.5f, 0, m_ScoreUIHandle, true);
 	DrawRotaGraph(620, 360, 1.0f, 0, m_ResultUIHandle, true);
-	DrawRotaGraph(600, 400, 1.0f, 0, m_TimerUIHandle, true);
-	DrawRotaGraph(700, 600, 1.0f, 0, m_ScoreUIHandle, true);
 
 }

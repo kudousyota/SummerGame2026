@@ -39,15 +39,14 @@ bool Application::Init()
 	//フォントの読み込み
 	AddFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
 
+	//DirectX11をしようするための初期化
+	//Effecseerを使用するには必ず設定する
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+
 	if (DxLib_Init() == -1)
 	{
 		return false;
 	}
-
-
-	//DirectX11をしようするための初期化
-	//Effecseerを使用するには必ず設定する
-	SetUseDirect3DVersion(DX_DIRECT3D_11);
 
 	//Effekseer使用の初期化
 	//引数には画面に表示する最大パーティクルを設定する
@@ -59,14 +58,14 @@ bool Application::Init()
 	//フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ
 	SetChangeScreenModeGraphicsSystemResetFlag(false);
 
-
-
-
 	//描画対象をバックバッファに変更
 	SetDrawScreen(DX_SCREEN_BACK);
 	//カリングの設定
 	SetUseBackCulling(true);
 
+	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
+	//薄い青
+	SetBackgroundColor(100, 150, 255); 
 
 	return true;
 }
