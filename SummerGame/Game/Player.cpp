@@ -145,7 +145,8 @@ void Player::Init()
 
 	m_pos = Vector3(0.0f, 500.0f, 0.0f);
 	//移動速度
-	m_speed = 13.0f;
+	//m_speed = 13.0f;
+	 m_speed = 33.0f;
 	//ステータス
 	//m_maxHp = 300;
 	//m_hp = 300;

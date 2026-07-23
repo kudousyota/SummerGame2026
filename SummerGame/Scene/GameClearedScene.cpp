@@ -9,6 +9,8 @@
 #include "../Game/Player.h"
 #include "../Game/Camera.h"
 #include "../system/Vector3.h"
+#include "../UI/UIManager.h"
+#include "../UI/GameClearedUI.h"
 //#include "../system/SoundManager.h"
 
 
@@ -80,6 +82,15 @@ void GameClearedScene::Init()
 {
 	//フォントの読み込み
 	m_fontHandle	= CreateFontToHandle("x10y12pxDonguriDuel", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+
+	//UI
+	m_pUiManager = std::make_unique<UIManager>();
+	//リザルトUI
+	auto gameClearedUI = std::make_unique<GameClearedUI>();
+	//hpUI->SetPlayerHP(m_pPlayer);
+	m_pUiManager->Add(std::move(gameClearedUI));
+
+	m_pUiManager->Init();
 
 	//m_skyHandle		= MV1LoadModel("data/Sky_Daylight01.mv1");
 
@@ -174,7 +185,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 		return;
 
 	}
-
+	m_pUiManager->Update();
 
 }
 
@@ -197,7 +208,7 @@ void GameClearedScene::NormalDraw()
 	const int black = GetColor(0, 0, 0);
 
 	DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
-
+	m_pUiManager->Draw();
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();

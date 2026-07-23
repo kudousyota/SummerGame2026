@@ -1,8 +1,10 @@
 #pragma once
 #include "Scene.h"
 #include "../System/Vector3.h"
+#include <memory>
 //#include "../system/EffectManager.h"
 
+class UIManager;
 class GameClearedScene :public Scene
 {
 public:
@@ -69,6 +71,8 @@ private:
 	void FadeDraw();	//フェードDraw
 	using DrawFunc_t = void(GameClearedScene::*)();
 	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
+
+	std::unique_ptr<UIManager> m_pUiManager;
 
 	//EffectManager m_effectManger;
 };
