@@ -1,6 +1,6 @@
 #include "GameClearedUI.h"
 #include "DxLib.h"
-#include "../Game/Player.h"
+#include "../Game/Character/Player.h"
 
 
 GameClearedUI::GameClearedUI():

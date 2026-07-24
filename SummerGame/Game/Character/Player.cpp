@@ -150,7 +150,8 @@ Player::Player() :
 	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
 	m_modelDisplayOffsetY(0.0f),
 	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f)),
-	m_maxHp(0)
+	m_maxHp(0),
+	m_deadPos({0.0f,0.0f,0.0f})
 {
 	
 }
@@ -160,11 +161,6 @@ Player::~Player()
 	CollisionManager::Instance().Unregister(this);
 
 	MV1DeleteModel(m_modelHandle);	
-}
-
-CharacterType Player::GetCharacterType() const
-{
-	return CharacterType::Player;
 }
 
 void Player::Init()
@@ -206,10 +202,12 @@ void Player::Update()
 	if (m_isDead)
 	{
 #ifdef _DEBUG
+		m_deadPos = m_pos;
 		if (input.IsTriggered("pause"))
 		{
 			m_isDead = false;
-
+			
+			m_pos = m_deadPos;
 		}
 #endif // _DEBUG
 
@@ -782,6 +780,11 @@ void Player::ApplyDamage(int damage)
 	}
 
 	//printfDx("Player HP = %d\n", m_hp);
+}
+
+CharacterType Player::GetCharacterType() const
+{
+	return CharacterType::Player;
 }
 
 Vector3 Player::GetCameraTarget() const

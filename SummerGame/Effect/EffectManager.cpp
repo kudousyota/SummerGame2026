@@ -19,7 +19,7 @@ void EffectManager::Update()
 {
     //DXLibのカメラ・ライト情報をEffekseer側に同期
     Effekseer_Sync3DSetting();
-    //再生中のエフェクトを更新し、再生終了したものはリストから削除//
+    //再生中のエフェクトを更新し、再生終了したものはリストから削除
     //it = イテレータ
     for (auto it = m_effects.begin(); it != m_effects.end();)
     {

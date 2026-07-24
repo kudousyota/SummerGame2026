@@ -134,6 +134,9 @@ private:
 	//描画に使うモデルの垂直オフセット
 	float m_modelDisplayOffsetY;
 
+	//死んだ位置
+	Vector3 m_deadPos;
+
 	//カメラ
 	std::shared_ptr<Camera>m_pCamera;
 	//ロックオンマネージャー

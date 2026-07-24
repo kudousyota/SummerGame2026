@@ -1,5 +1,5 @@
 #include "LockOnManager.h"
-#include "../Game/Enemy.h"
+#include "../Game/Character/Enemy.h"
 namespace
 {
 	static constexpr int kLockOnDurationFrame = 90;

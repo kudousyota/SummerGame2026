@@ -8,6 +8,7 @@
 #include "../Game.h"
 #include "EffekseerForDXLib.h"
 #include "Model.h"
+#include "Timer.h"
 
 
 
@@ -92,6 +93,8 @@ void Application::Run()
 
 		ClearDrawScreen();
 		input.Update();
+		//タイマーの更新(時間スケールやウィッチタイムの残りフレームを減らす)
+		Timer::Instance().Update();
 
 		controller.Update(input);
 		controller.Draw();
@@ -116,6 +119,8 @@ void Application::Terminate()
 	RemoveFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
 	//Effekseer使用の終了処理
 	Effkseer_End();
+	// プリロードしたモデルを解放
+	Model::Instance().ReleseAll();
 	DxLib_End();
 }
 

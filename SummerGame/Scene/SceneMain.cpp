@@ -59,8 +59,9 @@ void SceneMain::Init()
 
 	//次にCamera生成
 	m_pCamera = std::make_shared<Camera>();
-	m_pCamera->SetStage(m_pStage);
-	m_pCamera->Init(m_pPlayer->GetCameraTarget(),m_pPlayer->GetAngle());
+    m_pCamera->SetStage(m_pStage);
+	//初期カメラをプレイヤーの背後に設定する(デフォルトは正面になることがあるため180度回転させる)
+	m_pCamera->Init(m_pPlayer->GetCameraTarget(), m_pPlayer->GetAngle() + DX_PI_F);
 
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pPlayer->SetStage(m_pStage);
@@ -164,15 +165,19 @@ void SceneMain::NormalUpdate(Input& input)
 		m_frame = 0;
 		return;
 	}
+
 	//プレイヤーが死んだら
 	if (m_pPlayer->IsDead())
 	{
+#ifdef _DEBUG
+		
+#else
 		m_update = &SceneMain::GameOverFadeOutUpdate;
 		m_draw = &SceneMain::FadeDraw;
 		m_frame = 0;
 		return;
+#endif // _DEBUG
 	}
-
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());
 

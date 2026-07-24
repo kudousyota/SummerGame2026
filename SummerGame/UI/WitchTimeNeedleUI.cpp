@@ -1,5 +1,5 @@
 #include "WitchTimeNeedleUI.h"
-#include "../Game/Player.h"
+#include "../Game/Character/Player.h"
 
 WitchTimeNeedleUI::WitchTimeNeedleUI():
 	m_nidelHandle(-1),
