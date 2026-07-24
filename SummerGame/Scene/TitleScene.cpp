@@ -4,6 +4,7 @@
 //#include "../system/SoundManager.h"
 #include "SceneMain.h"
 #include "SceneController.h"
+#include "Model.h"
 namespace
 {
 	constexpr int fade_interval = 60;
@@ -26,16 +27,7 @@ void TitleScene::FadeInUpdate(Input&)
 
 void TitleScene::NormalUpdate(Input& input)
 {
-	//アニメ進行
-	m_currentAnimCount += 0.5f;
-	//アニメの総時間を超えたらループさせる
-	float currentTotal = MV1GetAttachAnimTotalTime(m_playerHandle, m_cureentAnimHandle);
-	if (m_currentAnimCount >= currentTotal)
-	{
-		m_currentAnimCount -= currentTotal;
-	}
-	MV1SetAttachAnimTime(m_playerHandle, m_cureentAnimHandle, m_currentAnimCount);
-
+	m_titlePlayer.Update();
 
 	if (input.IsTriggered("ok"))
 	{
@@ -60,6 +52,8 @@ void TitleScene::FadeOutUpdate(Input&)
 
 void TitleScene::NormalDraw()
 {
+
+	m_titlePlayer.Draw();
 
 	//モデルの位置を反映してから描画
 	
@@ -136,11 +130,8 @@ void TitleScene::Init()
 
 	//SoundManager::PlayBGM("Title", true);
 
-	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
-	m_currentAnimCount = 0.0f;
-
-	m_cureentAnimHandle = MV1AttachAnim(m_playerHandle, animNo, -1, -1);
-	m_currentAnimIndex = animNo;
+	//タイトルでプレイヤーを描画
+	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Idle");
 
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)

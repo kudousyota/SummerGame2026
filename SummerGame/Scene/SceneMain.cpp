@@ -88,7 +88,7 @@ void SceneMain::Init()
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 
-	Model::Instance().PreloadAll();
+	
 	
 }
 

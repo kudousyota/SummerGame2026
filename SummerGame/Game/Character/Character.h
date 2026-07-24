@@ -4,6 +4,7 @@
 #include <memory>
 #include "../DataLoader/CharacterType.h"
 #include "../DataLoader/AttackData.h"
+#include "CharacterViewer.h"
 
 //プレイヤーとエネミーの基底クラス
 class Input;
@@ -42,6 +43,8 @@ public:
 	virtual Vector3 GetHitEffect()const { return m_pos; }
 
 	virtual Vector3 GetCollisionPosition() const;
+
+
 
 	virtual void SetPosition(const Vector3& pos) { m_pos = pos; }
 	

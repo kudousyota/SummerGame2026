@@ -124,8 +124,7 @@ private:
 	//攻撃時に方向を変えるための関数
 	void TurnToInputDirection(const Vector3& right, const Vector3& forward);
 
-	//カメラ
-	std::shared_ptr<Camera>m_pCamera;
+
 
 	//プレイヤーの当たり判定はカプセルで行う//キャラクターの半径を取得する関数
 	float GetCollisionRadius() const override { return 30.0f; }
@@ -135,6 +134,9 @@ private:
 	//描画に使うモデルの垂直オフセット
 	float m_modelDisplayOffsetY;
 
+	//カメラ
+	std::shared_ptr<Camera>m_pCamera;
+	//ロックオンマネージャー
 	LockOnManager m_lockOnManager;
 	//CheckAttackSphereを呼び、当たったらロックオンにセットする共通処理
 	void TryAttackHit(); 

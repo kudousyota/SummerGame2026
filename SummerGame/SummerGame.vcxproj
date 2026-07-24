@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -93,7 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Dxlib_h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Dxlib_h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Character\CharacterViewer.cpp" />
     <ClCompile Include="DataLoader\AttackData.cpp" />
     <ClCompile Include="Effect\Effect.cpp" />
     <ClCompile Include="Effect\EffectManager.cpp" />
@@ -148,21 +149,21 @@
     <ClCompile Include="System\LockOnManager.cpp" />
     <ClCompile Include="Scene\GameOverScene.cpp" />
     <ClCompile Include="Game\Breath.cpp" />
-    <ClCompile Include="Game\Enemy.cpp" />
-    <ClCompile Include="Game\Alien.cpp" />
+    <ClCompile Include="Game\Character\Enemy.cpp" />
+    <ClCompile Include="Game\Character\Alien.cpp" />
     <ClCompile Include="DataLoader\DataManager.cpp" />
     <ClCompile Include="Game\EnemyManager.cpp" />
     <ClCompile Include="Game\EnemySpawn.cpp" />
-    <ClCompile Include="Game\Angel.cpp" />
+    <ClCompile Include="Game\Character\Angel.cpp" />
     <ClCompile Include="Game\Stage.cpp" />
     <ClCompile Include="System\ProjectileManager.cpp" />
     <ClCompile Include="System\Projectile.cpp" />
     <ClCompile Include="System\Model.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\CollisionManager.cpp" />
-    <ClCompile Include="Game\Creature.cpp" />
+    <ClCompile Include="Game\Character\Creature.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
-    <ClCompile Include="Game\Character.cpp" />
+    <ClCompile Include="Game\Character\Character.cpp" />
     <ClCompile Include="Scene\GameClearedScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneController.cpp" />
@@ -170,7 +171,7 @@
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Application.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\Character\Player.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
     <ClCompile Include="System\Vector3.cpp" />
     <ClCompile Include="System\Timer.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="UI\WitchTimeNeedleUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Character\CharacterViewer.h" />
     <ClInclude Include="DataLoader\CharacterType.h" />
     <ClInclude Include="DataLoader\AttackData.h" />
     <ClInclude Include="Effect\Effect.h" />
@@ -188,21 +190,21 @@
     <ClInclude Include="System\LockOnManager.h" />
     <ClInclude Include="Scene\GameOverScene.h" />
     <ClInclude Include="Game\Breath.h" />
-    <ClInclude Include="Game\Enemy.h" />
-    <ClInclude Include="Game\Alien.h" />
+    <ClInclude Include="Game\Character\Enemy.h" />
+    <ClInclude Include="Game\Character\Alien.h" />
     <ClInclude Include="DataLoader\DataManager.h" />
     <ClInclude Include="Game\EnemyManager.h" />
     <ClInclude Include="Game\EnemySpawn.h" />
-    <ClInclude Include="Game\Angel.h" />
+    <ClInclude Include="Game\Character\Angel.h" />
     <ClInclude Include="Game\Stage.h" />
     <ClInclude Include="System\ProjectileManager.h" />
     <ClInclude Include="System\Projectile.h" />
     <ClInclude Include="System\Model.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\CollisionManager.h" />
-    <ClInclude Include="Game\Creature.h" />
+    <ClInclude Include="Game\Character\Creature.h" />
     <ClInclude Include="Game\Camera.h" />
-    <ClInclude Include="Game\Character.h" />
+    <ClInclude Include="Game\Character\Character.h" />
     <ClInclude Include="Scene\GameClearedScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneController.h" />
@@ -210,7 +212,7 @@
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Application.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\Character\Player.h" />
     <ClInclude Include="Scene\SceneMain.h" />
     <ClInclude Include="System\Vector3.h" />
     <ClInclude Include="System\Timer.h" />

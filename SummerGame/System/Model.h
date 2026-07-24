@@ -14,6 +14,7 @@ public:
 	int CreateCreatureModel() const { return MV1DuplicateModel(m_creatureBaseHandle); }
 	int CreateAngelModel()    const { return MV1DuplicateModel(m_angelBaseHandle); }
 	int CreatAlienModel() const { return MV1DuplicateModel(m_alienBaseHandle); }
+	int CreatPlayerModel() const { return MV1DuplicateModel(m_playerBaseHandle); }
 
 	void ReleseAll();
 
@@ -21,5 +22,6 @@ private:
 	int m_creatureBaseHandle = -1;
 	int m_angelBaseHandle = -1;
 	int m_alienBaseHandle = -1;
+	int m_playerBaseHandle = -1;
 };
 

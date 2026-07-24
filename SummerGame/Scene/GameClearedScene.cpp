@@ -6,7 +6,7 @@
 #include "TitleScene.h"
 #include "SceneController.h"
 #include "../Game.h"
-#include "../Game/Player.h"
+#include "../Game/Character/Player.h"
 #include "../Game/Camera.h"
 #include "../system/Vector3.h"
 #include "../UI/UIManager.h"

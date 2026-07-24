@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Vector3.h"
-#include "../Game/Character.h"
+#include "../Game/Character/Character.h"
 class Character;
 class AttackData;
 class CollisionManager

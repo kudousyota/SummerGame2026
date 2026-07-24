@@ -3,7 +3,7 @@
 #include "Creature.h"
 #include "Alien.h"
 #include <algorithm>
-#include "../Game/Player.h"
+#include "../Game/Character/Player.h"
 
 EnemyManager::EnemyManager()
 {

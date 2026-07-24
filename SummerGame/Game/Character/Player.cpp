@@ -1,9 +1,9 @@
 #include "Player.h"
 #include "DxLib.h"
 #include "../System/Input.h"
-#include "Camera.h"
+#include "../Camera.h"
 #include "../System/CollisionManager.h"
-#include "Stage.h"
+#include "../Stage.h"
 #include "../System/Timer.h"
 #include "../Effect/EffectManager.h"
 

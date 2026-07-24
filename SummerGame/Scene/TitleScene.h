@@ -2,6 +2,7 @@
 #include "../System/Input.h"
 #include "../System/Vector3.h"
 #include "Scene.h"
+#include "CharacterViewer.h"
 
 class TitleScene: public Scene
 {
@@ -59,5 +60,7 @@ private:
 	int m_logoHandle;
 	//ÉçÉSÇÃà íu
 	Vector3 m_logoPos;
+
+	CharacterViewer m_titlePlayer;
 };
 

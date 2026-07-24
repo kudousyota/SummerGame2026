@@ -7,6 +7,7 @@
 #include "../Scene/SceneMain.h"
 #include "../Game.h"
 #include "EffekseerForDXLib.h"
+#include "Model.h"
 
 
 
@@ -62,6 +63,8 @@ bool Application::Init()
 	SetDrawScreen(DX_SCREEN_BACK);
 	//カリングの設定
 	SetUseBackCulling(true);
+	//モデルのロード
+	Model::Instance().PreloadAll();
 
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
 	//薄い青

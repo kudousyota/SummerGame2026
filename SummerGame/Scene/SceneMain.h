@@ -1,12 +1,12 @@
 #pragma once
-#include "../Game/Player.h"
+#include "../Game/Character/Player.h"
 #include "../Game/Camera.h"
 #include <memory>
 #include "../Game/Stage.h"
 #include "../Game/EnemyManager.h"
 #include "../Game/EnemySpawn.h"
 #include "Scene.h" //Sceneの基底クラスをインクルード
-#include "../Game/Creature.h"
+#include "../Game/Character/Creature.h"
 
 
 

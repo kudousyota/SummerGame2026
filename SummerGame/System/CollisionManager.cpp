@@ -1,5 +1,5 @@
 #include "CollisionManager.h"
-#include "../Game/Character.h"
+#include "../Game/Character/Character.h"
 #include <algorithm>
 #include <vector>
 #include "../DataLoader/AttackData.h"
