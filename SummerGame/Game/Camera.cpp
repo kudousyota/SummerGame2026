@@ -38,7 +38,7 @@ Camera::~Camera()
 void Camera::Init(const Vector3& initialTarget, float initialAngle)
 {
 	
-	m_skyDomeHandle = MV1LoadModel("Data/Sky_Evening.mv1");
+	m_skyDomeHandle = MV1LoadModel("Data/Sky_Night01.mv1");
 
 	m_cameraAngleX = initialAngle;
 	m_cameraAngleY = 0.0f;

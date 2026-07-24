@@ -38,9 +38,9 @@ void Creature::Init()
 	Enemy::Init();
 
 	
-	m_hp = 50;
+	//m_hp = 50;
 	//本物の体力
-	//m_hp = 700;
+	m_hp = 700;
 
 	m_attackPower = 20;
 	
@@ -247,6 +247,11 @@ void Creature::AttackUpdate()
 Vector3 Creature::GetCollisionPosition() const
 {
 	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
+}
+
+Vector3 Creature::GetHitEffect() const
+{
+	return m_pos + Vector3(0.0f,GetCollisionHeight()/2,0.0f);
 }
 
 void Creature::TransitionTo(CreatureState nextState)

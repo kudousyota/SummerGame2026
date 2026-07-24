@@ -13,8 +13,9 @@ public:
 	void OnHit(const AttackData& attackdata);
 	void OnDead();
 
-	virtual AttackType GetAttackType() const override;
-	virtual float GetAttackRadius() const override;
+
+	AttackType GetAttackType() const override;
+	float GetAttackRadius() const override;
 
 private:
 	enum class CreatureState
@@ -39,7 +40,7 @@ private:
 	//攻撃する場所
 	Vector3 m_attackPos;
 
-
+	Vector3 GetHitEffect()const override;
 
 	void TransitionTo(CreatureState nextState);
 

@@ -39,6 +39,8 @@ public:
 	//今ジャスト回避の受付中(Dodge状態で受付フレーム内)かどうか
 	virtual bool IsJustDodgeWindow() const { return false; }
 
+	virtual Vector3 GetHitEffect()const { return m_pos; }
+
 	virtual Vector3 GetCollisionPosition() const;
 
 	virtual void SetPosition(const Vector3& pos) { m_pos = pos; }

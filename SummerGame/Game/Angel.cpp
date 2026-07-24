@@ -250,6 +250,7 @@ void Angel::OnDamaged()
 	TransitionTo(AngelState::Damage);
 }
 
+
 void Angel::OnHit(const AttackData& attackdata)
 {
 	ApplyDamage(attackdata.GetDamage());
@@ -266,4 +267,9 @@ AttackType Angel::GetAttackType() const
 float Angel::GetAttackRadius() const
 {
 	return kAttackRadius;
+}
+
+Vector3 Angel::GetHitEffect() const
+{
+	return m_pos + Vector3(0.0f,GetCollisionHeight()/2,0.0f);
 }

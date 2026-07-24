@@ -56,6 +56,7 @@ private:
 	void TransitionTo(AlienState nextState);
 
 
+	Vector3 GetHitEffect()const override;
 
 	
 	//ダメージを受けたらDamageステートへ

@@ -47,7 +47,7 @@ void Enemy::ApplyDamage(int damage)
 
 	m_hp -= damage;
 
-	EffectManager::Instns().PlayEffect(EffectType::Hit, GetCollisionPosition());
+	EffectManager::Instns().PlayEffect(EffectType::Hit, GetHitEffect());
 
 	if (m_hp <= 0)
 	{

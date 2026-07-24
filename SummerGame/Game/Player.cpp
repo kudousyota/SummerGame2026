@@ -18,9 +18,9 @@ namespace
 	//初期座標
 	const Vector3 kInitPos = VGet(0.0f, 500.0f, 0.0f);
 	//移動速度
-	constexpr float kSpeed = 33.0f;
+	constexpr float kSpeed = 14.0f;
 	//最大HP
-	constexpr int kMaxHp = 50;
+	constexpr int kMaxHp = 150;
 	//ジャンプ力
 	constexpr int kJumpPower = 15;
 	//初期攻撃力(通常時に戻す値としても使う)
@@ -177,14 +177,14 @@ void Player::Init()
 
 	m_pos = kInitPos;
 	//移動速度
-	//m_speed = 13.0f;
-	 m_speed = kSpeed;
+	//m_speed = 33.0f;
+	m_speed = kSpeed;
 	//ステータス
-	//m_maxHp = 300;
-	//m_hp = 300;
-
 	m_maxHp = kMaxHp;
 	m_hp = kMaxHp;
+
+	//m_maxHp = 50;
+	//m_hp = 50;
 
 	m_jumpPower = kJumpPower;
 	//攻撃力

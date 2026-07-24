@@ -363,6 +363,11 @@ void Alien::TransitionTo(AlienState nextState)
 	}
 }
 
+Vector3 Alien::GetHitEffect() const
+{
+	return m_pos + Vector3(0.0f,GetCollisionHeight(),0.0f);
+}
+
 AttackType Alien::GetAttackType() const
 {
 	return AttackType::Breath;

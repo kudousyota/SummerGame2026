@@ -38,5 +38,7 @@ private:
 	void TransitionTo(AngelState nextState);
 
 	void OnDamaged();
+
+	Vector3 GetHitEffect()const override;
 };
 
