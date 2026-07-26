@@ -124,7 +124,8 @@ private:
 	//攻撃時に方向を変えるための関数
 	void TurnToInputDirection(const Vector3& right, const Vector3& forward);
 
-
+	//攻撃方向を取得する関数
+	void UpdateAttackDirection(const Vector3& right, const Vector3& forward);
 
 	//プレイヤーの当たり判定はカプセルで行う//キャラクターの半径を取得する関数
 	float GetCollisionRadius() const override { return 30.0f; }

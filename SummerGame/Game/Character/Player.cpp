@@ -604,21 +604,6 @@ void Player::Update()
 			m_moveVelocity.z = 0.0f;
 		}
 	}
-
-	//攻撃の時も向きをかえるようにする
-	if (m_currentState == PlayerState::Attack ||
-		m_currentState == PlayerState::Rush ||
-		m_currentState == PlayerState::Kick ||
-		m_currentState == PlayerState::SkyAttack ||
-		m_currentState == PlayerState::SkyRush ||
-		m_currentState == PlayerState::SkyKick)
-	{
-		TurnToInputDirection(right, forward);
-	}
-
-	//攻撃位置は垂直成分を除いた前方で決める
-	m_attackForward = m_forward;
-	m_attackForward.y = 0.0f;
 	if (m_attackForward.SqMagnitude() > 0.0001f)
 	{
 		m_attackForward = m_attackForward.Normalize();
@@ -897,6 +882,9 @@ void Player::TransitionTo(PlayerState nextState)
 	m_prevState = m_currentState;
 	m_currentState = nextState;
 
+	Vector3 right = m_pCamera->GetRight();
+	Vector3 forward = m_pCamera->GetForward();
+
 	switch (m_currentState)
 	{
 	case PlayerState::Idle:
@@ -917,6 +905,8 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 	case PlayerState::Attack:
 
+		UpdateAttackDirection(right, forward);
+
 		m_isAttackHit = false;
 		m_isNextAttack = false;
 		//ここでmoveVelocityをリセット
@@ -928,6 +918,7 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 	case PlayerState::Rush:
 
+		UpdateAttackDirection(right, forward);
 		//ラッシュの攻撃は複数回当たる可能性があるので、当たったかどうかを管理する配列をリセットする
 		for (int i = 0; i < 4; i++)
 		{
@@ -939,6 +930,7 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::Kick:
+		UpdateAttackDirection(right, forward);
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
@@ -958,7 +950,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kSkyAnimName, true, 0.5f);
 		break;
 	case PlayerState::SkyAttack:
-		
+		UpdateAttackDirection(right, forward);
 		//空中攻撃をしたときにY方向のパワー無くして重力も消す
 		m_velocity.y = 0.0f;
 		m_gravity = 0.0f;
@@ -971,6 +963,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
 		break;
 	case PlayerState::SkyRush:
+		UpdateAttackDirection(right, forward);
 		//同様の処理
 		m_velocity.y = 0.0f;
 		m_gravity = 0.0f;
@@ -986,6 +979,7 @@ void Player::TransitionTo(PlayerState nextState)
 		break;
 
 	case PlayerState::SkyKick:
+		UpdateAttackDirection(right, forward);
 		//ここも同じ
 		m_velocity.y = kSkyKickFallSpeed;
 		m_gravity = 0.0f;
@@ -1070,7 +1064,7 @@ AttackData Player::CreateAttackData()
 
 void Player::MoveAttack(float distance)
 {
-	Vector3 dir = m_forward;
+	Vector3 dir = m_attackForward;
 	dir.y = 0.0f;
 
 	if (dir.SqMagnitude() > 0.0001f)
@@ -1119,6 +1113,28 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 	m_forward.x = sinf(m_angle - DX_PI_F);
 	m_forward.y = 0.0f;
 	m_forward.z = cosf(m_angle - DX_PI_F);
+}
+
+void Player::UpdateAttackDirection(const Vector3& right, const Vector3& forward)
+{
+	float stickX = Input::Instance().GetStickLX();
+	float stickY = Input::Instance().GetStickLY();
+
+	Vector3 moveVec = right * stickX + forward * stickY;
+	moveVec.y = 0.0f;
+
+	//入力が無いなら現在の向きを使う
+	if (moveVec.SqMagnitude() <= 0.0001f)
+	{
+		m_attackForward = m_forward;
+		return;
+	}
+
+	m_attackForward = moveVec.Normalize();
+
+	// モデルもその方向へ向ける
+	m_forward = m_attackForward;
+	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 }
 
 Vector3 Player::GetCollisionPosition() const
