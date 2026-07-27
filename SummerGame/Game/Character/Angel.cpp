@@ -44,7 +44,8 @@ namespace
 Angel::Angel():
 	m_currentState(AngelState::Idle),
 	m_prevState(AngelState::Idle),
-	m_dancingAttackHit{false,false, false, false, false, false, false, false }
+	m_dancingAttackHit{false,false, false, false, false, false, false, false },
+	m_lastSeePos({0.0f,0.0f,0.0f})
 {
 }
 
@@ -62,6 +63,10 @@ void Angel::Init()
 	//ステータス
 	m_hp = 500;
 	m_attackPower = 20;
+
+	//視界
+	//m_sightRange = 400.0f;
+	//m_fov = 120.0f;
 
 	m_scale = VGet(1.0f, 1.0f, 1.0f);
 
@@ -113,10 +118,13 @@ void Angel::Update()
 		break;
 	case AngelState::Run:
 	{
+		
 		//視野角から消えたら待機にする
 		if (!CanSeePlayer())
 		{
-			TransitionTo(AngelState::Idle);
+			//プレイヤーが最後にいた場所を記憶
+			m_lastSeePos = m_pPlayer->GetPosition();
+			TransitionTo(AngelState::Look);
 			break;
 		}
 
@@ -166,6 +174,27 @@ void Angel::Update()
 			TransitionTo(AngelState::Run);
 		}
 		break;
+	case AngelState::Look:
+
+		//プレイヤーを見つけたら追いかける
+		if (CanSeePlayer())
+		{
+			TransitionTo(AngelState::Run);
+			break;
+		}
+
+		Vector3 dir = m_lastSeePos - m_pos;
+		dir.y = 0.0f;
+
+		if (dir.SqMagnitude() < 30.0f * 30.0f)
+		{
+			TransitionTo(AngelState::Idle);
+		}
+		else
+		{
+			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
+		}
+
 	}
 	// モデル行列更新
 	UpdateModelMatrix();
@@ -241,6 +270,10 @@ void Angel::TransitionTo(AngelState nextState)
 		break;
 	case AngelState::Damage:
 		m_animation.ChangeAnim(kDamageAnimName, false, 0.5f);
+		break;
+
+	case AngelState::Look:
+		m_animation.ChangeAnim(kRotateAnimName, true, 0.5f);
 		break;
 	}
 }

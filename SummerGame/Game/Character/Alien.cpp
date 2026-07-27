@@ -62,6 +62,10 @@ void Alien::Init()
 	m_collisionRadius = 50.0f;
 	m_collisionHeight = 160.0f;
 
+	//視界
+	m_sightRange = 400.0f;
+	m_fov = 120.0f;
+
 	m_modelHandle = Model::Instance().CreatAlienModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 
@@ -239,18 +243,8 @@ void Alien::Draw()
 	//デバッグ描画
 	DrawDebugCollision();
 
-	////攻撃判定表示6
-	//if (m_attackFrame > 0)
-	//{
-	//	DrawSphere3D(m_attackPos.ToDxLibVector(), 50.0f, 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
-	//}
-
 	//HP表示
 	DrawFormatString(300, 50, GetColor(255, 255, 255), "AlienHP:%d", m_hp);
-
-	//DrawLine3D(pos, pos + VScale(forward, 100.0f),GetColor(255, 0, 0));
-
-	
 
 	//視界のデバッグ
 	DrawDebugSight();

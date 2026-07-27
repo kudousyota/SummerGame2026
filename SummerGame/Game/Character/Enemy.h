@@ -25,8 +25,6 @@ public:
 protected:
     //共通の値
     static constexpr float kAttackRange = 150.0f;
-    static constexpr float kSightRange = 500.0f;
-    static constexpr float kFov = 90.0f;
 
     int m_modelHandle;
     bool m_isDead;
@@ -37,6 +35,9 @@ protected:
     bool m_isAttack;
     Vector3 m_attackDir;
     Vector3 m_scale;
+    //見える距離
+    float m_sightRange;
+    float m_fov;
 
     //タイムスケールの取得
     float m_timeScale;

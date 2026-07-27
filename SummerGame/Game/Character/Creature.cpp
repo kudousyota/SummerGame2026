@@ -25,7 +25,8 @@ namespace
 Creature::Creature():
 	m_currentState(CreatureState::Idle),
 	m_prevState(CreatureState::Idle),
-	m_modelDisplayOffsetY(0.0f)
+	m_modelDisplayOffsetY(0.0f),
+	m_lastSeePos({0.0f,0.0f,0.0f})
 {
 }
 
@@ -46,6 +47,9 @@ void Creature::Init()
 	
 	m_collisionRadius = 130.0f;
 	m_collisionHeight = 530.0f;
+	//視界
+	//m_sightRange = 400.0f;
+	//m_fov = 120.0f;
 
 	m_currentState = CreatureState::Idle;
 	m_prevState = CreatureState::Idle;
@@ -104,10 +108,13 @@ void Creature::Update()
 		break;
 	case CreatureState::Walk:
 	{
+		
 		//視野角から消えたら待機にする
 		if (!CanSeePlayer())
 		{
-			TransitionTo(CreatureState::Idle);
+			//プレイヤーが最後にいた場所を記憶
+			m_lastSeePos = m_pPlayer->GetPosition();
+			TransitionTo(CreatureState::Look);
 			break;
 		}
 		//プレイヤーのまでのベクトル
@@ -175,6 +182,26 @@ void Creature::Update()
 			TransitionTo(CreatureState::Idle);
 		}
 		break;
+	case CreatureState::Look:
+		//プレイヤーを見つけたら追いかける
+		if (CanSeePlayer())
+		{
+			TransitionTo(CreatureState::Walk);
+			break;
+		}
+
+		Vector3 dir = m_lastSeePos - m_pos;
+		dir.y = 0.0f;
+
+		if (dir.SqMagnitude() < 30.0f * 30.0f)
+		{
+			TransitionTo(CreatureState::Idle);
+		}
+		else
+		{
+			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
+		}
+		break;
 	}
 	// モデル行列更新
 	UpdateModelMatrix();
@@ -215,7 +242,6 @@ void Creature::OnDead()
 {
 	m_isDead = true;
 }
-
 
 void Creature::AttackUpdate()
 {
@@ -297,7 +323,10 @@ void Creature::TransitionTo(CreatureState nextState)
 
 		break;
 	case CreatureState::Damage:
-		m_animation.ChangeAnim(kDamageAnimName, false, 0.5);
+		m_animation.ChangeAnim(kDamageAnimName, false, 0.5f);
+		break;
+	case CreatureState::Look:
+		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
 		break;
 	}
 	

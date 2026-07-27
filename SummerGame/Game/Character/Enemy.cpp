@@ -15,7 +15,9 @@ Enemy::Enemy():
 	m_isAttack(false),
 	m_attackDir(VGet(0.0f, 0.0f, 0.0f)),
 	m_scale(0.0f,0.0f,0.0f),
-	m_timeScale(0.0f)
+	m_timeScale(0.0f),
+	m_sightRange(0.0f),
+	m_fov(0.0f)
 {
 }
 
@@ -33,7 +35,8 @@ void Enemy::Init()
 	//最初は正面を向く
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
-	
+	m_sightRange = 500.0f;
+	m_fov = 90.0f;
 
 	CollisionManager::Instance().Register(this);
 }
@@ -86,14 +89,14 @@ bool Enemy::CanSeePlayer()
 	float distSq = dir.SqMagnitude();
 
 	//視認距離の外ならfalse
-	if (distSq > kSightRange * kSightRange)
+	if (distSq > m_sightRange * m_sightRange)
 	{
 		return false;
 	}
 
 	//視野角内かを内積で判定
 	float dot = m_forward.Dot(dir.Normalize());
-	float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+	float halfFovCos = cosf(m_fov * 0.5f * DX_PI_F / 180.0f);
 
 	return dot >= halfFovCos;
 }
@@ -104,25 +107,25 @@ void Enemy::DrawDebugSight() const
 	int color = GetColor(255, 255, 0);
 
 	//視野角の半分(ラジアン)
-	float halfFov = kFov * 0.5f * DX_PI_F / 180.0f;
+	float halfFov = m_fov * 0.5f * DX_PI_F / 180.0f;
 	//前方の角度
 	float baseAngle = atan2f(m_forward.x, m_forward.z);
 	//分割数
 	int segments = 16;
 	//線形の始点
 	VECTOR prevPoint = VGet(
-		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
+		m_pos.x + m_sightRange * sinf(baseAngle - halfFov),
 		m_pos.y + 160.0f,
-		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
+		m_pos.z + m_sightRange * cosf(baseAngle - halfFov)
 	);
 	//扇形の円弧を線分で描画
 	for (int i = 1; i <= segments; i++)
 	{
 		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
 		VECTOR point = VGet(
-			m_pos.x + kSightRange * sinf(angle),
+			m_pos.x + m_sightRange * sinf(angle),
 			m_pos.y + 160.0f,
-			m_pos.z + kSightRange * cosf(angle)
+			m_pos.z + m_sightRange * cosf(angle)
 		);
 		DrawLine3D(prevPoint, point, color);
 		prevPoint = point;
@@ -131,14 +134,14 @@ void Enemy::DrawDebugSight() const
 	//扇の両辺(敵から視野端への線)
 	VECTOR center = VGet(m_pos.x, m_pos.y + 160.0f, m_pos.z);
 	VECTOR leftEdge = VGet(
-		m_pos.x + kSightRange * sinf(baseAngle - halfFov),
+		m_pos.x + m_sightRange * sinf(baseAngle - halfFov),
 		m_pos.y + 160.0f,
-		m_pos.z + kSightRange * cosf(baseAngle - halfFov)
+		m_pos.z + m_sightRange * cosf(baseAngle - halfFov)
 	);
 	VECTOR rightEdge = VGet(
-		m_pos.x + kSightRange * sinf(baseAngle + halfFov),
+		m_pos.x + m_sightRange * sinf(baseAngle + halfFov),
 		m_pos.y + 160.0f,
-		m_pos.z + kSightRange * cosf(baseAngle + halfFov)
+		m_pos.z + m_sightRange * cosf(baseAngle + halfFov)
 	);
 	//扇形の境界線を描画
 	DrawLine3D(center, leftEdge, color);
@@ -147,12 +150,12 @@ void Enemy::DrawDebugSight() const
 	//プレイヤーが視野内にいるとき色を変える
 	Vector3 dir = (m_pPlayer->GetPosition() - m_pos);
 	float dist = dir.SqMagnitude();
-	if (dist <= kSightRange * kSightRange)
+	if (dist <= m_sightRange * m_sightRange)
 	{
 		//内積の計算
 		float dot = m_forward.Dot(dir.Normalize());
 		//視野角の境界になる内積の値
-		float halfFovCos = cosf(kFov * 0.5f * DX_PI_F / 180.0f);
+		float halfFovCos = cosf(m_fov * 0.5f * DX_PI_F / 180.0f);
 		//視野の中ならプレイヤーまで赤い線を引く
 		if (dot >= halfFovCos)
 		{

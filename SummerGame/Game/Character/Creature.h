@@ -25,6 +25,7 @@ private:
 		Attack,
 		Punch,
 		Damage,
+		Look
 	};
 	//現在の状態
 	CreatureState m_currentState;
@@ -41,6 +42,8 @@ private:
 	Vector3 m_attackPos;
 
 	Vector3 GetHitEffect()const override;
+
+	Vector3 m_lastSeePos;
 
 	void TransitionTo(CreatureState nextState);
 

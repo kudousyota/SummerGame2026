@@ -26,12 +26,15 @@ private:
 		Rotate,
 		Shout,
 		Damage,
+		Look
 	};
 
 	//現在の状態
 	AngelState m_currentState;
 	//前回の状態
 	AngelState m_prevState;
+
+	Vector3 m_lastSeePos;
 
 	bool m_dancingAttackHit[8];
 
