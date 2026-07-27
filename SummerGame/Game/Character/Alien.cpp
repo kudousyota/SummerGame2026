@@ -18,6 +18,7 @@ namespace
 	const char* const kDeathAnimName = "Alien|Death";
 	const char* const kDownAnimName = "Alien|Down";
 	const char* const kAttackAnimName = "Alien|Attack";
+	const char* const kLookAnimName = "Alien|Look";
 
 	//ブレス攻撃するために口元付近のリグを取る
 	const char* const kAttackRig = "mixamorig1:Head";
@@ -33,7 +34,8 @@ Alien::Alien():
 	m_prevState(AlienState::Idle),
 	m_modelDisplayOffsetY(0.0f),
 	m_headBone(-1),
-	m_pBreath(nullptr)
+	m_pBreath(nullptr),
+	m_lastSeePos({0.0f,0.0f,0.0f})
 {
 }
 
@@ -106,6 +108,8 @@ void Alien::Update()
 		if (CanSeePlayer())
 		{
 			TransitionTo(AlienState::Move);
+			//プレイヤーが最後にいた場所を記憶
+			m_lastSeePos = m_pPlayer->GetPosition();
 		}
 		break;
 	case AlienState::Move:
@@ -113,7 +117,9 @@ void Alien::Update()
 		//視界から外れたら
 		if (!CanSeePlayer())
 		{
-			TransitionTo(AlienState::Idle);
+			//プレイヤーが最後にいた場所を記憶
+			m_lastSeePos = m_pPlayer->GetPosition();
+			TransitionTo(AlienState::Look);
 			break;
 		}
 		//プレイヤーまでのベクトル
@@ -194,7 +200,27 @@ void Alien::Update()
 		
 		}
 		break;
+	case AlienState::Look:
 
+		//プレイヤーを見つけたら追いかける
+		if (CanSeePlayer())
+		{
+			TransitionTo(AlienState::Move);
+			break;
+		}
+
+		Vector3 dir = m_lastSeePos - m_pos;
+		dir.y = 0.0f;
+
+		if (dir.SqMagnitude() < 30.0f * 30.0f)
+		{
+			TransitionTo(AlienState::Idle);
+		}
+		else
+		{
+			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
+		}
+		
 	}
 	//モデル更新行列
 	UpdateModelMatrix();
@@ -359,7 +385,9 @@ void Alien::TransitionTo(AlienState nextState)
 		//ヒットアニメーションがないので今は適当にほかのモーションを渡す
 		m_animation.ChangeAnim(kDownAnimName, false, 0.8f);
 		break;
-	
+	case AlienState::Look:
+		m_animation.ChangeAnim(kLookAnimName, true, 0.5f);
+		break;
 	}
 }
 

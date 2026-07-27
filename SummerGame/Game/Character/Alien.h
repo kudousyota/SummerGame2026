@@ -27,6 +27,7 @@ private:
 		StandUp,
 		Up,
 		Hit,
+		Look
 	};
 
 	//現在の状態
@@ -55,10 +56,10 @@ private:
 
 	void TransitionTo(AlienState nextState);
 
-
 	Vector3 GetHitEffect()const override;
 
-	
+	Vector3 m_lastSeePos;
+
 	//ダメージを受けたらDamageステートへ
 	//void OnDamaged() override;
 

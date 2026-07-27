@@ -100,8 +100,8 @@ bool Enemy::CanSeePlayer()
 
 void Enemy::DrawDebugSight() const
 {
-	//õ“G”ÍˆÍƒfƒoƒbƒO•`‰æ
-	int color = GetColor(255, 255, 0);//‰©F
+	//õ“G”ÍˆÍ‚ð‰©F‚Å•`‰æ
+	int color = GetColor(255, 255, 0);
 
 	//Ž‹–ìŠp‚Ì”¼•ª(ƒ‰ƒWƒAƒ“)
 	float halfFov = kFov * 0.5f * DX_PI_F / 180.0f;
@@ -177,18 +177,9 @@ void Enemy::FacePlayer()
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 }
 
-void Enemy::ChasePlayer(float rotateSpeed, float scale)
+void Enemy::ChasePlayer(float rotatespeed, float scale)
 {
-	Vector3 dir = m_pPlayer->GetPosition() - m_pos;
-	dir.y = 0.0f;
-	Vector3 targetDir = dir.Normalize();
-
-	m_forward += (targetDir - m_forward) * rotateSpeed;
-	m_forward = m_forward.Normalize();
-
-	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
-
-	m_pos += m_forward * m_speed * scale;
+	MoveTo(m_pPlayer->GetPosition(), rotatespeed, scale);
 }
 
 void Enemy::UpdateCooldown(float scale)
@@ -208,4 +199,25 @@ void Enemy::DrawDebugCollision() const
 	VECTOR end = VGet(debugPos.x,debugPos.y + GetCollisionHeight() - GetCollisionRadius(),debugPos.z);
 
 	DrawCapsule3D(start,end,GetCollisionRadius(),16,0xffffff,0xffffff,false);
+}
+
+void Enemy::MoveTo(const Vector3& target, float rotatespeed, float scale)
+{
+	Vector3 dir = target - m_pos;
+	dir.y = 0.0f;
+
+	if (dir.SqMagnitude() < 0.001f)
+	{
+		return;
+	}
+
+	Vector3 targetDir = dir.Normalize();
+
+	m_forward += (targetDir - m_forward) * rotatespeed;
+	m_forward = m_forward.Normalize();
+
+	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+
+	m_pos += m_forward * m_speed * scale;
+
 }
