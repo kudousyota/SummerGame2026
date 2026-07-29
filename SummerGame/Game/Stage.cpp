@@ -25,7 +25,7 @@ void Stage::Init()
 {
 	m_modelHandle = MV1LoadModel("Data/Stage.mv1");
 	assert(m_modelHandle != -1);
-	m_colliderHandle = MV1LoadModel("Data/Stage.mv1");
+	m_colliderHandle = MV1LoadModel("Data/GameCollider.mv1");
 	assert(m_colliderHandle != -1);
 
 	MV1SetPosition(m_modelHandle, m_stagePos.ToDxLibVector());
@@ -35,5 +35,10 @@ void Stage::Init()
 void Stage::Draw()
 {
 	MV1DrawModel(m_modelHandle);
+#ifdef _DEBUG
+	//í≤êÆóp
 	//MV1DrawModel(m_colliderHandle);
+#endif // _DEBUG
+
+	
 }

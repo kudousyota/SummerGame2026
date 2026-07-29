@@ -18,6 +18,9 @@ private:
 	int m_TimerUIHandle;
 	int m_ScoreUIHandle;
 
+	float m_timerX;
+	float m_scoreX;
+
 	//ƒvƒŒƒCƒ„[
 	std::weak_ptr<Player> m_pPlayer;
 };
