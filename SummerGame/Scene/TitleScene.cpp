@@ -7,8 +7,7 @@
 #include "Model.h"
 namespace
 {
-	constexpr int fade_interval = 60;
-	const char* const kWaveAnimName = "CharacterArmature|Wave";
+	constexpr int kFadeInterval = 60;
 }
 
 
@@ -41,7 +40,7 @@ void TitleScene::NormalUpdate(Input& input)
 
 void TitleScene::FadeOutUpdate(Input&)
 {
-	if (m_frame++ >= fade_interval)
+	if (m_frame++ >= kFadeInterval)
 	{
 		//フェードアウト完了
 		m_finished = true;
@@ -86,7 +85,7 @@ void TitleScene::FadeDraw()
 	NormalDraw();
 
 	//値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
-	auto rate = static_cast<float>(m_frame) / static_cast<float>(fade_interval);
+	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate)); //αブレンド
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);	//画面全体に黒フィルムをかける
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//ブレンドしない
@@ -110,7 +109,7 @@ TitleScene::TitleScene(SceneController& controller):
 	Init();
 	m_update = &TitleScene::FadeInUpdate;
 	m_draw = &TitleScene::FadeDraw;
-	m_frame = fade_interval;
+	m_frame = kFadeInterval;
     m_finished = false;
 }
 
@@ -131,7 +130,7 @@ void TitleScene::Init()
 	//SoundManager::PlayBGM("Title", true);
 
 	//タイトルでプレイヤーを描画
-	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Idle");
+	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Title");
 
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)

@@ -44,8 +44,8 @@ namespace
 	const char* const kKickAnimName = "Player|Kick";
 	const char* const kSkyAnimName = "Player|Sky";
 	const char* const kSkyKickAnimName = "Player|kakatootosi_TEST";
-	const char* const kRunAnimName = "Player|Run";
-	const char* const kHitAnimName = "Player|Hit";
+	const char* const kRunAnimName = "Run";
+	const char* const kHitAnimName = "Hit";
 
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame = 10.0f;
@@ -935,7 +935,7 @@ void Player::TransitionTo(PlayerState nextState)
 		m_attackPower += kKickPower;
 		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
 		MoveAttack(kKickMove);
-		m_animation.ChangeAnim(kKickAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kKickAnimName, false, 0.7f);
 		break;
 	case PlayerState::Damage:
 
