@@ -10,8 +10,8 @@ void Model::PreloadAll()
 
 void Model::ReleseAll()
 {
-	MV1DeleteModel(m_angelBaseHandle);
-	MV1DeleteModel(m_creatureBaseHandle);
-	MV1DeleteModel(m_alienBaseHandle);
-	MV1DeleteModel(m_playerBaseHandle);
+    if (m_angelBaseHandle != -1) MV1DeleteModel(m_angelBaseHandle);
+    if (m_creatureBaseHandle != -1) MV1DeleteModel(m_creatureBaseHandle);
+    if (m_alienBaseHandle != -1) MV1DeleteModel(m_alienBaseHandle);
+    if (m_playerBaseHandle != -1) MV1DeleteModel(m_playerBaseHandle);
 }

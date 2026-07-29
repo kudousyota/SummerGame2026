@@ -8,9 +8,10 @@ public:
 	void Init();
 	void Draw();
 
-	int GetModelHandle()const { return m_modelHandle; }
+	int GetModelHandle()const { return m_colliderHandle; }
 private:
 	int m_modelHandle;
+	int m_colliderHandle;
 
 	Vector3 m_stagePos;
 };

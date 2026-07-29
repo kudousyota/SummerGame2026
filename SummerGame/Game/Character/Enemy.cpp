@@ -24,8 +24,10 @@ Enemy::Enemy():
 Enemy::~Enemy()
 {
 	CollisionManager::Instance().Unregister(this);
-
-	MV1DeleteModel(m_modelHandle);
+    if (m_modelHandle != -1)
+    {
+        MV1DeleteModel(m_modelHandle);
+    }
 }
 
 void Enemy::Init()

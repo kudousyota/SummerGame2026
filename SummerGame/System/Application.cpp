@@ -9,6 +9,7 @@
 #include "EffekseerForDXLib.h"
 #include "Model.h"
 #include "Timer.h"
+#include "../Effect/EffectManager.h"
 
 
 
