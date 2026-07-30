@@ -54,15 +54,15 @@ void Character::Collision()
 	//座標に落下分の移動量を足す
 	m_pos.y += m_velocity.y;
 
-
+	int stageHandle = m_pStage->GetModelHandle();
 	//地面の判定
 	float groundY = 0.0f;
-	int stageHandle = m_pStage->GetModelHandle();
-
+	Vector3 outGroundNormal = Vector3(0.0f,0.0f,0.0f);
+	
 
 	// CollisionManagerに地面判定用の関数を呼び出す
 	if (m_velocity.y <= 0.0f &&
-		CollisionManager::Instance().CheckStageGround(this, stageHandle, groundY))
+		CollisionManager::Instance().CheckStageGround(this, stageHandle, groundY, outGroundNormal))
 	{
 		//足元の座標を地面の高さに合わせる
 		m_pos.y = groundY;

@@ -4,6 +4,12 @@
 #include <vector>
 #include "../DataLoader/AttackData.h"
 
+namespace
+{
+	constexpr float kWalkableSlopeAngleDeg = 60.0f;
+	//歩ける坂道の角度
+	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (3.14159265358979323846f / 180.0f));
+}
 
 //シングルトンのCollisionManagerを取得
 CollisionManager& CollisionManager::Instance()
@@ -178,7 +184,9 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			break;
 		}
 		//ポリゴンに当たったか記録
-		hitAny = true;
+		//hitAny = true;
+		//ここでは「壁ポリゴンに当たったか」を一旦保留にする
+
 		//一番めり込んだポリゴンを探すための変数
 		float maxDepth = -FLT_MAX;
 		//一番深いポリゴンの法線を保持
@@ -186,6 +194,15 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 		//当たったポリゴンをチェック
 		for (int i = 0; i < hit.HitNum; i++)
 		{
+			Vector3 fullNormal(hit.Dim[i].Normal.x, hit.Dim[i].Normal.y, hit.Dim[i].Normal.z);
+			fullNormal = fullNormal.Normalize();
+
+			// normal.yが閾値以上なら「歩ける床/坂」とみなして壁判定から除外
+			if (fullNormal.y >= kWalkableSlopeCos)
+			{
+				//坂・床はスキップ
+				continue;
+			}
 			//法線のY成分を無視してXZ平面に投射
 			Vector3 rawNormal(hit.Dim[i].Normal.x, 0.0f, hit.Dim[i].Normal.z);
 
@@ -221,10 +238,12 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			}
 
 		}
+		//実際に壁として押し出しが発生した場合のみ hitAny を立てる
 		//実際にめり込んでいた場合のみ、その分だけ壁の法線方向に押し出す
 		if (maxDepth > 0.0f)
 		{
 			pos += bestNormal * maxDepth;
+			hitAny = true;
 		}
 		//ヒット結果のメモリを解放
 		MV1CollResultPolyDimTerminate(hit);
@@ -235,7 +254,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 	return hitAny;
 }
 
-bool CollisionManager::CheckStageGround(Character* character, int stagehandle, float& outGroundY)
+bool CollisionManager::CheckStageGround(Character* character, int stagehandle, float& outGroundY, Vector3& outGroundNormal)
 {
 	Vector3 pos = character->GetPosition();
 	//キャラクターのカプセルの半径を取得
@@ -256,6 +275,7 @@ bool CollisionManager::CheckStageGround(Character* character, int stagehandle, f
 	if (hitPoly.HitFlag == 1)
 	{
 		outGroundY = hitPoly.HitPosition.y;
+		outGroundNormal = Vector3(hitPoly.Normal.x, hitPoly.Normal.y, hitPoly.Normal.z).Normalize();
 		return true;
 	}
 	return false;

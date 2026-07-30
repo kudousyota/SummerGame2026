@@ -18,7 +18,7 @@ public:
 	//ステージとの判定
 	bool CheckStageWall(Character* caracter,int stagehandle);
 	//ステージの地面
-	bool CheckStageGround(Character* character, int stagehandle, float& outGroundY);
+	bool CheckStageGround(Character* character, int stagehandle, float& outGroundY,Vector3& outGroundNormal);
 	//カメラとステージの判定
 	bool CheckCameraRay(int stagehandle,const Vector3& start, const Vector3& end, Vector3& hitpos);
 

@@ -16,7 +16,7 @@ namespace
 
 	//====== 初期ステータス ======
 	//初期座標
-	const Vector3 kInitPos = VGet(0.0f, 500.0f, 0.0f);
+	const Vector3 kInitPos = VGet(-1366.0f, 40.0f, -395.0f);
 	//移動速度
 	constexpr float kSpeed = 14.0f;
 	//最大HP
