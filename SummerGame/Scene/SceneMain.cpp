@@ -46,7 +46,7 @@ void SceneMain::Init()
 	// ƒJƒƒ‰‚Ìİ’è
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(20.0f, 5000.0f);
+	SetCameraNearFar(20.0f, 8000.0f);
 
 	DataManager::GetInstance().LoadData();
 

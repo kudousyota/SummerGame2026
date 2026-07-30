@@ -197,10 +197,11 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			Vector3 fullNormal(hit.Dim[i].Normal.x, hit.Dim[i].Normal.y, hit.Dim[i].Normal.z);
 			fullNormal = fullNormal.Normalize();
 
-			// normal.yが閾値以上なら「歩ける床/坂」とみなして壁判定から除外
+			//歩ける床と坂とみなして壁判定から除外
+			//歩行可能な坂道は壁として扱わない
 			if (fullNormal.y >= kWalkableSlopeCos)
 			{
-				//坂・床はスキップ
+				//坂と床はスキップ
 				continue;
 			}
 			//法線のY成分を無視してXZ平面に投射
@@ -212,10 +213,8 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			{
 				continue;
 			}
-
-			Vector3 normal(hit.Dim[i].Normal.x,
-				0.0f,
-				hit.Dim[i].Normal.z);
+			//歩行可能な坂道は壁として扱わない
+			Vector3 normal(hit.Dim[i].Normal.x,0.0f,hit.Dim[i].Normal.z);
 
 			normal = normal.Normalize();
 			//ポリゴンの頂点の一つを平面上の点として使う
@@ -256,28 +255,32 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 
 bool CollisionManager::CheckStageGround(Character* character, int stagehandle, float& outGroundY, Vector3& outGroundNormal)
 {
+	//キャラクターの現在の位置を取得
 	Vector3 pos = character->GetPosition();
 	//キャラクターのカプセルの半径を取得
 	float radius = character->GetCollisionRadius();
-	
-	
+	//レイを伸ばして坂道や段差でも設置判定をできるようにする
 	const float kUpMargin = 5.0f;
 	const float kDownMargin = 10.0f;
 
 	//レイ(下向きの線分)の開始点と終了点を決める
-	//キャラクターの足元の少し上から、少し下まで
-	VECTOR rayStart = VGet(pos.x, pos.y + kUpMargin, pos.z);
-	VECTOR rayEnd = VGet(pos.x, pos.y - kDownMargin, pos.z);
+	//キャラクターの基準位置は足元
+	//カプセル半径を考慮した位置から下向きにレイを飛ばす
+	VECTOR rayStart = VGet(pos.x, pos.y + radius + kUpMargin, pos.z);
+	VECTOR rayEnd = VGet(pos.x, pos.y - radius - kDownMargin, pos.z);
 
-	//DxLibの線分とモデルの当たり判定
+	//ステージとのレイ判定をする
 	MV1_COLL_RESULT_POLY hitPoly = MV1CollCheck_Line(stagehandle, -1, rayStart, rayEnd);
-
+	//レイが地面に当たったら
 	if (hitPoly.HitFlag == 1)
 	{
+		//当たった場所を返す
 		outGroundY = hitPoly.HitPosition.y;
+		//地面の法線を正規化して返す
 		outGroundNormal = Vector3(hitPoly.Normal.x, hitPoly.Normal.y, hitPoly.Normal.z).Normalize();
 		return true;
 	}
+	//地面が見つからなかったら
 	return false;
 
 
