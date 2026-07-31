@@ -7,8 +7,8 @@
 namespace
 {
 	constexpr float kWalkableSlopeAngleDeg = 60.0f;
-	//歩ける坂道の角度
-	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (3.14159265358979323846f / 180.0f));
+	//歩ける坂道の角度//ラジアンに変換
+	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (DX_PI / 180.0f));
 }
 
 //シングルトンのCollisionManagerを取得
@@ -261,7 +261,7 @@ bool CollisionManager::CheckStageGround(Character* character, int stagehandle, f
 	float radius = character->GetCollisionRadius();
 	//レイを伸ばして坂道や段差でも設置判定をできるようにする
 	const float kUpMargin = 5.0f;
-	const float kDownMargin = 10.0f;
+	const float kDownMargin = 8.0f;
 
 	//レイ(下向きの線分)の開始点と終了点を決める
 	//キャラクターの基準位置は足元
