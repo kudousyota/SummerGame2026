@@ -28,7 +28,7 @@ void Character::Init()
 	m_attackPower = 10;
     //重力を少し強めにして落下のもっさり感を軽減
     m_gravity = 1.2f;
-	m_pos = VGet(0.0f, 0.0f, 0.0f);
+	m_pos = {0.0f, 0.0f, 0.0f};
 	m_angle = 0.0f;
 	m_collisionRadius = 30.0f;
 	m_collisionHeight = 100.0f;

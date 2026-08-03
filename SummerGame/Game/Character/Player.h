@@ -3,11 +3,12 @@
 #include "Character.h"
 #include <memory> 
 #include "../System/LockOnManager.h"
+#include "../WitchTimeHand.h"
 
 class Camera;
 class Input;
 class Stage; 
-class Player : public Character
+class Player : public Character ,public std::enable_shared_from_this<Player>
 {
 public:
 	Player();
@@ -142,6 +143,10 @@ private:
 	std::shared_ptr<Camera>m_pCamera;
 	//ロックオンマネージャー
 	LockOnManager m_lockOnManager;
+	//ウィッチタイムの手
+	std::unique_ptr<WitchTimeHand> m_pWitchTimeHand;
+
+
 	//CheckAttackSphereを呼び、当たったらロックオンにセットする共通処理
 	void TryAttackHit(); 
 };

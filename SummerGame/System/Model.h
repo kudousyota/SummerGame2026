@@ -15,7 +15,7 @@ public:
 	int CreateAngelModel()    const { return MV1DuplicateModel(m_angelBaseHandle); }
 	int CreatAlienModel() const { return MV1DuplicateModel(m_alienBaseHandle); }
 	int CreatPlayerModel() const { return MV1DuplicateModel(m_playerBaseHandle); }
-
+	int CreatWitchTimeHandModel() const { return MV1DuplicateModel(m_witchTimeHandBaseHandle); }
 	void ReleseAll();
 
 private:
@@ -23,5 +23,7 @@ private:
 	int m_angelBaseHandle = -1;
 	int m_alienBaseHandle = -1;
 	int m_playerBaseHandle = -1;
+	int m_witchTimeHandBaseHandle = -1;
+
 };
 

@@ -155,7 +155,7 @@ void GameClearedScene::FadeInUpdate(Input& input)
 	{
 		m_update = &GameClearedScene::FadeOutUpdate;
 		m_draw = &GameClearedScene::FadeDraw;
-		m_frame = 0;	//フェードアウトの最初
+		m_frame = 0;//フェードアウトの最初
 		//SoundManager::PlaySE("Ok");
 		return;
 

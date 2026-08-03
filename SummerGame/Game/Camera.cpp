@@ -53,7 +53,7 @@ void Camera::Init(const Vector3& initialTarget, float initialAngle)
 	m_cameraPos = initialTarget - offset;
 
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(), m_cameraTarget.ToDxLibVector());
-	MV1SetScale(m_skyDomeHandle, VGet(2.5f, 2.5f, 2.5f));
+	MV1SetScale(m_skyDomeHandle, Vector3(2.5f, 2.5f, 2.5f));
 }
 
 void Camera::End()

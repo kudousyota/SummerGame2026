@@ -177,6 +177,7 @@
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="UI\WitchTimeNeedleUI.cpp" />
+    <ClCompile Include="Game\WitchTimeHand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Character\CharacterViewer.h" />
@@ -218,6 +219,7 @@
     <ClInclude Include="System\Timer.h" />
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="UI\WitchTimeNeedleUI.h" />
+    <ClInclude Include="Game\WitchTimeHand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />

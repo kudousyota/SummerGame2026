@@ -38,19 +38,22 @@ void GameClearedUI::Update()
 {
 	//ÉâÅ[Év
 	m_timerX += (kTimerGoalX - m_timerX) * 0.1f;
-
+	m_scoreX += (kScoreGoalX - m_scoreX) * 0.1f;
 	//ÇŸÇ⁄ìûíÖÇµÇΩÇÁÇ“Ç¡ÇΩÇËçáÇÌÇπÇÈ
 	if (fabsf(kTimerGoalX - m_timerX) < 1.0f)
 	{
 		m_timerX = kTimerGoalX;
 	}
+	if (fabsf(kScoreGoalX - m_scoreX) < 1.0f)
+	{
+		m_scoreX = kScoreGoalX;
+	}
+
 }
 
 void GameClearedUI::Draw()
 {
-
 	DrawRotaGraph(static_cast<int>(m_timerX), 100, 0.5f, 0, m_TimerUIHandle, true);
-	DrawRotaGraph(580, 300, 0.5f, 0, m_ScoreUIHandle, true);
+	DrawRotaGraph(static_cast<int>(m_scoreX), 300, 0.5f, 0, m_ScoreUIHandle, true);
 	DrawRotaGraph(620, 360, 1.0f, 0, m_ResultUIHandle, true);
-
 }

@@ -13,6 +13,7 @@
 #include "../UI/WitchTimeNeedleUI.h"
 #include "../Game.h"
 #include "../Effect/EffectManager.h"
+#include "../Game/WitchTimeHand.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;

@@ -33,6 +33,9 @@ private:
 	float m_enemyTimeScale = 1.0f;
 	int m_frameCountEnemy = 0;
 
+	//ゲーム内の時間を図るための変数
+	int m_gameTime = 0;
+
 	
 	
 };

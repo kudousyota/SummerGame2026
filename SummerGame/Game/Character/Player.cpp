@@ -5,6 +5,7 @@
 #include "../System/CollisionManager.h"
 #include "../Stage.h"
 #include "../System/Timer.h"
+#include "../System/Model.h"
 #include "../Effect/EffectManager.h"
 
 namespace
@@ -189,7 +190,14 @@ void Player::Init()
 	//攻撃力
 	m_attackPower = kBaseAttackPower;
 	m_invincibleTime = 0;
-	m_modelHandle = MV1LoadModel("Data/Player.mv1");
+	m_modelHandle = Model::Instance().CreatPlayerModel();
+
+	//ウィッチタイムの手を作る
+	m_pWitchTimeHand = std::make_unique<WitchTimeHand>();
+	m_pWitchTimeHand->SetPlayer(shared_from_this())
+		;
+	m_pWitchTimeHand->Init();
+
 
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
