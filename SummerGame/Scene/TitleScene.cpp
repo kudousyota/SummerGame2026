@@ -100,11 +100,11 @@ TitleScene::TitleScene(SceneController& controller):
 	m_playerHandle(-1),
 	m_cureentAnimHandle(-1),
 	m_currentAnimCount(0.0f),
-	m_playerPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_playerPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_currentAnimIndex(-1),
 	m_logoHandle(-1),
 	m_playerAngle(0.0f),
-	m_logoPos(VGet(0.0f, 0.0f, 0.0f))
+	m_logoPos(Vector3(0.0f, 0.0f, 0.0f))
 {
 	Init();
 	m_update = &TitleScene::FadeInUpdate;
@@ -123,7 +123,7 @@ void TitleScene::Init()
 	
 	m_logoHandle = LoadGraph("data/kudonetta.png");
 
-	m_logoPos = VGet(130.0f, -270.0f, 0.0f);
+	m_logoPos = Vector3(130.0f, -270.0f, 0.0f);
 
 	//SoundManager::Load();
 
@@ -135,7 +135,7 @@ void TitleScene::Init()
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
 	//これでメインシーンから引き継いだカメラの位置がリセットされる
-	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 100.0f, -700.0f), VGet(0.0f, 100.0f, 0.0f));
+	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 100.0f, -700.0f), Vector3(0.0f, 100.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
 }

@@ -69,7 +69,7 @@ void Angel::Init()
 	//m_fov = 120.0f;
 	
 	//サイズ
-	m_scale = VGet(1.0f, 1.0f, 1.0f);
+	m_scale = Vector3(1.0f, 1.0f, 1.0f);
 	//当たり判定
 	m_collisionRadius = 50.0f;
 	m_collisionHeight = 160.0f;

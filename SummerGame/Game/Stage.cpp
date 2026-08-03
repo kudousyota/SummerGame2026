@@ -5,7 +5,7 @@
 Stage::Stage():
 	m_modelHandle(-1),
 	m_colliderHandle(-1),
-	m_stagePos(VGet(0.0f, 0.0f, 0.0f))
+	m_stagePos(Vector3(0.0f, 0.0f, 0.0f))
 {
 }
 

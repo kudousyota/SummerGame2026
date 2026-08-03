@@ -7,17 +7,18 @@
 #include "../System/Timer.h"
 #include "../System/Model.h"
 #include "../Effect/EffectManager.h"
+#include "../WitchTimeHand.h"
 
 namespace
 {
 	//プレイヤーからカメラに向かうベクトル
-	const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
+	const Vector3 kPlayerToTarget = Vector3(0.0f, 290.0f, 0.0f);
 	//重力加速度
 	const float kGravity = 0.6f;
 
 	//====== 初期ステータス ======
 	//初期座標
-	const Vector3 kInitPos = VGet(-1366.0f, 40.0f, -395.0f);
+	const Vector3 kInitPos = Vector3(-1366.0f, 40.0f, -395.0f);
 	//移動速度
 	constexpr float kSpeed = 14.0f;
 	//最大HP
@@ -134,10 +135,10 @@ namespace
 Player::Player() :
 	m_pCamera(nullptr),
 	m_jumpPower(0),
-	m_forward(VGet(0.0f, 0.0f, 1.0f)),
+	m_forward(Vector3(0.0f, 0.0f, 1.0f)),
 	m_isAttackHit(false),
 	m_isNextAttack(false),
-	m_attackPos(VGet(0.0f,0.0f,0.0f)),
+	m_attackPos(Vector3(0.0f,0.0f,0.0f)),
 	m_currentState(PlayerState::Idle),
 	m_prevState(PlayerState::Idle),
 	m_isDead(false),
@@ -146,13 +147,14 @@ Player::Player() :
 	m_dodgeFrame(0),
 	m_rushHit{false, false, false, false},
 	m_isWitchTime(false),
-	m_attackForward(VGet(0.0f,0.0f,0.0f)),
-	m_moveVelocity(VGet(0.0f, 0.0f, 0.0f)),
-	m_attackVelocity(VGet(0.0f, 0.0f, 0.0f)),
+	m_attackForward(Vector3(0.0f,0.0f,0.0f)),
+	m_moveVelocity(Vector3(0.0f, 0.0f, 0.0f)),
+	m_attackVelocity(Vector3(0.0f, 0.0f, 0.0f)),
 	m_modelDisplayOffsetY(0.0f),
-	m_lastGroundPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_lastGroundPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_maxHp(0),
-	m_deadPos({0.0f,0.0f,0.0f})
+	m_deadPos({0.0f,0.0f,0.0f}),
+	m_pWitchTimeHand(std::make_unique<WitchTimeHand>())
 {
 	
 }
@@ -193,11 +195,8 @@ void Player::Init()
 	m_modelHandle = Model::Instance().CreatPlayerModel();
 
 	//ウィッチタイムの手を作る
-	m_pWitchTimeHand = std::make_unique<WitchTimeHand>();
-	m_pWitchTimeHand->SetPlayer(shared_from_this())
-		;
+	m_pWitchTimeHand->SetPlayer(shared_from_this());
 	m_pWitchTimeHand->Init();
-
 
 	m_animation.Init(m_modelHandle,kIdleAnimName,true,0.5f);
 	
@@ -621,7 +620,7 @@ void Player::Update()
 	}
 	else
 	{
-		m_attackForward = VGet(0.0f, 0.0f, 1.0f); //フォールバック
+		m_attackForward = Vector3(0.0f, 0.0f, 1.0f); //フォールバック
 	}
 
 	m_attackVelocity *= 0.8f;
@@ -630,10 +629,12 @@ void Player::Update()
 
 	Character::Collision();
 	//ここで攻撃位置を更新
-	m_attackPos = m_pos + m_attackForward * kAttackOffset + VGet(0.0f, GetCollisionHeight() * 0.5f, 0.0f);
+	m_attackPos = m_pos + m_attackForward * kAttackOffset + Vector3(0.0f, GetCollisionHeight() * 0.5f, 0.0f);
 
 	//攻撃判定
 	AttackUpdate();
+	//ウィッチタイムの手の更新
+	m_pWitchTimeHand->Update();
 
 	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -654,17 +655,18 @@ void Player::Draw()
 	}
 
 	MV1DrawModel(m_modelHandle);
+	m_pWitchTimeHand->Draw();
 	
 #ifdef _DEBUG
 
 	Vector3 debugPos = GetCollisionPosition();
 
-	VECTOR start = VGet(
+	VECTOR start = Vector3(
 		debugPos.x,
 		debugPos.y + GetCollisionRadius(),
 		debugPos.z);
 
-	VECTOR end = VGet(
+	VECTOR end = Vector3(
 		debugPos.x,
 		debugPos.y + GetCollisionHeight() - GetCollisionRadius(),
 		debugPos.z);
@@ -685,7 +687,7 @@ void Player::Draw()
 	}
 
 	//プレイヤーのジャスト回避判定を描画
-	DrawSphere3D(VGet(m_pos.x, m_pos.y + GetCollisionHeight() * 0.5f, m_pos.z), drawRadius, 16, drawColor, drawColor, false);
+	DrawSphere3D(Vector3(m_pos.x, m_pos.y + GetCollisionHeight() * 0.5f, m_pos.z), drawRadius, 16, drawColor, drawColor, false);
 	
 	//当たり判定の描画
 	if (m_currentState == PlayerState::Attack ||
@@ -921,11 +923,17 @@ void Player::TransitionTo(PlayerState nextState)
 		m_isAttackHit = false;
 		m_isNextAttack = false;
 		//ここでmoveVelocityをリセット
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		//攻撃で進む
 		MoveAttack(kAttackMove);
 
 		m_animation.ChangeAnim(kPunchAnimName,false,0.5f);
+		//ウィッチタイム中なら通常攻撃に合わせて手の攻撃も出す
+		if (m_isWitchTime)
+		{
+			m_pWitchTimeHand->Appear();
+		}
+
 		break;
 	case PlayerState::Rush:
 
@@ -935,22 +943,32 @@ void Player::TransitionTo(PlayerState nextState)
 		{
 			m_rushHit[i] = false;
 		}
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		MoveAttack(kRushMove);
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
+		//ウィッチタイム中なら通常攻撃に合わせて手の攻撃も出す
+		if (m_isWitchTime)
+		{
+			m_pWitchTimeHand->Appear();
+		}
 		break;
 
 	case PlayerState::Kick:
 		UpdateAttackDirection(right, forward);
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		MoveAttack(kKickMove);
 		m_animation.ChangeAnim(kKickAnimName, false, 0.7f);
+		//ウィッチタイム中なら通常攻撃に合わせて手の攻撃も出す
+		if (m_isWitchTime)
+		{
+			m_pWitchTimeHand->Appear();
+		}
 		break;
 	case PlayerState::Damage:
 
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 
 		m_animation.ChangeAnim(kHitAnimName, false, 0.5f);
 		break;
@@ -965,13 +983,17 @@ void Player::TransitionTo(PlayerState nextState)
 		//空中攻撃をしたときにY方向のパワー無くして重力も消す
 		m_velocity.y = 0.0f;
 		m_gravity = 0.0f;
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyAttackMove);
 		m_isAttackHit = false;
 		m_isNextAttack = false;
-		
 
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
+		//ウィッチタイム中なら通常攻撃に合わせて手の攻撃も出す
+		if (m_isWitchTime)
+		{
+			m_pWitchTimeHand->Appear();
+		}
 		break;
 	case PlayerState::SkyRush:
 		UpdateAttackDirection(right, forward);
@@ -984,9 +1006,14 @@ void Player::TransitionTo(PlayerState nextState)
 		{
 			m_rushHit[i] = false;
 		}
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyRushMove);
 		m_animation.ChangeAnim(kPunchRushAnimName, false, 0.9f);
+		//ウィッチタイム中なら通常攻撃に合わせて手の攻撃も出す
+		if (m_isWitchTime)
+		{
+			m_pWitchTimeHand->Appear();
+		}
 		break;
 
 	case PlayerState::SkyKick:
@@ -996,10 +1023,15 @@ void Player::TransitionTo(PlayerState nextState)
 		m_gravity = 0.0f;
 		m_isAttackHit = false;
 		m_attackPower += kKickPower;
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		MoveAttack(kSkyKickMove);
 
 		m_animation.ChangeAnim(kSkyKickAnimName, false, 0.8f);
+		//ウィッチタイム中なら通常攻撃に合わせて手の攻撃も出す
+		if (m_isWitchTime)
+		{
+			m_pWitchTimeHand->Appear();
+		}
 		break;
 	case PlayerState::Jump:
 		m_gravity = kGravity;
@@ -1010,14 +1042,14 @@ void Player::TransitionTo(PlayerState nextState)
 		//フレームをリセット
 		m_dodgeFrame = 0;
 		//慣性のために移動速度をリセット
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		m_animation.ChangeAnim(kDodgeAnimName, false, 1.35f);
 		break;
 	case PlayerState::SkyDodge:
 		//フレームをリセット
 		m_dodgeFrame = 0;
 		//慣性のために移動速度をリセット
-		m_moveVelocity = (VGet(0.0f, 0.0f, 0.0f));
+		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
 		break;
 	default:
@@ -1150,7 +1182,7 @@ void Player::UpdateAttackDirection(const Vector3& right, const Vector3& forward)
 
 Vector3 Player::GetCollisionPosition() const
 {
-	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
+	return m_pos + Vector3(0.0f, m_modelDisplayOffsetY, 0.0f);
 }
 
 void Player::TryAttackHit()

@@ -9,11 +9,11 @@ Enemy::Enemy():
 	m_modelHandle(-1),
 	m_isDead(false),
 	m_attackCooldown(0),
-	m_forward(VGet(0.0f, 0.0f, 1.0f)),
+	m_forward(Vector3(0.0f, 0.0f, 1.0f)),
 	m_isAttacking(false),
 	m_attackFrame(0),
 	m_isAttack(false),
-	m_attackDir(VGet(0.0f, 0.0f, 0.0f)),
+	m_attackDir(Vector3(0.0f, 0.0f, 0.0f)),
 	m_scale(0.0f,0.0f,0.0f),
 	m_timeScale(0.0f),
 	m_sightRange(0.0f),
@@ -115,7 +115,7 @@ void Enemy::DrawDebugSight() const
 	//分割数
 	int segments = 16;
 	//線形の始点
-	VECTOR prevPoint = VGet(
+	VECTOR prevPoint = Vector3(
 		m_pos.x + m_sightRange * sinf(baseAngle - halfFov),
 		m_pos.y + 160.0f,
 		m_pos.z + m_sightRange * cosf(baseAngle - halfFov)
@@ -124,7 +124,7 @@ void Enemy::DrawDebugSight() const
 	for (int i = 1; i <= segments; i++)
 	{
 		float angle = baseAngle - halfFov + (halfFov * 2.0f) * (float)i / segments;
-		VECTOR point = VGet(
+		VECTOR point = Vector3(
 			m_pos.x + m_sightRange * sinf(angle),
 			m_pos.y + 160.0f,
 			m_pos.z + m_sightRange * cosf(angle)
@@ -134,13 +134,13 @@ void Enemy::DrawDebugSight() const
 	}
 
 	//扇の両辺(敵から視野端への線)
-	VECTOR center = VGet(m_pos.x, m_pos.y + 160.0f, m_pos.z);
-	VECTOR leftEdge = VGet(
+	VECTOR center = Vector3(m_pos.x, m_pos.y + 160.0f, m_pos.z);
+	VECTOR leftEdge = Vector3(
 		m_pos.x + m_sightRange * sinf(baseAngle - halfFov),
 		m_pos.y + 160.0f,
 		m_pos.z + m_sightRange * cosf(baseAngle - halfFov)
 	);
-	VECTOR rightEdge = VGet(
+	VECTOR rightEdge = Vector3(
 		m_pos.x + m_sightRange * sinf(baseAngle + halfFov),
 		m_pos.y + 160.0f,
 		m_pos.z + m_sightRange * cosf(baseAngle + halfFov)
@@ -162,7 +162,7 @@ void Enemy::DrawDebugSight() const
 		if (dot >= halfFovCos)
 		{
 			// 発見中は赤で上書き
-			DrawLine3D(center, VGet(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 160.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
+			DrawLine3D(center, Vector3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 160.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
 		}
 	}
 }
@@ -199,9 +199,9 @@ void Enemy::DrawDebugCollision() const
 {
 	Vector3 debugPos = GetCollisionPosition();
 
-	VECTOR start = VGet(debugPos.x,debugPos.y + GetCollisionRadius(),debugPos.z);
+	VECTOR start = Vector3(debugPos.x,debugPos.y + GetCollisionRadius(),debugPos.z);
 
-	VECTOR end = VGet(debugPos.x,debugPos.y + GetCollisionHeight() - GetCollisionRadius(),debugPos.z);
+	VECTOR end = Vector3(debugPos.x,debugPos.y + GetCollisionHeight() - GetCollisionRadius(),debugPos.z);
 
 	DrawCapsule3D(start,end,GetCollisionRadius(),16,0xffffff,0xffffff,false);
 }

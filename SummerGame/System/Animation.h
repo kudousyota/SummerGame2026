@@ -20,7 +20,7 @@ public:
 	bool GetAnimEndFlag() { return m_isEndAnim; }
 	//アニメションの進行率を返す//0から１の値を返す
 	float GetAnimRate();
-
+	//現在のアニメーションのフレーム数を返す
 	float GetCurrentAnimTime() const{return m_currentAnimCount;}
 
 private:

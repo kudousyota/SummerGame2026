@@ -7,10 +7,10 @@ Character::Character():
 	m_hp(0),
 	m_attackPower(0),
 	m_gravity(0.0f),
-	m_pos(VGet(0.0f, 0.0f, 0.0f)),
+	m_pos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_angle(0),
 	m_modelHandle(-1),
-	m_velocity(VGet(0.0f,0.0f,0.0f)),
+	m_velocity(Vector3(0.0f,0.0f,0.0f)),
 	m_isGround(false),
 	m_collisionRadius(0.0f),
 	m_collisionHeight(0.0f)

@@ -6,7 +6,7 @@
 namespace
 {
 	//注視点からカメラに向かうベクトル
-	const Vector3 kTargetToCamera = VGet(0.0f, 200.0f, 800.0f);
+	const Vector3 kTargetToCamera = Vector3(0.0f, 200.0f, 800.0f);
 
 	//注視点からカメラまでの距離
 	constexpr float kCameraDistance = 300.0f;
@@ -24,8 +24,8 @@ namespace
 Camera::Camera() :
 	m_cameraAngleX(0.0f),
 	m_cameraAngleY(0.0f),
-	m_cameraPos(VGet(0.0f, 0.0f, 0.0f)),
-	m_cameraTarget(VGet(0.0f, 0.0f, 0.0f)),
+	m_cameraPos(Vector3(0.0f, 0.0f, 0.0f)),
+	m_cameraTarget(Vector3(0.0f, 0.0f, 0.0f)),
 	m_cameraTargetY(0.0f),
 	m_skyDomeHandle(-1)
 {
@@ -205,7 +205,7 @@ Vector3 Camera::GetForward() const
 Vector3 Camera::GetRight() const
 {
 	Vector3 forward = GetForward();
-	Vector3 up = VGet(0.0f, 1.0f, 0.0f);
+	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 right = forward.Cross(up);
 
 	if (right.SqMagnitude() > 0.0001f)

@@ -3,11 +3,11 @@
 #include "Character.h"
 #include <memory> 
 #include "../System/LockOnManager.h"
-#include "../WitchTimeHand.h"
 
 class Camera;
 class Input;
-class Stage; 
+class Stage;
+class WitchTimeHand;
 class Player : public Character ,public std::enable_shared_from_this<Player>
 {
 public:
@@ -25,6 +25,7 @@ public:
 	Vector3 GetCameraTarget()const;
 	float GetAngle() const { return m_angle; }
 	Vector3 GetPosition()const { return m_pos; }
+	Vector3 GetForward()const { return m_forward; }
 
 	//ジャスト回避しているかどうか
 	bool GetWitchTime() { return m_isWitchTime; }

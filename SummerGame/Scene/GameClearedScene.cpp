@@ -30,14 +30,14 @@ GameClearedScene::GameClearedScene(SceneController& controller) :
 	Scene(controller),
 	m_skyHandle(-1),
 	m_playerHandle(-1),
-	m_playerPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_playerPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_currentAnimCount(0.0f),
 	m_cureentAnimHandle(-1),
 	m_currentAnimIndex(-1),
 	m_enemyHandle(-1),
-	m_enemyPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_enemyPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_enemyAngle(0.0f),
-	m_effectPos(VGet(0,0,0)),
+	m_effectPos(Vector3(0,0,0)),
 	m_groundHandle(-1)
 {
 	m_update = &GameClearedScene::FadeInUpdate;
@@ -102,11 +102,11 @@ void GameClearedScene::Init()
 
 	//SoundManager::PlayBGM("Result",true);
 
-	//m_playerPos		= VGet(0.0f, 0.0f, -10.0f);
+	//m_playerPos		= Vector3(0.0f, 0.0f, -10.0f);
 
-	//m_enemyPos		= VGet(0.0f, 0.0f, -400.0f);
+	//m_enemyPos		= Vector3(0.0f, 0.0f, -400.0f);
 
-	//m_groundPos		= VGet(0.0f, -100.0f, 150.0f);
+	//m_groundPos		= Vector3(0.0f, -100.0f, 150.0f);
 
 	//int animNo = MV1GetAnimIndex(m_playerHandle, kShootAnimName);
 	//m_currentAnimCount = 0.0f;
@@ -128,7 +128,7 @@ void GameClearedScene::Init()
 
 	////カメラをリザルト用に初期化
 	////これでメインシーンから引き継いだカメラの位置がリセットされる
-	//SetCameraPositionAndTarget_UpVecY(VGet(500.0f, 300.0f, -350.0f), VGet(0.0f, 0.0f, 0.0f));
+	//SetCameraPositionAndTarget_UpVecY(Vector3(500.0f, 300.0f, -350.0f), Vector3(0.0f, 0.0f, 0.0f));
 	//SetupCamera_Perspective(DX_PI_F / 3.0f);
 	//SetCameraNearFar(20.0f, 4500.0f);
 }

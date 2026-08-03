@@ -57,7 +57,7 @@ void Alien::Init()
 	//重力
 	m_gravity = 0.0f;
 	//モデルのスケール
-	m_scale = VGet(1.0f, 1.0f, 1.0f);
+	m_scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	m_collisionRadius = 50.0f;
 	m_collisionHeight = 160.0f;
@@ -331,7 +331,7 @@ void Alien::AttackUpdate()
 
 Vector3 Alien::GetCollisionPosition() const
 {
-	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
+	return m_pos + Vector3(0.0f, m_modelDisplayOffsetY, 0.0f);
 }
 
 void Alien::TransitionTo(AlienState nextState)

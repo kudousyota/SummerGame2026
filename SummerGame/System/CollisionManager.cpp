@@ -56,7 +56,7 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 
 		//カプセルの線分(a -> b)
 		Vector3 a = character->GetCollisionPosition();
-		Vector3 b = VGet(a.x, a.y + capsuleHeight, a.z);
+		Vector3 b = Vector3(a.x, a.y + capsuleHeight, a.z);
 
 		Vector3 ab = b - a;
 		Vector3 ap = pos - a;
@@ -126,7 +126,7 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 
 		Vector3 a = character->GetCollisionPosition();
 
-		Vector3 b = a + VGet(0.0f, capsuleHeight, 0.0f);
+		Vector3 b = a + Vector3(0.0f, capsuleHeight, 0.0f);
 
 		float distance = Segment_Segment_MinLength(start, end, a, b);
 
@@ -173,8 +173,8 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 	const int kMaxIteration = 4;
 	for (int iter = 0; iter < kMaxIteration; iter++)
 	{
-		VECTOR start = VGet(pos.x, pos.y + radius, pos.z);
-		VECTOR end = VAdd(start, VGet(0.0f, height - radius * 2.0f, 0.0f));
+		VECTOR start = Vector3(pos.x, pos.y + radius, pos.z);
+		VECTOR end = VAdd(start, Vector3(0.0f, height - radius * 2.0f, 0.0f));
 
 		auto hit = MV1CollCheck_Capsule(stagehandle, -1, start, end, radius);
 		//何もヒットしなければ,これ以上押し出す必要はない
@@ -266,8 +266,8 @@ bool CollisionManager::CheckStageGround(Character* character, int stagehandle, f
 	//レイ(下向きの線分)の開始点と終了点を決める
 	//キャラクターの基準位置は足元
 	//カプセル半径を考慮した位置から下向きにレイを飛ばす
-	VECTOR rayStart = VGet(pos.x, pos.y + radius + kUpMargin, pos.z);
-	VECTOR rayEnd = VGet(pos.x, pos.y - radius - kDownMargin, pos.z);
+	VECTOR rayStart = Vector3(pos.x, pos.y + radius + kUpMargin, pos.z);
+	VECTOR rayEnd = Vector3(pos.x, pos.y - radius - kDownMargin, pos.z);
 
 	//ステージとのレイ判定をする
 	MV1_COLL_RESULT_POLY hitPoly = MV1CollCheck_Line(stagehandle, -1, rayStart, rayEnd);

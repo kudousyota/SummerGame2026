@@ -54,9 +54,9 @@ void Creature::Init()
 	m_currentState = CreatureState::Idle;
 	m_prevState = CreatureState::Idle;
 
-	//m_pos = VGet(0.0f, 500.0f, 250.0f);
+	//m_pos = Vector3(0.0f, 500.0f, 250.0f);
 	m_modelHandle = Model::Instance().CreateCreatureModel();
-	m_scale = VGet(3.0f, 3.0f, 3.0f);
+	m_scale = Vector3(3.0f, 3.0f, 3.0f);
 
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 }
@@ -262,7 +262,7 @@ void Creature::AttackUpdate()
 	//攻撃データを作成
 	AttackData attack(CharacterType::Enemy,m_currentState == CreatureState::Punch ? AttackType::Punch : AttackType::Attack,m_attackPower, kAttackRadius);
 	//前側に表示高さは微調整
-	m_attackPos = m_pos + m_attackDir * 70.0f + VGet(0.0f, 20.0f, 0.0f);
+	m_attackPos = m_pos + m_attackDir * 70.0f + Vector3(0.0f, 20.0f, 0.0f);
 	//攻撃判定を出す
 	CollisionManager::Instance().CheckAttackSphere(attack,m_attackPos);
 	m_isAttacking = true;
@@ -272,7 +272,7 @@ void Creature::AttackUpdate()
 
 Vector3 Creature::GetCollisionPosition() const
 {
-	return m_pos + VGet(0.0f, m_modelDisplayOffsetY, 0.0f);
+	return m_pos + Vector3(0.0f, m_modelDisplayOffsetY, 0.0f);
 }
 
 Vector3 Creature::GetHitEffect() const

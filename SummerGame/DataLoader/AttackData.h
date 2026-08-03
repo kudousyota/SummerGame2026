@@ -8,7 +8,8 @@ enum class AttackType
 	Kick,
 	SkyKick,
 	Attack,
-	Breath
+	Breath,
+	WitchHand,
 };
 
 class AttackData
