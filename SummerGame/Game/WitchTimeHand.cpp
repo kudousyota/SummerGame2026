@@ -11,7 +11,7 @@ namespace
 	const char* const kPunchAnimName = "Hand|Punch";
 	constexpr float kAnimSpeed = 0.5f;
 	constexpr int kDamage = 100;
-	constexpr float kAttackRadius = 150.0f;
+	constexpr float kAttackRadius = 300.0f;
 	constexpr float kAttackFrame = 10.0f;
 }
 
@@ -51,8 +51,8 @@ void WitchTimeHand::Update()
 
 	//角度をプレイヤーに合わせる
 	m_angle = player->GetAngle();
-
-	m_pos = player->GetPosition() + player->GetForward() *120.0f;
+	//手の位置をプレイヤーに設定する
+	m_pos = player->GetPosition() + player->GetForward() * 120.0f;
 	
 	if(!m_hasAttacked &&m_animation.GetCurrentAnimTime() >= kAttackFrame)
 	{
@@ -78,6 +78,9 @@ void WitchTimeHand::Draw()
 	}
 	//モデルの描画
 	MV1DrawModel(m_modelHandle);
+
+	//デバッグ用に攻撃判定を描画する
+	DrawSphere3D(m_pos.ToDxLibVector(), kAttackRadius, 16, 0xff0000, 0xff0000, false);
 }
 
 void WitchTimeHand::Appear()
@@ -94,6 +97,7 @@ void WitchTimeHand::Disappear()
 
 void WitchTimeHand::AttackUpdate()
 {
+
 	//攻撃判定を作成して当たり判定をチェックする
 	AttackData attack(CharacterType::Player, AttackType::WitchHand, kDamage, kAttackRadius);
 	CollisionManager::Instance().CheckAttackSphere(attack,m_pos);
