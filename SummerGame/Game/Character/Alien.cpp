@@ -8,6 +8,8 @@
 #include "../Game/Breath.h"
 #include "../System/ProjectileManager.h"
 #include "../Effect/EffectManager.h"
+#include "../Effect/Effect.h"
+#include "EffekseerForDXLib.h"
 
 
 namespace
@@ -36,6 +38,7 @@ Alien::Alien():
 	m_modelDisplayOffsetY(0.0f),
 	m_headBone(-1),
 	m_pBreath(nullptr),
+	m_breathEffectHandle(-1),
 	m_lastSeePos({0.0f,0.0f,0.0f})
 {
 }
@@ -158,11 +161,16 @@ void Alien::Update()
 		//攻撃終了後は待機状態へ戻る
 		if (m_animation.GetAnimEndFlag())
 		{
-			if(m_pBreath)
+			if (m_pBreath)
 			{
 				m_pBreath->Kill();
 				m_pBreath = nullptr;
-				EffectManager::Instns().StopEffect(EffectType::Breath);
+			}
+
+			if (m_breathEffectHandle != -1)
+			{
+				StopEffekseer3DEffect(m_breathEffectHandle);
+				m_breathEffectHandle = -1;
 			}
 			TransitionTo(AlienState::Idle);
 		}
@@ -199,8 +207,12 @@ void Alien::Update()
 		{
 			m_pBreath->Kill();
 			m_pBreath = nullptr;
-			EffectManager::Instns().StopEffect(EffectType::Breath);
+		}
 
+		if (m_breathEffectHandle != -1)
+		{
+			StopEffekseer3DEffect(m_breathEffectHandle);
+			m_breathEffectHandle = -1;
 		}
 		
 		//ダメージアニメーションが終わったらIdleに戻る
@@ -321,8 +333,8 @@ void Alien::AttackUpdate()
 	{
 		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, CreateAttackData())));
 
+		m_breathEffectHandle = EffectManager::Instns().PlayEffect(EffectType::Breath,Vector3(headPos));
 	
-
 		//発射位置と向きを正規化
 		m_pBreath->SetPos(Vector3(pos));
 		m_pBreath->SetForward(Vector3(forward));
@@ -335,8 +347,13 @@ void Alien::AttackUpdate()
 		m_pBreath->SetPos(Vector3(headPos));
 		m_pBreath->SetForward(Vector3(forward));
 	}
-	//エフェクト再生
-	//EffectManager::Instns().PlayEffect(EffectType::Breath, headPos);
+
+	if (m_breathEffectHandle != -1)
+	{
+		//ブレスエフェクトの位置を頭のボーンに合わせる
+		SetPosPlayingEffekseer3DEffect(m_breathEffectHandle,headPos.x,headPos.y,headPos.z);
+	}
+	
 }
 
 Vector3 Alien::GetCollisionPosition() const

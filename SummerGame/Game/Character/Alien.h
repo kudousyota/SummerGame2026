@@ -1,7 +1,9 @@
 #pragma once
 #include "Enemy.h"
+
 class Breath;
 class Player;
+class Effect;
 class Alien : public Enemy
 {
 public:
@@ -44,7 +46,10 @@ private:
 
 	//リグ
 	int m_headBone;
+	//ブレス
 	Breath* m_pBreath;
+	// ブレスエフェクトの再生ハンドル
+	int m_breathEffectHandle;
 
 private:
 	//攻撃処理

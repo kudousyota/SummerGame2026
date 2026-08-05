@@ -47,28 +47,32 @@ void EffectManager::Draw()
 	DrawEffekseer3D();
 }
 //指定した種類と座標でエフェクトを再生する
-void EffectManager::PlayEffect(EffectType type, const Vector3& pos)
+int  EffectManager::PlayEffect(EffectType type, const Vector3& pos)
 {
     //指定したエフェクトのインスタンスを取得
 	auto effect = std::make_unique<Effect>();
     //対応するリソースハンドルを使って指定座標で再生する
     effect->Play(GetResourceHandle(type),pos);
+	//再生中のエフェクトのポインタを返す
+    int handle = effect->GetPlayingHandle();
+
     //管理リストに追加して更新・削除の対象にする
     m_effects.push_back(std::move(effect));
 
+    return handle;
 }
-void EffectManager::StopEffect(EffectType type)
-{
-    //指定した種類のエフェクトを停止する
-    for (auto& effect : m_effects)
-    {
-        //エフェクトのリソースハンドルが一致する場合に停止する
-        if (effect->IsPlaying() && effect->GetResourceHandle() == GetResourceHandle(type))
-        {
-            effect->Stop();
-        }
-	}
-}
+//void EffectManager::StopEffect(EffectType type)
+//{
+//    //指定した種類のエフェクトを停止する
+//    for (auto& effect : m_effects)
+//    {
+//        //エフェクトのリソースハンドルが一致する場合に停止する
+//        if (effect->IsPlaying() && effect->GetPlayingHandle() == GetResourceHandle(type))
+//        {
+//            effect->Stop();
+//        }
+//	}
+//}
 //エフェクトの種類からリソースハンドルを取得
 int EffectManager::GetResourceHandle(EffectType type) const
 {

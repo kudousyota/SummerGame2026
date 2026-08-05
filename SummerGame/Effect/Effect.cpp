@@ -20,13 +20,24 @@ void Effect::Play(int resourceHandle, const Vector3& pos)
 void Effect::Stop()
 {
 	//エフェクトの停止
-	StopEffekseer3DEffect(m_playingHandle);
+	if (m_playingHandle != -1)
+	{
+		StopEffekseer3DEffect(m_playingHandle);
+		m_playingHandle = -1;
+	}
 }
 
 void Effect::Update()
 {
-	//エフェクトの位置を設定する
-	SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos.x, m_pos.y, m_pos.z);
+	if (m_playingHandle == -1)
+	{
+		return;
+	}
+
+	if (!IsEffekseer3DEffectPlaying(m_playingHandle))
+	{
+		m_playingHandle = -1;
+	}
 }
 
 bool Effect::IsPlaying() const

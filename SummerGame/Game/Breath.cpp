@@ -1,6 +1,7 @@
 #include "Breath.h"
 #include "../System/CollisionManager.h"
 #include "../Effect/EffectManager.h"
+#include "EffekseerForDXLib.h"
 
 namespace
 {
@@ -12,10 +13,16 @@ Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const At
 	Projectile(pos,forward,speed,attack),
 	m_effectHandle(-1)
 {
+	m_effectHandle = PlayEffekseer3DEffect(EffectManager::Instns().GetResourceHandle(EffectType::Breath));
+
+	SetScalePlayingEffekseer3DEffect(m_effectHandle,1.0f,1.0f,1.0f);
 }
 
 void Breath::Update()
 {
+
+	SetPosPlayingEffekseer3DEffect(m_effectHandle, m_pos.x, m_pos.y, m_pos.z);
+
 	//前のフレームを保存
 	Vector3 endpos = m_pos + m_forward * kBreathRange;
 	//カプセルの判定
@@ -41,5 +48,6 @@ void Breath::Draw()
 
 void Breath::Kill()
 {
+	StopEffekseer3DEffect(m_effectHandle);
 	m_isDead = true;
 }

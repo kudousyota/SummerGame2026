@@ -3,15 +3,14 @@
 class Effect
 {
 public:
-	void Play(int resourceHandle,const Vector3& pos);
+	void Play(int resourceHandle, const Vector3& pos);
+
 	void Stop();
 	void Update();
 
-	bool IsPlaying()const;
-
-	int GetResourceHandle()const { return m_resourceHandle;}
-
-	//void SetPos(const Vector3& pos) { m_pos = pos; }
+	int GetPlayingHandle() const { return m_playingHandle; };
+	int GetResourceHandle() const { return m_resourceHandle; }
+	bool IsPlaying() const;
 private:
 	//エフェクトの再生位置
 	Vector3 m_pos;

@@ -22,11 +22,11 @@ public:
 	void Init();
 	void Update();
 	void Draw();
-
-	void PlayEffect(EffectType type, const Vector3& pos);
+	//指定した種類と座標でエフェクトを再生する関数を追加
+	int PlayEffect(EffectType type, const Vector3& pos);
 
 	//エフェクトを停止する関数を追加
-	void StopEffect(EffectType type);
+	//void StopEffect(EffectType type);
 
 	int GetResourceHandle(EffectType type) const;
 
