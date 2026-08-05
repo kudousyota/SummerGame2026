@@ -34,7 +34,7 @@ void Breath::Draw()
 	//前のフレームを保存
 	Vector3 endpos = m_pos + m_forward * kBreathRange;
 	//エフェクト再生
-	EffectManager::Instns().PlayEffect(EffectType::Breath, m_pos + m_forward * kBreathRange * 0.5f);
+	//EffectManager::Instns().PlayEffect(EffectType::Breath, m_pos + m_forward * kBreathRange * 0.5f);
 
 	//DrawCapsule3D(m_pos, endpos, m_attackData.GetRadius(), 4, 0xffffff, 0xffffff, false);
 }

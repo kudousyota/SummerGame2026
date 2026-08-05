@@ -57,6 +57,18 @@ void EffectManager::PlayEffect(EffectType type, const Vector3& pos)
     m_effects.push_back(std::move(effect));
 
 }
+void EffectManager::StopEffect(EffectType type)
+{
+    //指定した種類のエフェクトを停止する
+    for (auto& effect : m_effects)
+    {
+        //エフェクトのリソースハンドルが一致する場合に停止する
+        if (effect->IsPlaying() && effect->GetResourceHandle() == GetResourceHandle(type))
+        {
+            effect->Stop();
+        }
+	}
+}
 //エフェクトの種類からリソースハンドルを取得
 int EffectManager::GetResourceHandle(EffectType type) const
 {

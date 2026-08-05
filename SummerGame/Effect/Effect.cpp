@@ -9,11 +9,12 @@ void Effect::Play(int resourceHandle, const Vector3& pos)
 	m_playingHandle = PlayEffekseer3DEffect(resourceHandle);
 
 	SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos.x, m_pos.y, m_pos.z);*/
-
+	m_resourceHandle = resourceHandle;
 	m_pos = pos;
 	m_playingHandle = PlayEffekseer3DEffect(resourceHandle);
 	SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos.x, m_pos.y, m_pos.z);
-	SetScalePlayingEffekseer3DEffect(m_playingHandle, 20.0f, 20.0f, 20.0f); //デバッグ用に極端に拡大
+	//デバッグ用に極端に拡大
+	SetScalePlayingEffekseer3DEffect(m_playingHandle, 20.0f, 20.0f, 20.0f);
 }
 
 void Effect::Stop()

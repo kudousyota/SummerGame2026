@@ -1191,7 +1191,7 @@ void Player::TryAttackHit()
 
 	if (!hitList.empty())
 	{
-		// 一番最初に当たったキャラクターをロックオン対象にする
+		//一番最初に当たったキャラクターをロックオン対象にする
 		m_lockOnManager.OnAttackHit(hitList.front());
 	}
 }

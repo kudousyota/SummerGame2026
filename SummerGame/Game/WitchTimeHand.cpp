@@ -52,7 +52,7 @@ void WitchTimeHand::Update()
 	//角度をプレイヤーに合わせる
 	m_angle = player->GetAngle();
 	//手の位置をプレイヤーに設定する
-	m_pos = player->GetPosition() + player->GetForward() * 120.0f;
+	m_pos = player->GetPosition();
 	
 	if(!m_hasAttacked &&m_animation.GetCurrentAnimTime() >= kAttackFrame)
 	{
@@ -60,6 +60,7 @@ void WitchTimeHand::Update()
 
 		m_hasAttacked = true;
 	}
+	//アニメーションが終了したら消える
 	if (m_animation.GetAnimEndFlag())
 	{
 		Disappear();

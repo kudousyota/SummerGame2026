@@ -25,6 +25,9 @@ public:
 
 	void PlayEffect(EffectType type, const Vector3& pos);
 
+	//エフェクトを停止する関数を追加
+	void StopEffect(EffectType type);
+
 	int GetResourceHandle(EffectType type) const;
 
 private:

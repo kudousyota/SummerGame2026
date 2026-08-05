@@ -7,6 +7,7 @@
 #include "../System/Model.h"
 #include "../Game/Breath.h"
 #include "../System/ProjectileManager.h"
+#include "../Effect/EffectManager.h"
 
 
 namespace
@@ -41,6 +42,7 @@ Alien::Alien():
 
 Alien::~Alien()
 {
+	
 }
 
 void Alien::Init()
@@ -160,6 +162,7 @@ void Alien::Update()
 			{
 				m_pBreath->Kill();
 				m_pBreath = nullptr;
+				EffectManager::Instns().StopEffect(EffectType::Breath);
 			}
 			TransitionTo(AlienState::Idle);
 		}
@@ -195,6 +198,9 @@ void Alien::Update()
 		if (m_pBreath)
 		{
 			m_pBreath->Kill();
+			m_pBreath = nullptr;
+			EffectManager::Instns().StopEffect(EffectType::Breath);
+
 		}
 		
 		//ダメージアニメーションが終わったらIdleに戻る
@@ -314,6 +320,9 @@ void Alien::AttackUpdate()
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
 		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, CreateAttackData())));
+
+	
+
 		//発射位置と向きを正規化
 		m_pBreath->SetPos(Vector3(pos));
 		m_pBreath->SetForward(Vector3(forward));
@@ -326,7 +335,8 @@ void Alien::AttackUpdate()
 		m_pBreath->SetPos(Vector3(headPos));
 		m_pBreath->SetForward(Vector3(forward));
 	}
-
+	//エフェクト再生
+	//EffectManager::Instns().PlayEffect(EffectType::Breath, headPos);
 }
 
 Vector3 Alien::GetCollisionPosition() const
