@@ -12,7 +12,7 @@ public:
 
 	void Kill();
 private:
-
+	int m_effectHandle = -1;
 	
 };
 

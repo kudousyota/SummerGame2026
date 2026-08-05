@@ -13,6 +13,7 @@ void EffectManager::Init()
 {
     //被ダメエフェクトのリソース読み込みハンドルを所持する
 	m_resourceHandles[static_cast<int>(EffectType::Hit)] = LoadEffekseerEffect("Data/eff/Effect/Hit.efk");
+    m_resourceHandles[static_cast<int>(EffectType::Breath)] = LoadEffekseerEffect("Data/eff/Effect/Breath.efk");
 }
 
 void EffectManager::Update()

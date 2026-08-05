@@ -97,7 +97,6 @@ void WitchTimeHand::Disappear()
 
 void WitchTimeHand::AttackUpdate()
 {
-
 	//攻撃判定を作成して当たり判定をチェックする
 	AttackData attack(CharacterType::Player, AttackType::WitchHand, kDamage, kAttackRadius);
 	CollisionManager::Instance().CheckAttackSphere(attack,m_pos);

@@ -8,6 +8,7 @@ enum class EffectType
 {
 	Hit,
 	Just,
+	Breath,
 	Max
 };
 class Effect;
