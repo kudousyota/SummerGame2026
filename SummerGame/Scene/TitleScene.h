@@ -13,7 +13,12 @@ public:
 	void Draw();
 	bool IsFinished() const { return m_finished; }
 private:
-	
+	enum class MenuSelect
+	{
+		Start,
+		Exit
+	};
+	MenuSelect m_menuSelect = MenuSelect::Start;
 
 	//メンバ関数ポインタを使用して内部状態を書き換える
 	//update関数とdraw関数を、現在のTitleSceneの状態に合わせて

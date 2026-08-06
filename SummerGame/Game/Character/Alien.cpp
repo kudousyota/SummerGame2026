@@ -352,6 +352,7 @@ void Alien::AttackUpdate()
 	{
 		//ブレスエフェクトの位置を頭のボーンに合わせる
 		SetPosPlayingEffekseer3DEffect(m_breathEffectHandle,headPos.x,headPos.y,headPos.z);
+		SetRotationPlayingEffekseer3DEffect(m_breathEffectHandle, 0.0f, m_angle, 0.0f);
 	}
 	
 }

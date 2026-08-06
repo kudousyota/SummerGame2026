@@ -15,7 +15,7 @@ Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const At
 {
 	m_effectHandle = PlayEffekseer3DEffect(EffectManager::Instns().GetResourceHandle(EffectType::Breath));
 
-	SetScalePlayingEffekseer3DEffect(m_effectHandle,1.0f,1.0f,1.0f);
+	SetScalePlayingEffekseer3DEffect(m_effectHandle,0.5f, 0.5f, 0.5f);
 }
 
 void Breath::Update()

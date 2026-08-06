@@ -5,6 +5,7 @@
 #include "SceneMain.h"
 #include "SceneController.h"
 #include "Model.h"
+#include "../System/Application.h"
 namespace
 {
 	constexpr int kFadeInterval = 60;
@@ -28,6 +29,12 @@ void TitleScene::NormalUpdate(Input& input)
 {
 	m_titlePlayer.Update();
 
+	//上下でカーソル移動
+	if (input.IsTriggered("up") || input.IsTriggered("down"))
+	{
+		m_menuSelect = (m_menuSelect == MenuSelect::Start) ? MenuSelect::Exit : MenuSelect::Start;
+	}
+
 	if (input.IsTriggered("ok"))
 	{
 		//SoundManager::PlaySE("Ok");
@@ -44,39 +51,37 @@ void TitleScene::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
-		m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
+
+		if (m_menuSelect == MenuSelect::Exit)
+		{
+			//ゲーム終了をApplicationに要求する
+			Application::GetInstance().RequestExit();
+		}
+		else
+		{
+			m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
+		}
 		return;
 	}
 }
 
 void TitleScene::NormalDraw()
 {
-
 	m_titlePlayer.Draw();
 
-	//モデルの位置を反映してから描画
-	
-    const int cx = Game::kScreenWidth / 2;
-	const int cy = Game::kScreenHeight / 2;
-	//カラー
 	const int white = GetColor(255, 255, 255);
-	const int Cyan = GetColor(0, 255, 255);
-	const int Color = GetColor(224, 255, 255);
-	const int black = GetColor(0, 0, 0);
 
-	//DrawStringToHandle(510, 330 , "nigeusagi", black, m_fontHandle);
-	//DrawGraph(m_logoPos.x, m_logoPos.y, m_logoHandle, true);
 	DrawRotaGraph(660, 150, 0.5, 0.0, m_logoHandle, true);
-	//点滅頻度
+
 	const int intervar = 650;
 	int now = GetNowCount();
 	bool visible = (now / intervar) % 2;
-	if (visible)
-	{
-		//操作説明表示
-		DrawStringToHandle(470, 580, "Press A to Game", white, m_fontHandle);
-	}
+	
+	const int startColor = (m_menuSelect == MenuSelect::Start) ? GetColor(255, 255, 0) : white;
+	const int exitColor = (m_menuSelect == MenuSelect::Exit) ? GetColor(255, 255, 0) : white;
 
+	DrawStringToHandle(470, 560, "Start", startColor, m_fontHandle);
+	DrawStringToHandle(470, 610, "Exit", exitColor, m_fontHandle);
 }
 
 void TitleScene::FadeDraw()
