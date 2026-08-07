@@ -13,7 +13,10 @@ void EffectManager::Init()
 {
     //被ダメエフェクトのリソース読み込みハンドルを所持する
 	m_resourceHandles[static_cast<int>(EffectType::Hit)] = LoadEffekseerEffect("Data/eff/Effect/Hit.efk");
+    //ブレス攻撃のエフェクトのリソース読み込み
     m_resourceHandles[static_cast<int>(EffectType::Breath)] = LoadEffekseerEffect("Data/eff/Effect/Breath.efk");
+    //エイリアンの浮遊エフェクトの読み込み
+    m_resourceHandles[static_cast<int>(EffectType::Floating)] = LoadEffekseerEffect("Data/eff/Effect/Floating.efk");
 }
 
 void EffectManager::Update()

@@ -43,9 +43,10 @@ void Creature::Init()
 	m_hp = 700;
 
 	m_attackPower = 20;
-	
+
 	m_collisionRadius = 130.0f;
 	m_collisionHeight = 530.0f;
+
 	//視界
 	//m_sightRange = 400.0f;
 	//m_fov = 120.0f;
@@ -85,7 +86,6 @@ void Creature::Update()
 	
 	//攻撃クールタイム//攻撃のクールタイムもウィッチタイムで遅くする
 	UpdateCooldown(m_timeScale);
-
 
 	//ステート
 	switch (m_currentState)
@@ -207,10 +207,8 @@ void Creature::Update()
 	
 }
 
-
 void Creature::Draw()
 {
-
 	//HPがゼロになったら
 	if (m_isDead)
 	{

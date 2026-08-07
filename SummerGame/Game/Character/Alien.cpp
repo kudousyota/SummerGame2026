@@ -39,6 +39,8 @@ Alien::Alien():
 	m_headBone(-1),
 	m_pBreath(nullptr),
 	m_breathEffectHandle(-1),
+	m_floatingEffectHandle(-1),
+	m_floatingEffectPos({0.0f,0.0f,0.0f}),
 	m_lastSeePos({0.0f,0.0f,0.0f})
 {
 }
@@ -64,6 +66,7 @@ void Alien::Init()
 	//モデルのスケール
 	m_scale = Vector3(1.0f, 1.0f, 1.0f);
 
+	//当たり判定
 	m_collisionRadius = 50.0f;
 	m_collisionHeight = 160.0f;
 
@@ -76,7 +79,8 @@ void Alien::Init()
 
 	//モデルを読み込んでボーンを見つけてくる
 	m_headBone = MV1SearchFrame(m_modelHandle, kAttackRig);
-
+	//浮遊エフェクトの再生
+	m_floatingEffectHandle = EffectManager::Instns().PlayEffect(EffectType::Floating, m_pos);
 }
 
 void Alien::Update()
@@ -84,6 +88,13 @@ void Alien::Update()
 	//死んだとき
 	if (m_isDead)
 	{
+		//死亡アニメーションが終わったら消える
+		if (m_floatingEffectHandle != -1)
+		{
+			StopEffekseer3DEffect(m_floatingEffectHandle);
+			m_floatingEffectHandle = -1;
+		}
+
 		return;
 	}
 	//当たり判定
@@ -93,8 +104,6 @@ void Alien::Update()
 	//アニメーションの更新
 	m_animation.Update(m_timeScale);
 
-	
-
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
 	{
@@ -103,6 +112,13 @@ void Alien::Update()
 
 	//攻撃クールタイム//攻撃のクールタイムもウィッチタイムで遅くする
 	UpdateCooldown(m_timeScale);
+	//浮遊エフェクトの位置をエイリアンの位置に合わせる
+	m_floatingEffectPos = m_pos;
+	if (m_floatingEffectHandle != -1)
+	{
+		//浮遊エフェクトの位置を更新
+		SetPosPlayingEffekseer3DEffect(m_floatingEffectHandle, m_floatingEffectPos.x, m_floatingEffectPos.y, m_floatingEffectPos.z);
+	}
 
 	//ステート
 	switch (m_currentState)
@@ -155,7 +171,7 @@ void Alien::Update()
 	}
 		break;
 	case AlienState::Attack:
-
+		//攻撃処理
 		AttackUpdate();
 
 		//攻撃終了後は待機状態へ戻る
@@ -309,7 +325,6 @@ void Alien::KickDown()
 
 void Alien::AttackUpdate()
 {
-
 	//現在のアニメーションを取得
 	float animFrame = m_animation.GetCurrentAnimTime();
 	

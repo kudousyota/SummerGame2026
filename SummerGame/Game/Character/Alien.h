@@ -50,6 +50,10 @@ private:
 	Breath* m_pBreath;
 	// ブレスエフェクトの再生ハンドル
 	int m_breathEffectHandle;
+	//浮遊エフェクトの再生ハンドル
+	int m_floatingEffectHandle;
+	//浮遊エフェクトの位置
+	Vector3 m_floatingEffectPos;
 
 private:
 	//攻撃処理

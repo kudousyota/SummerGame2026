@@ -17,7 +17,6 @@
 namespace 
 {
 	constexpr int kFadeInterval = 60;
-
 }
 
 GameClearedScene::GameClearedScene(SceneController& controller) :

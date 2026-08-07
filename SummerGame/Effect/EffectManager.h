@@ -9,6 +9,7 @@ enum class EffectType
 	Hit,
 	Just,
 	Breath,
+	Floating,
 	Max
 };
 class Effect;

@@ -5,7 +5,7 @@
 
 namespace
 {
-	constexpr float kBreathRange = 190.0f;
+	constexpr float kBreathRange = 200.0f;
 }
 
 Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const AttackData& attack):
@@ -13,8 +13,9 @@ Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const At
 	Projectile(pos,forward,speed,attack),
 	m_effectHandle(-1)
 {
+	//エフェクト再生
 	m_effectHandle = PlayEffekseer3DEffect(EffectManager::Instns().GetResourceHandle(EffectType::Breath));
-
+	//エフェクトのサイズ調整
 	SetScalePlayingEffekseer3DEffect(m_effectHandle,0.5f, 0.5f, 0.5f);
 }
 
@@ -35,14 +36,13 @@ void Breath::Update()
 void Breath::Draw()
 {
 	//ここでエフェクト出してもいい
-	
 	//デバッグ表示とかしたい
 
 	//前のフレームを保存
 	Vector3 endpos = m_pos + m_forward * kBreathRange;
+
 	//エフェクト再生
 	//EffectManager::Instns().PlayEffect(EffectType::Breath, m_pos + m_forward * kBreathRange * 0.5f);
-
 	//DrawCapsule3D(m_pos, endpos, m_attackData.GetRadius(), 4, 0xffffff, 0xffffff, false);
 }
 

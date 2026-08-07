@@ -143,6 +143,7 @@
     <ClCompile Include="DataLoader\AttackData.cpp" />
     <ClCompile Include="Effect\Effect.cpp" />
     <ClCompile Include="Effect\EffectManager.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="UI\GameClearedUI.cpp" />
     <ClCompile Include="UI\UIBase.cpp" />
     <ClCompile Include="UI\HPUI.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="DataLoader\AttackData.h" />
     <ClInclude Include="Effect\Effect.h" />
     <ClInclude Include="Effect\EffectManager.h" />
+    <ClInclude Include="Score.h" />
     <ClInclude Include="UI\GameClearedUI.h" />
     <ClInclude Include="UI\UIBase.h" />
     <ClInclude Include="UI\HPUI.h" />
