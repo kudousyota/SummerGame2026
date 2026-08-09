@@ -8,6 +8,7 @@
 #include "../System/Model.h"
 #include "../Effect/EffectManager.h"
 #include "../WitchTimeHand.h"
+#include "../System/Score.h"
 
 namespace
 {
@@ -754,13 +755,15 @@ void Player::ApplyDamage(int damage)
 		//TransitionTo(PlayerState::WitchTime); 
 		//敵のアニメーションを遅くする
 		Timer::Instance().SetEnemyTimeScaleForFrames(kWitchTimeScale, kWitchTimeFrame);
-
+		Score::Instance().AddWitchTimeCount();
 		return; // ダメージを受けずに処理を抜ける
 	}
 
 	//通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
 	m_hp -= damage;
 	TransitionTo(PlayerState::Damage);
+	//ノーダメージの条件を外す
+	Score::Instance().OnNoDamage();
 
 	//エフェクトの再生
 	EffectManager::Instns().PlayEffect(EffectType::Hit, m_pos + Vector3(0.0f,GetCollisionHeight(),0.0f));

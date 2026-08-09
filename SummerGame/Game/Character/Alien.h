@@ -17,6 +17,7 @@ public:
 
 	AttackType GetAttackType() const override;
 	float GetAttackRadius() const override;
+	int GetScore() const override { return m_score; }
 
 private:
 
@@ -54,6 +55,8 @@ private:
 	int m_floatingEffectHandle;
 	//浮遊エフェクトの位置
 	Vector3 m_floatingEffectPos;
+	Vector3 m_lastSeePos;
+
 
 private:
 	//攻撃処理
@@ -66,8 +69,8 @@ private:
 	void TransitionTo(AlienState nextState);
 
 	Vector3 GetHitEffect()const override;
+	
 
-	Vector3 m_lastSeePos;
 
 	//ダメージを受けたらDamageステートへ
 	//void OnDamaged() override;

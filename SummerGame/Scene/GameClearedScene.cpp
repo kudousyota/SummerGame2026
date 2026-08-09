@@ -11,6 +11,7 @@
 #include "../system/Vector3.h"
 #include "../UI/UIManager.h"
 #include "../UI/GameClearedUI.h"
+#include "../System/Score.h"
 //#include "../system/SoundManager.h"
 
 
@@ -80,8 +81,11 @@ GameClearedScene::~GameClearedScene()
 void GameClearedScene::Init()
 {
 	//フォントの読み込み
-	m_fontHandle	= CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+	m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
+	//最終スコアを取得
+	m_finalScore = Score::Instance().GetTotalScore();
+	
 	//UI
 	m_pUiManager = std::make_unique<UIManager>();
 	//リザルトUI
@@ -174,7 +178,6 @@ void GameClearedScene::FadeInUpdate(Input& input)
 void GameClearedScene::NormalUpdate(Input& input)
 {
 
-
 	if (input.IsTriggered("ok"))
 	{
 		m_update = &GameClearedScene::FadeOutUpdate;
@@ -184,6 +187,27 @@ void GameClearedScene::NormalUpdate(Input& input)
 		return;
 
 	}
+	//スコアアップ演出
+	if (m_displayScore < m_finalScore)
+	{
+		m_scoreAnimTime++;
+		//徐々に近づける
+		int diff = m_finalScore - m_displayScore;
+		int step = diff / 10;
+		if (step < 1)
+		{
+			step = 1;
+		}
+
+		m_displayScore += step;
+
+		//行き過ぎないように補正
+		if (m_displayScore > m_finalScore)
+		{
+			m_displayScore = m_finalScore;
+		}
+	}
+
 	m_pUiManager->Update();
 
 }

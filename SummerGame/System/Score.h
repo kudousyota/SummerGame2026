@@ -2,8 +2,7 @@
 class Score
 {
 public:
-	Score();
-	~Score();
+	static Score& Instance();
 
 	void Init();
 	//敵を倒したときのスコアを加算する
@@ -27,13 +26,18 @@ public:
 	float GetClearTime()const { return m_clearTime; }
 
 private:
+	Score() = default;
+	virtual~Score() = default;
+	//コピーコンストラクタと代入演算子を削除して、シングルトンのインスタンスが複製されないようにする
+	Score(const Score&) = delete;
+	Score& operator=(const Score&) = delete;
 
-	int m_enemyScore;
-	int m_timeScore;
-	int m_witchTimeScore;
-	int m_noDamageScore;
-	int m_totalScore;
-	int m_witchTimeCount;
-	float m_clearTime;
-	bool m_isNoDamage;
+	int m_enemyScore = 0;
+	int m_timeScore = 0;
+	int m_witchTimeScore = 0;
+	int m_noDamageScore = 0;
+	int m_totalScore = 0;
+	int m_witchTimeCount = 0;
+	float m_clearTime = 0.0f;
+	bool m_isNoDamage = true;
 };

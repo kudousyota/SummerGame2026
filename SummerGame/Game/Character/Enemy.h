@@ -21,6 +21,7 @@ public:
 
     virtual AttackType GetAttackType() const = 0;
     virtual float GetAttackRadius()const = 0;
+    virtual int GetScore()const = 0;
     AttackData CreateAttackData()const;
 protected:
     //共通の値
@@ -41,6 +42,9 @@ protected:
 
     //タイムスケールの取得
     float m_timeScale;
+
+    //スコア
+    int m_score;
 
     //モデルの行列//ここはほかのとこでプレイヤーとまとめる可能性あり
     void UpdateModelMatrix();

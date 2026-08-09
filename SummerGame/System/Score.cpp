@@ -7,21 +7,10 @@ namespace
 	constexpr int kScoreReset = 0;
 }
 
-Score::Score():
-	m_enemyScore(0),
-	m_timeScore(0),
-	m_witchTimeScore(0),
-	m_noDamageScore(0),
-	m_totalScore(0),
-	m_witchTimeCount(0),
-	m_clearTime(0.0f),
-	m_isNoDamage(true)
+Score& Score::Instance()
 {
-
-}
-
-Score::~Score()
-{
+	static Score score;
+	return score;
 }
 
 void Score::Init()

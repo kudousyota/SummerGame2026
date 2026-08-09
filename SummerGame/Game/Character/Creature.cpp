@@ -20,6 +20,8 @@ namespace
 
 	constexpr float kAttackRadius = 180.0f;
 	constexpr float kPumncRadius = 130.0f;
+	//ボスなのでスコアは多くする
+	constexpr int kScore = 1000;
 }
 
 Creature::Creature():
@@ -57,6 +59,9 @@ void Creature::Init()
 	//m_pos = Vector3(0.0f, 500.0f, 250.0f);
 	m_modelHandle = Model::Instance().CreateCreatureModel();
 	m_scale = Vector3(3.0f, 3.0f, 3.0f);
+
+	//ボスなのでスコアを多くする
+	m_score = kScore;
 
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 }

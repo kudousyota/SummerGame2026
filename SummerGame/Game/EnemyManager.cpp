@@ -4,6 +4,7 @@
 #include "Alien.h"
 #include <algorithm>
 #include "../Game/Character/Player.h"
+#include "../System/Score.h"
 
 EnemyManager::EnemyManager()
 {
@@ -58,7 +59,15 @@ void EnemyManager::Update()
 
 	//€‚ñ‚¾“G‚Ìíœˆ—
 	m_pAngels.erase(std::remove_if(m_pAngels.begin(), m_pAngels.end(),
-		[](const std::unique_ptr<Angel>& angel) {return angel->IsDead(); }),
+		[](const std::unique_ptr<Angel>& angel)
+		{
+			if (angel->IsDead())
+			{
+				Score::Instance().AddEnemyScore(angel->GetScore());
+				return true;
+			}
+			return false;
+		}),
 		m_pAngels.end());
 
 	m_pCreatures.erase(std::remove_if(m_pCreatures.begin(), m_pCreatures.end(),
@@ -66,6 +75,7 @@ void EnemyManager::Update()
 		{
 			if (creature->IsDead())
 			{
+				Score::Instance().AddEnemyScore(creature->GetScore());
 				m_isCreatureDead = true;
 				return true;
 			}
@@ -74,7 +84,15 @@ void EnemyManager::Update()
 		m_pCreatures.end());
 
 	m_pAlien.erase(std::remove_if(m_pAlien.begin(), m_pAlien.end(),
-		[](const std::unique_ptr < Alien > & alien) {return alien->IsDead(); }),
+		[](const std::unique_ptr < Alien > & alien)
+		{
+			if (alien->IsDead())
+			{
+				Score::Instance().AddEnemyScore(alien->GetScore());
+				return true;
+			}
+			return false; 
+		}),
 		m_pAlien.end());
 }
 

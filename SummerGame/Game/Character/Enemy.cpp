@@ -17,7 +17,8 @@ Enemy::Enemy():
 	m_scale(0.0f,0.0f,0.0f),
 	m_timeScale(0.0f),
 	m_sightRange(0.0f),
-	m_fov(0.0f)
+	m_fov(0.0f),
+	m_score(0)
 {
 }
 

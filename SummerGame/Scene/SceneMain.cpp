@@ -14,6 +14,7 @@
 #include "../Game.h"
 #include "../Effect/EffectManager.h"
 #include "../Game/WitchTimeHand.h"
+#include "../System/Score.h"
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -48,6 +49,8 @@ void SceneMain::Init()
 	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 300.0f, -700.0f), Vector3(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 8000.0f);
+	//スコアリセット
+	Score::Instance().Init();
 
 	DataManager::GetInstance().LoadData();
 
@@ -192,6 +195,11 @@ void SceneMain::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
+
+		//クリアタイムを確定してスコアを計算
+		Score::Instance().SetClearTime(static_cast<float>(m_frameCount) / 60.0f);//60f想定
+		Score::Instance().Calculate();
+
 		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
 		return;
 	}

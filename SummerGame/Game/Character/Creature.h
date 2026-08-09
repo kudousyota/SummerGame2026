@@ -16,7 +16,7 @@ public:
 
 	AttackType GetAttackType() const override;
 	float GetAttackRadius() const override;
-
+	int GetScore() const override { return m_score; }
 private:
 	enum class CreatureState
 	{

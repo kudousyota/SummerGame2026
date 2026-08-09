@@ -30,6 +30,9 @@ namespace
 	//このフレーム数でブレスを発射する
 	constexpr float kBreathFrame = 20.0f;
 
+	//スコア
+	constexpr int kScore = 300;
+
 }
 
 Alien::Alien():
@@ -81,6 +84,8 @@ void Alien::Init()
 	m_headBone = MV1SearchFrame(m_modelHandle, kAttackRig);
 	//浮遊エフェクトの再生
 	m_floatingEffectHandle = EffectManager::Instns().PlayEffect(EffectType::Floating, m_pos);
+	//スコア
+	m_score = kScore;
 }
 
 void Alien::Update()

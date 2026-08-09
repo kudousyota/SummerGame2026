@@ -1,6 +1,8 @@
 #include "GameClearedUI.h"
 #include "DxLib.h"
 #include "../Game/Character/Player.h"
+#include "../System/Score.h"
+
 
 namespace
 {
@@ -56,4 +58,14 @@ void GameClearedUI::Draw()
 	DrawRotaGraph(static_cast<int>(m_timerX), 100, 0.5f, 0, m_TimerUIHandle, true);
 	DrawRotaGraph(static_cast<int>(m_scoreX), 300, 0.5f, 0, m_ScoreUIHandle, true);
 	DrawRotaGraph(620, 360, 1.0f, 0, m_ResultUIHandle, true);
+
+	const int white = GetColor(255, 255, 255);
+
+	//各項目ごとのスコアを表示
+	DrawFormatString(static_cast<int>(m_scoreX) - 60, 280, white, "敵撃破: %d", Score::Instance().GetEnemyScore());
+	DrawFormatString(static_cast<int>(m_scoreX) - 60, 310, white, "タイム: %d", Score::Instance().GetTimeScore());
+	DrawFormatString(static_cast<int>(m_scoreX) - 60, 340, white, "ウィッチタイム: %d", Score::Instance().GetWitchTimeScore());
+	DrawFormatString(static_cast<int>(m_scoreX) - 60, 370, white, "ノーダメージ: %d", Score::Instance().GetNoDamageScore());
+	DrawFormatString(620, 400, white, "合計: %d", Score::Instance().GetTotalScore());
+
 }

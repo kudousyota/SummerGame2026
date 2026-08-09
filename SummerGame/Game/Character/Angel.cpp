@@ -39,6 +39,8 @@ namespace
 
 
 	constexpr float kAttackRadius = 180.0f;
+
+	constexpr int kScore = 500;
 }
 
 Angel::Angel():
@@ -75,6 +77,9 @@ void Angel::Init()
 	m_collisionHeight = 160.0f;
 
 	m_modelHandle = Model::Instance().CreateAngelModel();
+
+	m_score = kScore;
+
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
 }
 
