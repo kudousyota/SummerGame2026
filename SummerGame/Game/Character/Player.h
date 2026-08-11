@@ -3,6 +3,7 @@
 #include "Character.h"
 #include <memory> 
 #include "../System/LockOnManager.h"
+#include "PlayerAfterImage.h"
 
 class Camera;
 class Input;
@@ -147,6 +148,11 @@ private:
 	//ウィッチタイムの手
 	std::unique_ptr<WitchTimeHand> m_pWitchTimeHand;
 
+	//ジャスト回避中残像
+	PlayerAfterImage m_pAfterImage;
+
+	//残像を生成するフレーム
+	int m_afterImageFrame;
 
 	//CheckAttackSphereを呼び、当たったらロックオンにセットする共通処理
 	void TryAttackHit(); 

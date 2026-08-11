@@ -10,6 +10,7 @@
 #include "../WitchTimeHand.h"
 #include "../System/Score.h"
 
+
 namespace
 {
 	//プレイヤーからカメラに向かうベクトル
@@ -127,6 +128,9 @@ namespace
 	constexpr float kRushRadius = 60.0f;
 	constexpr float kKickRadius = 90.0f;
 
+	//残像を生成する感覚
+	constexpr int kAfterImageCreateFrame = 5;
+
 #ifdef _DEBUG
 	//デバッグ表示用のジャスト回避半径
 	constexpr float kDebugDodgeRadius = 100.0f;
@@ -155,7 +159,8 @@ Player::Player() :
 	m_lastGroundPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_maxHp(0),
 	m_deadPos({0.0f,0.0f,0.0f}),
-	m_pWitchTimeHand(std::make_unique<WitchTimeHand>())
+	m_pWitchTimeHand(std::make_unique<WitchTimeHand>()),
+	m_afterImageFrame(0)
 {
 	
 }
@@ -172,6 +177,9 @@ Player::~Player()
 
 void Player::Init()
 {
+	//モデルの生成
+	m_modelHandle = Model::Instance().CreatPlayerModel();
+	m_pAfterImage.Init(m_modelHandle);
 	Character::Init();
 	CollisionManager::Instance().Register(this);
 	//初期状態
@@ -193,7 +201,8 @@ void Player::Init()
 	//攻撃力
 	m_attackPower = kBaseAttackPower;
 	m_invincibleTime = 0;
-	m_modelHandle = Model::Instance().CreatPlayerModel();
+
+	
 
 	//ウィッチタイムの手を作る
 	m_pWitchTimeHand->SetPlayer(shared_from_this());
@@ -209,6 +218,8 @@ void Player::Update()
 {
 
 	auto& input = Input::Instance();
+	//ウィッチタイム中かどうか
+	m_isWitchTime = Timer::Instance().IsEnemySlow();
 	//HPがゼロになったら
 	if (m_isDead)
 	{
@@ -545,7 +556,25 @@ void Player::Update()
 		break;
 	case PlayerState::Dodge:
 		//ジャスト回避の受付
-		m_dodgeFrame++;
+		m_afterImageFrame++;
+		//残像を出す
+		/*if (m_dodgeFrame <= kDodgeFrame &&
+			m_isWitchTime)
+		{
+			m_afterImageFrame++;
+
+			if (m_afterImageFrame >= kAfterImageCreateFrame)
+			{
+				m_afterImageFrame = 0;
+
+				m_pAfterImage.Create(
+					m_pos,
+					m_angle,
+					m_animation.GetCurrentAnimName(),
+					m_animation.GetCurrentAnimTime()
+				);
+			}
+		}*/
 
 		if (m_animation.GetAnimEndFlag())
 		{
@@ -636,6 +665,8 @@ void Player::Update()
 	AttackUpdate();
 	//ウィッチタイムの手の更新
 	m_pWitchTimeHand->Update();
+	//残像の更新
+	m_pAfterImage.Update();
 
 	//モデル行列更新
 	MATRIX rot = MGetRotY(m_angle);
@@ -643,7 +674,23 @@ void Player::Update()
 	MATRIX trans = MGetTranslate(drawPos.ToDxLibVector());
 	MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 
-	m_isWitchTime = Timer::Instance().IsEnemySlow();
+	//ウィッチタイム中は残像を出す
+	if (m_isWitchTime)
+	{
+		m_afterImageFrame++;
+
+		if (m_afterImageFrame >= kAfterImageCreateFrame)
+		{
+			m_afterImageFrame = 0;
+
+			m_pAfterImage.Create(
+				m_pos,
+				m_angle,
+				m_animation.GetCurrentAnimName(),
+				m_animation.GetCurrentAnimTime()
+			);
+		}
+	}
 
 }
 
@@ -654,7 +701,8 @@ void Player::Draw()
 	{
 		return;
 	}
-
+	//残像の描画
+	m_pAfterImage.Draw();
 	MV1DrawModel(m_modelHandle);
 	m_pWitchTimeHand->Draw();
 	
@@ -1044,6 +1092,7 @@ void Player::TransitionTo(PlayerState nextState)
 	case PlayerState::Dodge:
 		//フレームをリセット
 		m_dodgeFrame = 0;
+		m_afterImageFrame = 0;
 		//慣性のために移動速度をリセット
 		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		m_animation.ChangeAnim(kDodgeAnimName, false, 1.35f);

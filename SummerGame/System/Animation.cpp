@@ -50,6 +50,8 @@ void Animation::Init(int modelHandle, std::string name, bool isRoop, float timeS
 	m_prevAnimHandle = -1;
 	//前のアニメションのフレーム数を0にする
 	m_animTimeScale = timeScale;
+
+	m_currentAnimName = name;
 }
 
 void Animation::Update(float speed)
@@ -173,6 +175,7 @@ void Animation::ChangeAnim(std::string name, bool isRoop, float timescale)
 	MV1SetAttachAnimBlendRate(m_modelHandle, m_prevAnimHandle, 1.0f);    // 旧アニメを完全表示に明示
 	m_currentAnimCount = 0.0f;//新しいアニメーションのフレーム数を0にする
 	m_animChangeFrame = 0.0f;//アニメーションを切り替えるフレーム数を0にする
+	m_currentAnimName = name;
 }
 
 float Animation::GetAnimRate()

@@ -22,6 +22,8 @@ public:
 	float GetAnimRate();
 	//現在のアニメーションのフレーム数を返す
 	float GetCurrentAnimTime() const{return m_currentAnimCount;}
+	//現在のアニメーションの名前
+	const std::string& GetCurrentAnimName()const { return m_currentAnimName; }
 
 private:
 	//モデルのハンドル
@@ -33,6 +35,8 @@ private:
 
 	//現在のアニメションのフレーム数
 	float m_currentAnimCount;
+	//現在のアニメーション名前
+	std::string m_currentAnimName;
 	//前のアニメションのフレーム数
 	float m_prevAnimCount;
 	//アニメションを切り替えるフレーム数
