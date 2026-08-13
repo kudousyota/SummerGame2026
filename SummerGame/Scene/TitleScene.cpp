@@ -6,6 +6,7 @@
 #include "SceneController.h"
 #include "Model.h"
 #include "../System/Application.h"
+#include "../System/SoundManager.h"
 namespace
 {
 	constexpr int kFadeInterval = 60;
@@ -127,6 +128,8 @@ void TitleScene::Init()
 
 	m_logoPos = Vector3(130.0f, -270.0f, 0.0f);
 
+	//BGMの再生
+	SoundManager::Instance().PlayBGM("Title",true);
 
 	//タイトルでプレイヤーを描画
 	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Title");

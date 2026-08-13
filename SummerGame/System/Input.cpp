@@ -122,10 +122,14 @@ bool Input::IsTriggered(const char* name) const
 	return m_inputData.at(name) && !m_lastInputData.at(name);
 }
 
+
+
 void Input::Load()
 {
 	// 未実装: 設定ファイル読み込みは行わない
 }
+
+
 
 float Input::GetStickLX()const
 {

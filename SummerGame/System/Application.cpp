@@ -10,7 +10,7 @@
 #include "Model.h"
 #include "Timer.h"
 #include "../Effect/EffectManager.h"
-
+#include "SoundManager.h"
 
 
 Application::Application()
@@ -67,7 +67,8 @@ bool Application::Init()
 	SetUseBackCulling(true);
 	//モデルのロード
 	Model::Instance().PreloadAll();
-
+	//サウンドのロード
+	SoundManager::Instance().Load();
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
 	//薄い青
 	SetBackgroundColor(100, 150, 255); 
