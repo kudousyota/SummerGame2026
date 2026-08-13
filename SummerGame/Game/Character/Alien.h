@@ -30,7 +30,8 @@ private:
 		StandUp,
 		Up,
 		Hit,
-		Look
+		Look,
+		Dead
 	};
 
 	//現在の状態
@@ -69,7 +70,7 @@ private:
 	void TransitionTo(AlienState nextState);
 
 	Vector3 GetHitEffect()const override;
-	
+	void OnDead()override;
 
 
 	//ダメージを受けたらDamageステートへ

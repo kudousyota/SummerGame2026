@@ -27,7 +27,8 @@ private:
 		Rotate,
 		Shout,
 		Damage,
-		Look
+		Look,
+		Dead
 	};
 
 	//現在の状態
@@ -42,6 +43,7 @@ private:
 	void TransitionTo(AngelState nextState);
 
 	void OnDamaged();
+	void OnDead()override;
 
 	Vector3 GetHitEffect()const override;
 };

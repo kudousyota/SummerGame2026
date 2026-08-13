@@ -23,11 +23,13 @@ public:
 	void Init();
 	void Update();
 	void Draw();
+    //再生中のエフェクト停止とロード済みリソースの解放
+    void Terminate();
 	//指定した種類と座標でエフェクトを再生する関数を追加
 	int PlayEffect(EffectType type, const Vector3& pos);
 
-	//エフェクトを停止する関数を追加
-	//void StopEffect(EffectType type);
+	//エフェクトを停止する
+	void StopAll();
 
 	int GetResourceHandle(EffectType type) const;
 

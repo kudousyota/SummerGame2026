@@ -50,6 +50,7 @@ namespace
 	const char* const kSkyKickAnimName = "Player|kakatootosi_TEST";
 	const char* const kRunAnimName = "Run";
 	const char* const kHitAnimName = "Hit";
+	const char* const kDeadAnimName = "Player|Dead";
 
 	//攻撃中のフレーム
 	constexpr float kPunchAnimFrame = 10.0f;
@@ -191,11 +192,11 @@ void Player::Init()
 	//m_speed = 33.0f;
 	m_speed = kSpeed;
 	//ステータス
-	m_maxHp = kMaxHp;
-	m_hp = kMaxHp;
+	//m_maxHp = kMaxHp;
+	//m_hp = kMaxHp;
 
-	//m_maxHp = 50;
-	//m_hp = 50;
+	m_maxHp = 50;
+	m_hp = 50;
 
 	m_jumpPower = kJumpPower;
 	//攻撃力
@@ -253,8 +254,6 @@ void Player::Update()
 
 	Vector3 forward = m_pCamera->GetForward();
 	Vector3 right = m_pCamera->GetRight();
-
-	
 
 	float scale = Timer::Instance().GetTimeScale();
 
@@ -557,25 +556,7 @@ void Player::Update()
 	case PlayerState::Dodge:
 		//ジャスト回避の受付
 		m_afterImageFrame++;
-		//残像を出す
-		/*if (m_dodgeFrame <= kDodgeFrame &&
-			m_isWitchTime)
-		{
-			m_afterImageFrame++;
-
-			if (m_afterImageFrame >= kAfterImageCreateFrame)
-			{
-				m_afterImageFrame = 0;
-
-				m_pAfterImage.Create(
-					m_pos,
-					m_angle,
-					m_animation.GetCurrentAnimName(),
-					m_animation.GetCurrentAnimTime()
-				);
-			}
-		}*/
-
+		
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(PlayerState::Idle);
@@ -588,6 +569,13 @@ void Player::Update()
 			TransitionTo(PlayerState::Sky);
 		}
 		break;
+	case PlayerState::Dead:
+
+		if (m_animation.GetAnimEndFlag())
+		{
+			//アニメーションが終わったら死んだことにする
+			m_isDead = true;
+		}
 	}
 
 
@@ -683,12 +671,7 @@ void Player::Update()
 		{
 			m_afterImageFrame = 0;
 
-			m_pAfterImage.Create(
-				m_pos,
-				m_angle,
-				m_animation.GetCurrentAnimName(),
-				m_animation.GetCurrentAnimTime()
-			);
+			m_pAfterImage.Create(m_pos,m_angle,m_animation.GetCurrentAnimName(),m_animation.GetCurrentAnimTime());
 		}
 	}
 
@@ -748,13 +731,7 @@ void Player::Draw()
 	{
 		AttackData data = CreateAttackData();
 
-		DrawSphere3D(
-			m_attackPos.ToDxLibVector(),
-			data.GetRadius(),
-			16,
-			GetColor(0, 255, 0),
-			GetColor(0, 255, 0),
-			false);
+		DrawSphere3D(m_attackPos.ToDxLibVector(),data.GetRadius(),16,GetColor(0, 255, 0),GetColor(0, 255, 0),false);
 	}
 
 
@@ -799,12 +776,12 @@ void Player::ApplyDamage(int damage)
 
 		//ここでウィッチタイム状態に入る処理
 		m_isWitchTime = true;
-		//例1: プレイヤーのステートをウィッチタイム中に変える場合
+		//プレイヤーのステートをウィッチタイム中に変える場合
 		//TransitionTo(PlayerState::WitchTime); 
 		//敵のアニメーションを遅くする
 		Timer::Instance().SetEnemyTimeScaleForFrames(kWitchTimeScale, kWitchTimeFrame);
 		Score::Instance().AddWitchTimeCount();
-		return; // ダメージを受けずに処理を抜ける
+		return; //ダメージを受けずに処理を抜ける
 	}
 
 	//通常の被ダメ処理上のジャスト回避に引っかからなかった場合のみここに来る
@@ -823,7 +800,8 @@ void Player::ApplyDamage(int damage)
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
-		m_isDead = true;
+		//hpが０になったら死亡状態にする
+		TransitionTo(PlayerState::Dead);
 		CollisionManager::Instance().Unregister(this);
 		//printfDx("PlayerDead!\n");
 	}
@@ -1104,6 +1082,13 @@ void Player::TransitionTo(PlayerState nextState)
 		m_moveVelocity = (Vector3(0.0f, 0.0f, 0.0f));
 		m_animation.ChangeAnim(kDodgeAnimName, false, 0.85f);
 		break;
+	case PlayerState::Dead:
+		//死んでアニメーションが終わったら死んだことにする
+		m_animation.ChangeAnim(kDeadAnimName, false, 0.5f);
+		//死んだら動けないようにする
+		m_moveVelocity = Vector3(0.0f, 0.0f, 0.0f);
+		m_attackVelocity = Vector3(0.0f, 0.0f, 0.0f);
+		break;
 	default:
 		break;
 	}
@@ -1151,7 +1136,6 @@ AttackData Player::CreateAttackData()
 	case AttackType::SkyKick:
 		radius = kSkyKickRadius;
 		break;
-
 	}
 
 	return AttackData(CharacterType::Player,GetAttackType(),m_attackPower,radius);
@@ -1200,7 +1184,6 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 	{
 		diff += DX_TWO_PI_F;
 	}
-
 
 	m_angle += diff * kRotateSpeed;
 

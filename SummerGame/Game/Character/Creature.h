@@ -11,7 +11,7 @@ public:
 	void Draw()override;
 
 	void OnHit(const AttackData& attackdata);
-	void OnDead();
+	void OnDead()override;
 
 
 	AttackType GetAttackType() const override;
@@ -25,7 +25,8 @@ private:
 		Attack,
 		Punch,
 		Damage,
-		Look
+		Look,
+		Dead
 	};
 	//現在の状態
 	CreatureState m_currentState;

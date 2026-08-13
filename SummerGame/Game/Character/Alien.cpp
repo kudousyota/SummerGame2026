@@ -22,6 +22,7 @@ namespace
 	const char* const kDownAnimName = "Alien|Down";
 	const char* const kAttackAnimName = "Alien|Attack";
 	const char* const kLookAnimName = "Alien|Look";
+	const char* const kDeadAnimName = "Alien|Dead";
 
 	//ブレス攻撃するために口元付近のリグを取る
 	const char* const kAttackRig = "mixamorig1:Head";
@@ -108,6 +109,16 @@ void Alien::Update()
 	m_timeScale = Timer::Instance().GetEnemyTimeScale();
 	//アニメーションの更新
 	m_animation.Update(m_timeScale);
+
+	if (m_currentState == AlienState::Dead)
+	{
+		if (m_animation.GetAnimEndFlag())
+		{
+			//アニメーションが終わったら完全に死亡扱い
+			m_isDead = true;
+		}
+		return;
+	}
 
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
@@ -263,6 +274,7 @@ void Alien::Update()
 		{
 			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
 		}
+
 		
 	}
 	//モデル更新行列
@@ -293,6 +305,12 @@ void Alien::Draw()
 void Alien::OnHit(const AttackData& attackdata)
 {
 	ApplyDamage(attackdata.GetDamage());
+
+	//死亡していたら、これ以上ステートを変更しない
+	if (m_isDead || m_currentState == AlienState::Dead)
+	{
+		return;
+	}
 
 	//攻撃されたらプレイヤーの方を向く
 	FacePlayer();
@@ -430,6 +448,9 @@ void Alien::TransitionTo(AlienState nextState)
 	case AlienState::Look:
 		m_animation.ChangeAnim(kLookAnimName, true, 0.5f);
 		break;
+	case AlienState::Dead:
+		m_animation.ChangeAnim(kDeadAnimName, false, 0.5f);
+		break;
 	}
 }
 
@@ -446,4 +467,22 @@ AttackType Alien::GetAttackType() const
 float Alien::GetAttackRadius() const
 {
 	return kBreathRadius;
+}
+
+void Alien::OnDead()
+{
+	//死亡時に攻撃中だった場合、ブレスの弾とエフェクトを後片付けする
+	if (m_pBreath)
+	{
+		m_pBreath->Kill();
+		m_pBreath = nullptr;
+	}
+
+	if (m_breathEffectHandle != -1)
+	{
+		StopEffekseer3DEffect(m_breathEffectHandle);
+		m_breathEffectHandle = -1;
+	}
+
+	TransitionTo(AlienState::Dead);
 }

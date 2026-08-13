@@ -9,6 +9,31 @@ EffectManager& EffectManager::Instns()
     return effect;
 }
 
+//再生中のエフェクトを停止し、ロードしたエフェクトリソースを解放する
+void EffectManager::Terminate()
+{
+    //再生中のエフェクトを全て停止
+    for (auto& effect : m_effects)
+    {
+        if (effect)
+        {
+            effect->Stop();
+        }
+    }
+    m_effects.clear();
+
+    //ロードしたエフェクトリソースを解放
+    for (int i = 0; i < static_cast<int>(EffectType::Max); ++i)
+    {
+        int handle = m_resourceHandles[i];
+        if (handle != -1)
+        {
+            DeleteEffekseerEffect(handle);
+            m_resourceHandles[i] = -1;
+        }
+    }
+}
+
 void EffectManager::Init()
 {
     //被ダメエフェクトのリソース読み込みハンドルを所持する
@@ -64,18 +89,19 @@ int  EffectManager::PlayEffect(EffectType type, const Vector3& pos)
 
     return handle;
 }
-//void EffectManager::StopEffect(EffectType type)
-//{
-//    //指定した種類のエフェクトを停止する
-//    for (auto& effect : m_effects)
-//    {
-//        //エフェクトのリソースハンドルが一致する場合に停止する
-//        if (effect->IsPlaying() && effect->GetPlayingHandle() == GetResourceHandle(type))
-//        {
-//            effect->Stop();
-//        }
-//	}
-//}
+
+void EffectManager::StopAll()
+{
+    for (auto& effect : m_effects)
+    {
+        if (effect)
+        {
+            //エフェクトの停止
+            effect->Stop();
+        }
+    }
+}
+
 //エフェクトの種類からリソースハンドルを取得
 int EffectManager::GetResourceHandle(EffectType type) const
 {

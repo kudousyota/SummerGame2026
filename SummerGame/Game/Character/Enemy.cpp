@@ -58,7 +58,7 @@ void Enemy::ApplyDamage(int damage)
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
-		m_isDead = true;
+		OnDead();
 		CollisionManager::Instance().Unregister(this);
 		return;
 	}

@@ -24,8 +24,21 @@ Animation::Animation():
 
 Animation::~Animation()
 {
-	//モデルをメモリから解放する
-	//MV1DeleteModel(m_modelHandle);
+    //アタッチしているアニメーションが残っているとリソースリークや不整合の
+    //原因になるので、デタッチしておく。モデル自体はこのクラスで所有していないため削除しない。
+    if (m_modelHandle != -1)
+    {
+        if (m_currentAnimHandle != -1)
+        {
+            MV1DetachAnim(m_modelHandle, m_currentAnimHandle);
+            m_currentAnimHandle = -1;
+        }
+        if (m_prevAnimHandle != -1)
+        {
+            MV1DetachAnim(m_modelHandle, m_prevAnimHandle);
+            m_prevAnimHandle = -1;
+        }
+    }
 }
 
 void Animation::Init(int modelHandle, std::string name, bool isRoop, float timeScale)

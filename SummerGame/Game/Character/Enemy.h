@@ -60,10 +60,13 @@ protected:
     void UpdateCooldown(float scale);
     //ダメージ受けたときの処理
     virtual void OnDamaged() {}
+    //死亡時の処理(継承先で死亡アニメーションへの遷移などを行う)
+    virtual void OnDead() { m_isDead = true; }
     //デバッグ
     void DrawDebugCollision() const;
     //指定位置まで移動
     virtual void MoveTo(const Vector3& target, float rotatespeed, float scale);
+   
 
     std::shared_ptr<Player> m_pPlayer;
 };

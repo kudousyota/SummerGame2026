@@ -9,18 +9,18 @@
 namespace
 {
 	constexpr int kFadeInterval = 60;
+	constexpr int kUiPos = 590;
 }
 
 
 void TitleScene::FadeInUpdate(Input&)
 {
 	
-
-	if (m_frame-- <= 0)
+	if (m_frame -- <= 0)
 	{
 		m_update = &TitleScene::NormalUpdate;
-		m_draw = &TitleScene::NormalDraw;
-		m_frame = 0;	//念のためフレームを0にしておく
+		m_draw	 = &TitleScene::NormalDraw;
+		m_frame  = 0;//念のためフレームを0にしておく
 		return;
 	}
 }
@@ -40,7 +40,7 @@ void TitleScene::NormalUpdate(Input& input)
 		//SoundManager::PlaySE("Ok");
 		m_update = &TitleScene::FadeOutUpdate;
 		m_draw = &TitleScene::FadeDraw;
-		m_frame = 0;	//フェードアウトの最初
+		m_frame = 0;//フェードアウトの最初
 		return;
 	}
 }
@@ -80,22 +80,19 @@ void TitleScene::NormalDraw()
 	const int startColor = (m_menuSelect == MenuSelect::Start) ? GetColor(255, 255, 0) : white;
 	const int exitColor = (m_menuSelect == MenuSelect::Exit) ? GetColor(255, 255, 0) : white;
 
-	DrawStringToHandle(470, 560, "Start", startColor, m_fontHandle);
-	DrawStringToHandle(470, 610, "Exit", exitColor, m_fontHandle);
+	DrawStringToHandle(kUiPos, 560, "Start", startColor, m_fontHandle);
+	DrawStringToHandle(kUiPos, 610, "Exit", exitColor, m_fontHandle);
 }
 
 void TitleScene::FadeDraw()
 {
-
 	NormalDraw();
 
 	//値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate)); //αブレンド
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);	//画面全体に黒フィルムをかける
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//ブレンドしない
-
-	
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate));//αブレンド
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);//画面全体に黒フィルムをかける
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);//ブレンドしない
 }
 
 TitleScene::TitleScene(SceneController& controller):
@@ -130,9 +127,6 @@ void TitleScene::Init()
 
 	m_logoPos = Vector3(130.0f, -270.0f, 0.0f);
 
-	//SoundManager::Load();
-
-	//SoundManager::PlayBGM("Title", true);
 
 	//タイトルでプレイヤーを描画
 	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Title");

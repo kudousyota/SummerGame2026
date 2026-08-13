@@ -6,7 +6,6 @@
 #include "../System/Timer.h"
 #include "../System/Model.h"
 
-
 namespace
 {
 	const char* const kShoutAnimName = "Angel|Shout";
@@ -18,6 +17,8 @@ namespace
 	const char* const kRotateAnimName = "Angel|Rotate";
 
 	const char* const kDamageAnimName = "Angel|Hit";
+
+	const char* const kDeadAnimName = "Angel|Dead";
 
 	//constexpr int kDanicgAttackRadius = 180;
 
@@ -99,6 +100,15 @@ void Angel::Update()
 	UpdateCooldown(m_timeScale);
 
 	m_animation.Update(m_timeScale);
+	if (m_currentState == AngelState::Dead)
+	{
+		if (m_animation.GetAnimEndFlag())
+		{
+			//アニメーションが終わったら完全に死亡扱い
+			m_isDead = true;
+		}
+		return;
+	}
 	//アニメーションのフレーム
 	float animTime = m_animation.GetCurrentAnimTime();
 
@@ -166,11 +176,11 @@ void Angel::Update()
 				m_dancingAttackHit[i] = true;
 			}
 		}
-			//アニメーションが終わったら追跡に戻る
-			if (m_animation.GetAnimEndFlag())
-			{
-				TransitionTo(AngelState::Run);
-			}
+		//アニメーションが終わったら追跡に戻る
+		if (m_animation.GetAnimEndFlag())
+		{
+			TransitionTo(AngelState::Run);
+		}
 		
 		}
 		break;
@@ -281,12 +291,20 @@ void Angel::TransitionTo(AngelState nextState)
 	case AngelState::Look:
 		m_animation.ChangeAnim(kRotateAnimName, true, 0.5f);
 		break;
+	case AngelState::Dead:
+		m_animation.ChangeAnim(kDeadAnimName,false,0.5f);
+		break;
 	}
 }
 
 void Angel::OnDamaged()
 {
 	TransitionTo(AngelState::Damage);
+}
+
+void Angel::OnDead()
+{
+	TransitionTo(AngelState::Dead);
 }
 
 

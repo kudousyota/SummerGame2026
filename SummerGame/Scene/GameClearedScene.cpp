@@ -12,6 +12,7 @@
 #include "../UI/UIManager.h"
 #include "../UI/GameClearedUI.h"
 #include "../System/Score.h"
+#include "../Effect/EffectManager.h"
 //#include "../system/SoundManager.h"
 
 
@@ -80,6 +81,9 @@ GameClearedScene::~GameClearedScene()
 
 void GameClearedScene::Init()
 {
+	//残っているエフェクトの停止
+	EffectManager::Instns().StopAll();
+
 	//フォントの読み込み
 	m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
@@ -95,45 +99,6 @@ void GameClearedScene::Init()
 
 	m_pUiManager->Init();
 
-	//m_skyHandle		= MV1LoadModel("data/Sky_Daylight01.mv1");
-
-	//m_playerHandle	= MV1LoadModel("data/Player.mv1");
-
-	//m_enemyHandle	= MV1LoadModel("data/Enemy.mv1");
-
-	//m_groundHandle	= MV1LoadModel("data/Ground.mv1");	
-
-	//SoundManager::PlayBGM("Result",true);
-
-	//m_playerPos		= Vector3(0.0f, 0.0f, -10.0f);
-
-	//m_enemyPos		= Vector3(0.0f, 0.0f, -400.0f);
-
-	//m_groundPos		= Vector3(0.0f, -100.0f, 150.0f);
-
-	//int animNo = MV1GetAnimIndex(m_playerHandle, kShootAnimName);
-	//m_currentAnimCount = 0.0f;
-
-	//m_cureentAnimHandle = MV1AttachAnim(m_playerHandle, animNo, -1, -1);
-	//m_currentAnimIndex = animNo;
-	//
-	//m_enemyAngle += DX_PI_F;
-
-	////モデル行列を毎フレーム更新して回転と位置を反映する
-	//MATRIX rotMtx = MGetRotY(m_enemyAngle);
-	//MATRIX transMtx = MGetTranslate(m_enemyPos.ToDxLibVector());
-	//MATRIX world = MMult(rotMtx, transMtx);
-	//MV1SetMatrix(m_enemyHandle, world);
-
-	//m_effectManger.Init();
-
-	//m_effectPos = m_enemyPos;
-
-	////カメラをリザルト用に初期化
-	////これでメインシーンから引き継いだカメラの位置がリセットされる
-	//SetCameraPositionAndTarget_UpVecY(Vector3(500.0f, 300.0f, -350.0f), Vector3(0.0f, 0.0f, 0.0f));
-	//SetupCamera_Perspective(DX_PI_F / 3.0f);
-	//SetCameraNearFar(20.0f, 4500.0f);
 }
 
 void GameClearedScene::Update(Input& input)

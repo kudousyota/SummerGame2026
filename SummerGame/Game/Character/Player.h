@@ -61,7 +61,8 @@ private:
 		SkyAttack,
 		SkyRush,
 		SkyKick,
-		WitchTime
+		WitchTime,
+		Dead
 	};
 
 	// 現在の状態

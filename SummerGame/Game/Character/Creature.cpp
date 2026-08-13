@@ -17,6 +17,8 @@ namespace
 	const char* const kPunchAnimName = "Enemy|Punch";
 
 	const char* const kDamageAnimName = "Enemy|Hit";
+	//死んだ
+	const char* const kDeadAnimName = "Enemy|Dead";
 
 	constexpr float kAttackRadius = 180.0f;
 	constexpr float kPumncRadius = 130.0f;
@@ -71,7 +73,6 @@ void Creature::Update()
 	//死んだら
 	if (m_isDead)
 	{
-		OnDead();
 		return;
 	}
 	//当たり判定の更新
@@ -83,6 +84,16 @@ void Creature::Update()
 	//アニメーションの更新
 	m_animation.Update(m_timeScale);
 
+	if (m_currentState == CreatureState::Dead)
+	{
+		if (m_animation.GetAnimEndFlag())
+		{
+			//アニメーションが終わったら完全に死亡扱い
+			m_isDead = true;
+		}
+		return;
+	}
+
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
 	{
@@ -91,6 +102,7 @@ void Creature::Update()
 	
 	//攻撃クールタイム//攻撃のクールタイムもウィッチタイムで遅くする
 	UpdateCooldown(m_timeScale);
+
 
 	//ステート
 	switch (m_currentState)
@@ -242,7 +254,7 @@ void Creature::Draw()
 
 void Creature::OnDead()
 {
-	m_isDead = true;
+	TransitionTo(CreatureState::Dead);
 }
 
 void Creature::AttackUpdate()
@@ -329,6 +341,9 @@ void Creature::TransitionTo(CreatureState nextState)
 		break;
 	case CreatureState::Look:
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.5f);
+		break;
+	case CreatureState::Dead:
+		m_animation.ChangeAnim(kDeadAnimName, false, 0.5f);
 		break;
 	}
 	

@@ -42,8 +42,8 @@ SceneMain::~SceneMain()
 void SceneMain::Init()
 {
 	// Zバッファの設定
-	SetUseZBuffer3D(true);	// Zバッファを使います
-	SetWriteZBuffer3D(true);	// 描画する物体はZバッファにも距離を書き込む
+	SetUseZBuffer3D(true);	//Zバッファを使います
+	SetWriteZBuffer3D(true);	//描画する物体はZバッファにも距離を書き込む
 
 	// カメラの設定
 	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 300.0f, -700.0f), Vector3(0.0f, 0.0f, 0.0f));
@@ -93,8 +93,6 @@ void SceneMain::Init()
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 
-	
-	
 }
 
 void SceneMain::Update(Input& input)
@@ -127,7 +125,7 @@ void SceneMain::DrawGrid()
 		endPos = Vector3(static_cast<float>(x), 0.0f, 300.0f);
 		DrawLine3D(startPos, endPos, 0x0000ff);
 	}
-#endif // _DEBUG
+#endif //_DEBUG
 
 	
 }
@@ -180,7 +178,7 @@ void SceneMain::NormalUpdate(Input& input)
 		m_draw = &SceneMain::FadeDraw;
 		m_frame = 0;
 		return;
-#endif // _DEBUG
+#endif //_DEBUG
 	}
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());

@@ -40,7 +40,7 @@ bool Application::Init()
 	//画面のサイズ変更
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitNum);
 	//フォントの読み込み
-	AddFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
+	AddFontResourceEx("Constantia", FR_PRIVATE, NULL);
 
 	//DirectX11をしようするための初期化
 	//Effecseerを使用するには必ず設定する
@@ -117,10 +117,12 @@ void Application::Run()
 void Application::Terminate()
 {
 	//フォントの解放
-	RemoveFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
-	//Effekseer使用の終了処理
-	Effkseer_End();
-	// プリロードしたモデルを解放
+	RemoveFontResourceEx("Constantia", FR_PRIVATE, NULL);
+    //EffectManagerの終了処理を先に行う
+    EffectManager::Instns().Terminate();
+    //Effekseer 使用の終了処理
+    Effkseer_End();
+	//プリロードしたモデルを解放
 	Model::Instance().ReleseAll();
 	DxLib_End();
 }
