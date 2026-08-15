@@ -109,16 +109,17 @@ void Creature::Update()
 	{
 	case CreatureState::Idle:
 	{
-		//クールタイム中は待つ
-		if (m_attackCooldown > 0)
-		{
-			break;
-		}
 		//プレイヤーを見つけたら追いかけ始める
 		if (CanSeePlayer())
 		{
 			TransitionTo(CreatureState::Walk);
 		}
+		//クールタイム中は待つ
+		if (m_attackCooldown > 0)
+		{
+			break;
+		}
+		
 		
 	}
 		break;

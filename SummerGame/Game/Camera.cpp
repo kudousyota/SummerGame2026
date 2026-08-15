@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "../System/CollisionManager.h"
 #include "../Game/Stage.h"
+#include "../System/Model.h"
 
 namespace
 {
@@ -26,8 +27,7 @@ Camera::Camera() :
 	m_cameraAngleY(0.0f),
 	m_cameraPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_cameraTarget(Vector3(0.0f, 0.0f, 0.0f)),
-	m_cameraTargetY(0.0f),
-	m_skyDomeHandle(-1)
+	m_cameraTargetY(0.0f)
 {
 }
 
@@ -37,8 +37,6 @@ Camera::~Camera()
 
 void Camera::Init(const Vector3& initialTarget, float initialAngle)
 {
-	
-	m_skyDomeHandle = MV1LoadModel("Data/Sky_Night01.mv1");
 
 	m_cameraAngleX = initialAngle;
 	m_cameraAngleY = 0.0f;
@@ -53,7 +51,7 @@ void Camera::Init(const Vector3& initialTarget, float initialAngle)
 	m_cameraPos = initialTarget - offset;
 
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(), m_cameraTarget.ToDxLibVector());
-	MV1SetScale(m_skyDomeHandle, Vector3(2.5f, 2.5f, 2.5f));
+	
 }
 
 void Camera::End()
@@ -181,13 +179,13 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 
 		SetLightDirection(LightDir);
 
-		MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
-	
+		//SetGlobalAmbientLight(GetColorF(0.3f, 0.3f, 0.3f, 1.0f));  //全体を底上げ
+		
 }
 
 void Camera::Draw()
 {
-	MV1DrawModel(m_skyDomeHandle);
+	
 }
 
 Vector3 Camera::GetForward() const

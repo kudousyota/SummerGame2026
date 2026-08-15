@@ -140,11 +140,7 @@ void Alien::Update()
 	switch (m_currentState)
 	{
 	case AlienState::Idle:
-		//クールタイム
-		if (m_attackCooldown > 0)
-		{
-			break;
-		}
+
 		//プレイヤーを見つけたら追いかける
 		if (CanSeePlayer())
 		{
@@ -152,6 +148,12 @@ void Alien::Update()
 			//プレイヤーが最後にいた場所を記憶
 			m_lastSeePos = m_pPlayer->GetPosition();
 		}
+		//クールタイム
+		if (m_attackCooldown > 0)
+		{
+			break;
+		}
+		
 		break;
 	case AlienState::Move:
 	{

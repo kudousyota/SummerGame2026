@@ -15,6 +15,7 @@
 #include "../Effect/EffectManager.h"
 #include "../Game/WitchTimeHand.h"
 #include "../System/Score.h"
+
 namespace
 {
 	constexpr float kRotateSpeed = DX_PI_F / 180.0f;
@@ -66,6 +67,8 @@ void SceneMain::Init()
     m_pCamera->SetStage(m_pStage);
 	//初期カメラをプレイヤーの背後に設定する(デフォルトは正面になることがあるため180度回転させる)
 	m_pCamera->Init(m_pPlayer->GetCameraTarget(), m_pPlayer->GetAngle() + DX_PI_F);
+
+	m_skyDome.Init();
 
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pPlayer->SetStage(m_pStage);
@@ -151,7 +154,7 @@ void SceneMain::NormalUpdate(Input& input)
 	m_pPlayer->Update();
 	m_pCamera->Update(m_pPlayer->GetCameraTarget(), m_pPlayer->GetLockOnManager().GetLockOnPos());
 
-
+	m_skyDome.Update(m_pCamera->GetPos());
 	m_frameCount++;
 	//敵の更新を任せる
 	m_enemyManager.Update();
@@ -217,7 +220,8 @@ void SceneMain::GameOverFadeOutUpdate(Input&)
 
 void SceneMain::NormalDraw()
 {
-	m_pCamera->Draw();
+
+	m_skyDome.Draw();
 	m_pStage->Draw();
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 

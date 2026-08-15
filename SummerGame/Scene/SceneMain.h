@@ -7,7 +7,7 @@
 #include "../Game/EnemySpawn.h"
 #include "Scene.h" //Sceneの基底クラスをインクルード
 #include "../Game/Character/Creature.h"
-
+#include "../Game/SkyDome.h"
 
 
 class Input;
@@ -64,11 +64,6 @@ private:
 	int m_cureentAnimHandle;
 
 	int m_frameCount;
-	
-
-	
-
-	
 
 	int m_nidelHandle;
 
@@ -80,4 +75,5 @@ private:
 
 	EnemyManager m_enemyManager;
 	EnemySpawner m_enemySpawner;
+	SkyDome m_skyDome;
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <list>
+#include <memory>
 
 class Input;
 class Scene;
@@ -9,10 +10,6 @@ class Scene;
 /// </summary>
 class SceneController
 {
-private:
-	// 現在スタックに積まれているシーン
-	// 最後に積んだものだけがUpdateされる
-	std::list<std::shared_ptr<Scene>> m_scenes;	
 public:
 
 	/// <summary>
@@ -50,5 +47,14 @@ public:
 	/// 内部に持ってるシーンのDrawを呼び出す
 	/// </summary>
 	void Draw();
+
+	
+
+private:
+	//現在スタックに積まれているシーン
+	//最後に積んだものだけがUpdateされる
+	std::list<std::shared_ptr<Scene>> m_scenes;
+
+
 };
 

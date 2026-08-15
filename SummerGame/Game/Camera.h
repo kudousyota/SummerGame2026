@@ -15,6 +15,8 @@ public:
 	Vector3 GetForward() const;
 	Vector3 GetRight() const;
 
+	const Vector3& GetPos()const { return m_cameraPos; }
+
 
 
 private:
@@ -24,9 +26,6 @@ private:
 	//カメラの位置
 	Vector3 m_cameraTarget;
 	Vector3 m_cameraPos;
-
-	//スカイドームのハンドル
-	int m_skyDomeHandle;
 
 	//カメラの角度
 	//カメラの水平回転角度

@@ -11,16 +11,16 @@ void SceneController::ResetScene(std::shared_ptr<Scene> scene)
 
 void SceneController::ChangeScene(std::shared_ptr<Scene> scene)
 {
-	// もし、リストが空の場合、普通に代入でChangeSceneしようとすると、当然emptyの箱に対してChangeしようとするので、クラッシュします。
-	// このため、最初にemptyかどうかをチェックします
-	if (m_scenes.empty())	// 最初は要素がないためpush_backで要素数を増やす
+	// もし、リストが空の場合、普通に代入でChangeSceneしようとして、emptyの箱に対してChangeしようとして、クラッシュする
+	// このため、最初にemptyかどうかをチェック
+	if (m_scenes.empty())	//最初は要素がないためpush_backで要素数を増やす
 	{
-		// 空っぽの場合には指定の要素をpushします。少なくとも一つは積まれている状態にする
+		//空っぽの場合には指定の要素をpushします。少なくとも一つは積まれている状態にする
 		m_scenes.push_back(scene);
 	}
 	else
 	{
-		m_scenes.back() = scene;	// この行の時点で元のシーンは自動的に削除されています
+		m_scenes.back() = scene;//この行の時点で元のシーンは自動的に削除されている
 		
 	}
 	m_scenes.back()->Init();
@@ -28,13 +28,13 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene)
 
 void SceneController::PushScene(std::shared_ptr<Scene> scene)
 {
-	// 新しいシーンを末尾に積みます
+	// 新しいシーンを末尾に積む
 	m_scenes.push_back(scene);
 }
 
 void SceneController::PopScene()
 {
-	// 末尾のシーンを削除します
+	// 末尾のシーンを削除する
 	m_scenes.pop_back();
 }
 
