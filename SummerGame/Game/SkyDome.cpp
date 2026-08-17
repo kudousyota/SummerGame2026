@@ -40,3 +40,8 @@ void SkyDome::Draw()
 	//•`‰æ
 	MV1DrawModel(m_skyDomeHandle);
 }
+
+void SkyDome::SetPos()
+{
+	m_pos = Vector3(0.0f, 0.0f, -3000.0f);
+}

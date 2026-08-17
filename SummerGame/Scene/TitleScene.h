@@ -3,6 +3,7 @@
 #include "../System/Vector3.h"
 #include "Scene.h"
 #include "CharacterViewer.h"
+#include "../Game/SkyDome.h"
 
 class TitleScene: public Scene
 {
@@ -67,5 +68,6 @@ private:
 	Vector3 m_logoPos;
 
 	CharacterViewer m_titlePlayer;
+	SkyDome m_SkyDome;
 };
 

@@ -16,7 +16,7 @@ namespace
 	//弱攻撃
 	const char* const kPunchAnimName = "Enemy|Punch";
 
-	const char* const kDamageAnimName = "Enemy|Hit";
+	const char* const kDamageAnimName = "Hit";
 	//死んだ
 	const char* const kDeadAnimName = "Enemy|Dead";
 

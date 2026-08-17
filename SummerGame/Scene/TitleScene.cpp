@@ -68,6 +68,7 @@ void TitleScene::FadeOutUpdate(Input&)
 
 void TitleScene::NormalDraw()
 {
+	m_SkyDome.Draw();
 	m_titlePlayer.Draw();
 
 	const int white = GetColor(255, 255, 255);
@@ -130,6 +131,9 @@ void TitleScene::Init()
 
 	//BGMの再生
 	SoundManager::Instance().PlayBGM("Title",true);
+
+	m_SkyDome.Init();
+	m_SkyDome.SetPos();
 
 	//タイトルでプレイヤーを描画
 	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Title");

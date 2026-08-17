@@ -12,6 +12,8 @@ public:
 	//ˆÊ’u‚¾‚¯Žó‚¯Žæ‚é
 	void Update(const Vector3& cameraPos);
 	void Draw();
+
+	void SetPos();
 public:
 	int m_skyDomeHandle;
 	Vector3 m_pos;
