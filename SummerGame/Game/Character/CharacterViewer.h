@@ -10,7 +10,7 @@ public:
 	CharacterViewer();
 	~CharacterViewer();
 
-	void Init(const int modelhandle, const std::string& animname);
+	void Init(const int modelhandle, const std::string& animname,const Vector3&pos);
 	void Update();
 	void Draw();
 

@@ -21,13 +21,13 @@ CharacterViewer::~CharacterViewer()
 	}
 }
 
-void CharacterViewer::Init(const int modelhandle, const std::string& animname)
+void CharacterViewer::Init(const int modelhandle, const std::string& animname, const Vector3& pos)
 {
 	m_modelHandle = modelhandle;
 
 	m_animation.Init(m_modelHandle, animname, true, 0.5f);
 
-	m_pos = Vector3(0.0f,0.0f,-500.0f);
+	m_pos = pos;
 }
 
 void CharacterViewer::Update()

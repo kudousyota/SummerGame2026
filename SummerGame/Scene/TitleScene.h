@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "CharacterViewer.h"
 #include "../Game/SkyDome.h"
+#include <vector>
 
 class TitleScene: public Scene
 {
@@ -18,6 +19,13 @@ private:
 	{
 		Start,
 		Exit
+	};
+
+	struct CharacterInfo
+	{
+		int modelHandle;
+		std::string animName;
+		Vector3 pos;
 	};
 	MenuSelect m_menuSelect = MenuSelect::Start;
 
@@ -45,29 +53,14 @@ private:
 	int m_frame;
 	//スカイドームのモデルハンドル
 	int m_skyHandle;
-	//プレイヤーのモデルハンドル
-	int m_playerHandle;
-    //アニメーションハンドル
-	int m_cureentAnimHandle;
 
-	//アニメーション再生時間を小数で扱うためfloatにする
-	float m_currentAnimCount;
-	//現在セットしているアニメーションのインデックス
-	int m_currentAnimIndex;
-	//プレイヤーの位置
-	Vector3 m_playerPos;
-	//プレイヤーの角度
-	float m_playerAngle;
-	//タイトルの地面ハンドル
-	int m_groundHandle;
-	//タイトルの地面の位置
-	Vector3 m_groundPos;
 	//ロゴハンドル
 	int m_logoHandle;
 	//ロゴの位置
 	Vector3 m_logoPos;
 
-	CharacterViewer m_titlePlayer;
 	SkyDome m_SkyDome;
+
+	std::vector<CharacterViewer>m_titleCharacter;
 };
 

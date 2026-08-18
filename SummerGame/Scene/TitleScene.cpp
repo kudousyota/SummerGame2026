@@ -28,7 +28,10 @@ void TitleScene::FadeInUpdate(Input&)
 
 void TitleScene::NormalUpdate(Input& input)
 {
-	m_titlePlayer.Update();
+	for (auto& character : m_titleCharacter)
+	{
+		character.Update();
+	}
 
 	//上下でカーソル移動
 	if (input.IsTriggered("up") || input.IsTriggered("down"))
@@ -69,7 +72,10 @@ void TitleScene::FadeOutUpdate(Input&)
 void TitleScene::NormalDraw()
 {
 	m_SkyDome.Draw();
-	m_titlePlayer.Draw();
+	for (auto& character : m_titleCharacter)
+	{
+		character.Draw();
+	}
 
 	const int white = GetColor(255, 255, 255);
 
@@ -101,13 +107,7 @@ TitleScene::TitleScene(SceneController& controller):
 	Scene(controller),
 	m_fontHandle(-1),
 	m_skyHandle(-1),
-	m_playerHandle(-1),
-	m_cureentAnimHandle(-1),
-	m_currentAnimCount(0.0f),
-	m_playerPos(Vector3(0.0f, 0.0f, 0.0f)),
-	m_currentAnimIndex(-1),
 	m_logoHandle(-1),
-	m_playerAngle(0.0f),
 	m_logoPos(Vector3(0.0f, 0.0f, 0.0f))
 {
 	Init();
@@ -135,9 +135,19 @@ void TitleScene::Init()
 	m_SkyDome.Init();
 	m_SkyDome.SetPos();
 
-	//タイトルでプレイヤーを描画
-	m_titlePlayer.Init(Model::Instance().CreatPlayerModel(), "Player|Title");
+	//タイトルでCharacterを描画
+	std::vector<CharacterInfo> infos =
+	{
+		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(300.0f,0.0f,1000.0f)},
 
+	};
+	m_titleCharacter.resize(infos.size());
+	for (size_t i = 0; i < infos.size(); i++)
+	{
+		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos);
+	}
+	
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
 	//これでメインシーンから引き継いだカメラの位置がリセットされる
