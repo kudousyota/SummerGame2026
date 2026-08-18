@@ -16,7 +16,6 @@ namespace
 
 void TitleScene::FadeInUpdate(Input&)
 {
-	
 	if (m_frame -- <= 0)
 	{
 		m_update = &TitleScene::NormalUpdate;
@@ -28,6 +27,9 @@ void TitleScene::FadeInUpdate(Input&)
 
 void TitleScene::NormalUpdate(Input& input)
 {
+	//回転
+	m_SkyDome.Update(Vector3(0.0f, 0.0f, -5500.0f));
+
 	for (auto& character : m_titleCharacter)
 	{
 		character.Update();
@@ -139,7 +141,11 @@ void TitleScene::Init()
 	SoundManager::Instance().PlayBGM("Title",true);
 
 	m_SkyDome.Init();
-	m_SkyDome.SetPos();
+	m_SkyDome.SetPos(Vector3(0.0f, 0.0f, -5500.0f));
+	//ゆっくり回転させる
+	m_SkyDome.SetRotSpeed(0.002f);
+
+	m_SkyDome.SetScale(3.0f);
 
 	//タイトルでCharacterを描画
 	std::vector<CharacterInfo> infos =
@@ -156,8 +162,8 @@ void TitleScene::Init()
 
 	//1個目のキャラクターに移動量を設定する
 	m_titleCharacter[kAlien].StartLinearMove(
-		Vector3(-800.0f, 0.0f, -500.f),//最初の場所
-		Vector3(800.0f, 0.0f, -500.0f),//目指す場所
+		Vector3(800.0f, 0.0f, -500.f),//最初の場所
+		Vector3(-800.0f, 0.0f, -500.0f),//目指す場所
 		5.0f);//速度
 	
 	//カメラを初期化

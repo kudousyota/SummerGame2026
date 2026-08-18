@@ -100,7 +100,6 @@ void Alien::Update()
 			StopEffekseer3DEffect(m_floatingEffectHandle);
 			m_floatingEffectHandle = -1;
 		}
-
 		return;
 	}
 	//当たり判定
@@ -140,7 +139,6 @@ void Alien::Update()
 	switch (m_currentState)
 	{
 	case AlienState::Idle:
-
 		//プレイヤーを見つけたら追いかける
 		if (CanSeePlayer())
 		{
@@ -253,7 +251,6 @@ void Alien::Update()
 		if (m_animation.GetAnimEndFlag())
 		{
 			TransitionTo(AlienState::Idle);
-		
 		}
 		break;
 	case AlienState::Look:
@@ -277,7 +274,6 @@ void Alien::Update()
 			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
 		}
 
-		
 	}
 	//モデル更新行列
 	UpdateModelMatrix();

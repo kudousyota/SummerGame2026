@@ -62,6 +62,7 @@ private:
 
 	//ƒƒSƒnƒ“ƒhƒ‹
 	int m_logoHandle;
+	Vector3 m_pos;
 	//ƒƒS‚ÌˆÊ’u
 	Vector3 m_logoPos;
 

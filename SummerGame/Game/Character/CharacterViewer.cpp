@@ -1,11 +1,6 @@
 #include "CharacterViewer.h"
 #include "DxLib.h"
 
-namespace
-{
-	const char* const kIdleAnimName = "Player|Idle";
-}
-
 CharacterViewer::CharacterViewer():
 	m_modelHandle(-1),
 	m_pos({ 0.0f,0.0f,0.0f }),
@@ -30,9 +25,7 @@ CharacterViewer::~CharacterViewer()
 void CharacterViewer::Init(const int modelhandle, const std::string& animname, const Vector3& pos)
 {
 	m_modelHandle = modelhandle;
-
 	m_animation.Init(m_modelHandle, animname, true, 0.5f);
-
 	m_pos = pos;
 }
 
@@ -47,8 +40,6 @@ void CharacterViewer::Draw()
 	MV1SetPosition(m_modelHandle, m_pos);
 	MV1SetRotationXYZ(m_modelHandle, Vector3(0.0f, m_angleY, 0.0f).ToDxLibVector());
 	MV1DrawModel(m_modelHandle);
-
-	//DrawString(0, 0, "Draw", GetColor(255, 255, 255));
 }
 void CharacterViewer::ChangeAnimation(const std::string& name, bool loop)
 {
@@ -67,22 +58,21 @@ void CharacterViewer::StartLinearMove(const Vector3& startPos, const Vector3& en
 	if(faceDirection)
 	{
 		Vector3 dir = (endPos - startPos).Normalize();
-		// atan2(x, z) ‚Åis•ûŒü‚ÌŠp“x‚ðŒvŽZ
-		m_angleY = atan2f(dir.x, dir.z);
+		//atan2(x, z)‚Åis•ûŒü‚ÌŠp“x‚ðŒvŽZ
+		m_angleY = atan2f(dir.x, dir.z) + DX_PI_F;
 	}
 }
 
 void CharacterViewer::UpdateLinearMove()
 {
-	if (!m_isMoving || m_isMoveFinished) return;
+	if(!m_isMoving || m_isMoveFinished) return;
 
 	Vector3 diff = m_moveEndPos - m_moveStartPos;
 	//‘å‚«‚³‚ð•Ô‚·
 	float totalLen = diff.SqMagnitude();
 	Vector3 dir = diff.Normalize();
-
 	m_pos = m_pos + dir * m_moveSpeed;
-	if ((m_pos - m_moveStartPos).SqMagnitude() >= totalLen)
+	if((m_pos - m_moveStartPos).SqMagnitude() >= totalLen)
 	{
 		m_pos = m_moveEndPos;
 		m_isMoveFinished = true;
