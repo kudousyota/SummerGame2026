@@ -33,6 +33,16 @@ void TitleScene::NormalUpdate(Input& input)
 		character.Update();
 	}
 
+	//エイリアンが端まで到達したら再スタート
+	if (m_titleCharacter[kAlien].IsMoveFinished())
+	{
+		m_titleCharacter[kAlien].StartLinearMove(
+			Vector3(-800.0f, 0.0f, -500.0f),
+			Vector3(800.0f, 0.0f, -500.0f),
+			5.0f
+		);
+	}
+
 	//上下でカーソル移動
 	if (input.IsTriggered("up") || input.IsTriggered("down"))
 	{
@@ -118,13 +128,9 @@ TitleScene::TitleScene(SceneController& controller):
 }
 
 void TitleScene::Init()
-{
-	//SetBackgroundColor(100, 150, 255);
-
-	
+{	
 	m_fontHandle = CreateFontToHandle("Constantia", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
-	
 	m_logoHandle = LoadGraph("data/kudonetta.png");
 
 	m_logoPos = Vector3(130.0f, -270.0f, 0.0f);
@@ -140,13 +146,19 @@ void TitleScene::Init()
 	{
 		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f)},
 		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(300.0f,0.0f,1000.0f)},
-
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(300.0f,0.0f,-600.0f)},
 	};
 	m_titleCharacter.resize(infos.size());
 	for (size_t i = 0; i < infos.size(); i++)
 	{
 		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos);
 	}
+
+	//1個目のキャラクターに移動量を設定する
+	m_titleCharacter[kAlien].StartLinearMove(
+		Vector3(-800.0f, 0.0f, -500.f),//最初の場所
+		Vector3(800.0f, 0.0f, -500.0f),//目指す場所
+		5.0f);//速度
 	
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)

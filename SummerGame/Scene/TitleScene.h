@@ -21,6 +21,12 @@ private:
 		Exit
 	};
 
+	enum TitleCharacter
+	{
+		kPlayer,
+		kAlien
+	};
+
 	struct CharacterInfo
 	{
 		int modelHandle;
