@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "../Game/Character/Player.h"
 #include "../System/Score.h"
+#include "../Common/FontManager.h"
 
 
 namespace
@@ -60,12 +61,18 @@ void GameClearedUI::Draw()
 	DrawRotaGraph(620, 360, 1.0f, 0, m_ResultUIHandle, true);
 
 	const int white = GetColor(255, 255, 255);
+	const int black = GetColor(0, 0, 0);
+	const int fontSize = 24;
 
 	//各項目ごとのスコアを表示
-	DrawFormatString(static_cast<int>(m_scoreX) - 60, 280, white, "敵撃破: %d", Score::Instance().GetEnemyScore());
+	std::string text = "Kill:" + std::to_string(Score::Instance().GetEnemyScore());
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 280, text, white, fontSize, black);
+
+
+	/*DrawFormatString(static_cast<int>(m_scoreX) - 60, 280, white, "敵撃破: %d", Score::Instance().GetEnemyScore());
 	DrawFormatString(static_cast<int>(m_scoreX) - 60, 310, white, "タイム: %d", Score::Instance().GetTimeScore());
 	DrawFormatString(static_cast<int>(m_scoreX) - 60, 340, white, "ウィッチタイム: %d", Score::Instance().GetWitchTimeScore());
 	DrawFormatString(static_cast<int>(m_scoreX) - 60, 370, white, "ノーダメージ: %d", Score::Instance().GetNoDamageScore());
-	DrawFormatString(620, 400, white, "合計: %d", Score::Instance().GetTotalScore());
+	DrawFormatString(620, 400, white, "合計: %d", Score::Instance().GetTotalScore());*/
 
 }

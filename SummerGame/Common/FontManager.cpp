@@ -27,13 +27,13 @@ FontManager::~FontManager()
 
 void FontManager::LoadFont()
 {
-	// 読み込むフォントファイルのパス
+	//読み込むフォントファイルのパス
 	if (AddFontResourceEx(kFontPath, FR_PRIVATE, NULL) > 0)
 	{
 	}
 	else
 	{
-		// フォント読込エラー処理
+		//フォント読込エラー処理
 		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
 	}
 

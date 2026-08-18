@@ -11,6 +11,7 @@
 #include "Timer.h"
 #include "../Effect/EffectManager.h"
 #include "SoundManager.h"
+#include "../Common/FontManager.h"
 
 
 Application::Application()
@@ -40,7 +41,7 @@ bool Application::Init()
 	//画面のサイズ変更
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitNum);
 	//フォントの読み込み
-	AddFontResourceEx("Constantia", FR_PRIVATE, NULL);
+	//AddFontResourceEx("Constantia", FR_PRIVATE, NULL);
 
 	//DirectX11をしようするための初期化
 	//Effecseerを使用するには必ず設定する
@@ -69,6 +70,8 @@ bool Application::Init()
 	Model::Instance().PreloadAll();
 	//サウンドのロード
 	SoundManager::Instance().Load();
+	//フォントのロード
+	FontManager::Instance().LoadFont();
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
 	//薄い青
 	SetBackgroundColor(100, 150, 255); 
@@ -118,8 +121,9 @@ void Application::Run()
 void Application::Terminate()
 {
 	//フォントの解放
-	RemoveFontResourceEx("Constantia", FR_PRIVATE, NULL);
-    //EffectManagerの終了処理を先に行う
+	//RemoveFontResourceEx("Constantia", FR_PRIVATE, NULL);
+	FontManager::Instance().Destroy();
+	//EffectManagerの終了処理を先に行う
     EffectManager::Instns().Terminate();
     //Effekseer 使用の終了処理
     Effkseer_End();
