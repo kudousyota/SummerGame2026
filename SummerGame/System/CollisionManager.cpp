@@ -37,7 +37,7 @@ void CollisionManager::Unregister(Character* character)
 std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& attackdata, const Vector3& pos)
 {
 //#ifdef _DEBUG
-//	DrawSphere3D(pos.ToDxLibVector(), attackdata.GetRadius(), 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
+//DrawSphere3D(pos.ToDxLibVector(), attackdata.GetRadius(), 16, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
 //#endif //_DEBUG
 
 	std::vector<Character*> hitCharacters;
@@ -140,13 +140,13 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 		{
 			if (character->IsJustDodgeWindow())
 			{
-				// ジャスト回避成功
+				//ジャスト回避成功
 				character->ApplyDamage(0);
 				continue;
 			}
 		}
 
-		// 通常の当たり判定
+		//通常の当たり判定
 		float hitRange = attackdata.GetRadius() + capsuleRadius;
 
 		if (distance <= hitRange)

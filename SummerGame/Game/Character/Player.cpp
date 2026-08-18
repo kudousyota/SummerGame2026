@@ -9,7 +9,7 @@
 #include "../Effect/EffectManager.h"
 #include "../WitchTimeHand.h"
 #include "../System/Score.h"
-
+#include "../System/SoundManager.h"
 
 namespace
 {
@@ -773,6 +773,8 @@ void Player::ApplyDamage(int damage)
 		
 		//直ぐに無敵を付与連続ヒット防止にもなる
 		m_invincibleTime = kInvincibleFrame;
+
+		SoundManager::Instance().PlaySE("Dodge");
 
 		//ここでウィッチタイム状態に入る処理
 		m_isWitchTime = true;
