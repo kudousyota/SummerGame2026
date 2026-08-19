@@ -20,11 +20,11 @@ private:
 		Start,
 		Exit
 	};
-
+	//プレイヤーは0番目でそれ以降はエイリアンの物として使用する
 	enum TitleCharacter
 	{
 		kPlayer,
-		kAlien
+		kAlienStart,
 	};
 
 	struct CharacterInfo
@@ -32,6 +32,15 @@ private:
 		int modelHandle;
 		std::string animName;
 		Vector3 pos;
+	};
+
+	struct AlienMoveInfo
+	{
+		Vector3 start;
+		Vector3 end;
+		float speed;
+		float angle;
+		bool faceCamera = false;//trueならカメラの方向を向く
 	};
 	MenuSelect m_menuSelect = MenuSelect::Start;
 
@@ -47,6 +56,8 @@ private:
 
 	void NormalDraw();	//通常Draw
 	void FadeDraw();	//フェードDraw
+
+	void StartAlienMove(size_t index);
 	using DrawFunc_t = void(TitleScene::*)();
 	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
 	
@@ -69,5 +80,7 @@ private:
 	SkyDome m_SkyDome;
 
 	std::vector<CharacterViewer>m_titleCharacter;
+	//エイリアンの移動場所の構造体
+	std::vector<AlienMoveInfo>m_alienMoveInfos;
 };
 

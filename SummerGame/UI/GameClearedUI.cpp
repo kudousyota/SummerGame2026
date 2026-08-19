@@ -4,6 +4,11 @@
 #include "../System/Score.h"
 #include "../Common/FontManager.h"
 
+// GameClearedUI
+// ゲームクリア時に表示する結果ウィンドウを管理する実装ファイル。
+// - 各種UI画像を読み込み、画面外から滑らかに入ってくるアニメーションを行う
+// - スコアやタイムなどのテキスト描画を行う
+
 
 namespace
 {
@@ -39,7 +44,7 @@ void GameClearedUI::Init()
 
 void GameClearedUI::Update()
 {
-	//ラープ
+    // ラープで UI を目標位置へ滑らかに移動させる
 	m_timerX += (kTimerGoalX - m_timerX) * 0.1f;
 	m_scoreX += (kScoreGoalX - m_scoreX) * 0.1f;
 	//ほぼ到着したらぴったり合わせる
@@ -64,10 +69,24 @@ void GameClearedUI::Draw()
 	const int black = GetColor(0, 0, 0);
 	const int fontSize = 24;
 
-	//各項目ごとのスコアを表示
-	std::string text = "Kill:" + std::to_string(Score::Instance().GetEnemyScore());
+    //各項目ごとのスコアを表示
+	//変数名の重複を避けるため再代入で対応
+	std::string text;
+	//キル数を描画
+	text = "Kile:" + std::to_string(Score::Instance().GetEnemyScore());
 	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 280, text, white, fontSize, black);
-
+	//タイムを描画
+	text = "Time:" + std::to_string(Score::Instance().GetTimeScore());
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 310, text, white, fontSize, black);
+	//ウィッチタイム
+	text = "WitchTime:" + std::to_string(Score::Instance().GetWitchTimeScore());
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 340, text, white, fontSize, black);
+	//ノーダメージ
+	text = "NoDamage:" + std::to_string(Score::Instance().GetWitchTimeScore());
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 370, text, white, fontSize, black);
+	//合計
+	text = "Totale:" + std::to_string(Score::Instance().GetTotalScore());
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 400, text, white, fontSize, black);
 
 	/*DrawFormatString(static_cast<int>(m_scoreX) - 60, 280, white, "敵撃破: %d", Score::Instance().GetEnemyScore());
 	DrawFormatString(static_cast<int>(m_scoreX) - 60, 310, white, "タイム: %d", Score::Instance().GetTimeScore());

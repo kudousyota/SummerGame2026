@@ -1,7 +1,9 @@
 #pragma once
+#include <optional>
 #include "Vector3.h"
 #include <string>
 #include "../System/Animation.h"
+
 
 //ゲームシーン以外でで演出などをするキャラクター用
 class CharacterViewer
@@ -19,7 +21,7 @@ public:
 	void SetRotation(float angley) { m_angleY = angley; }
 
 	//直線的な動きをする
-	void StartLinearMove(const Vector3& startPos,const Vector3& endPos,float speed,bool faceDirection = true);
+	void StartLinearMove(const Vector3& startPos,const Vector3& endPos,float speed,float angle,bool faceDirection = false,std::optional<Vector3>faceTarget = std::nullopt);
 	bool IsMoveFinished()const { return m_isMoveFinished; }
 	void UpdateLinearMove();
 private:

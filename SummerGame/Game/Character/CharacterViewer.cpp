@@ -46,19 +46,24 @@ void CharacterViewer::ChangeAnimation(const std::string& name, bool loop)
 	m_animation.ChangeAnim(name, loop);
 }
 
-void CharacterViewer::StartLinearMove(const Vector3& startPos, const Vector3& endPos, float speed, bool faceDirection)
+void CharacterViewer::StartLinearMove(const Vector3& startPos, const Vector3& endPos, float speed, float angle ,bool faceDirection,std::optional<Vector3>faceTarget)
 {
 	m_moveStartPos = startPos;
 	m_moveEndPos = endPos;
 	m_moveSpeed = speed;
 	m_pos = startPos;
+	m_angleY = angle;
 	m_isMoving = true;
 	m_isMoveFinished = false;
 	//移動方向を計算して向きを変える
-	if(faceDirection)
+	if (faceTarget.has_value())
+	{
+		Vector3 dir = (faceTarget.value() - startPos).Normalize();
+		m_angleY = atan2f(dir.x, dir.z) + DX_PI_F;
+	}
+	else if (faceDirection)
 	{
 		Vector3 dir = (endPos - startPos).Normalize();
-		//atan2(x, z)で進行方向の角度を計算
 		m_angleY = atan2f(dir.x, dir.z) + DX_PI_F;
 	}
 }

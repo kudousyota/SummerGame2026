@@ -84,7 +84,7 @@ void GameClearedScene::Init()
 	//残っているエフェクトの停止
 	EffectManager::Instns().StopAll();
 
-	//フォントの読み込み
+	////フォントの読み込み
 	m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	//最終スコアを取得

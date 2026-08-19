@@ -11,6 +11,7 @@ namespace
 {
 	constexpr int kFadeInterval = 60;
 	constexpr int kUiPos = 590;
+	const Vector3 kCameraPos = Vector3(0.0f, 100.0f, -700.0f); //タイトルのカメラ位置
 }
 
 
@@ -36,15 +37,17 @@ void TitleScene::NormalUpdate(Input& input)
 	}
 
 	//エイリアンが端まで到達したら再スタート
-	if (m_titleCharacter[kAlien].IsMoveFinished())
+	for (size_t i = 0; i < m_alienMoveInfos.size(); i++)
 	{
-		m_titleCharacter[kAlien].StartLinearMove(
-			Vector3(-800.0f, 0.0f, -500.0f),
-			Vector3(800.0f, 0.0f, -500.0f),
-			5.0f
-		);
-	}
+		size_t index = kAlienStart + i;
 
+		if (m_titleCharacter[index].IsMoveFinished())
+		{
+			StartAlienMove(i);
+		}
+	}
+	
+	
 	//上下でカーソル移動
 	if (input.IsTriggered("up") || input.IsTriggered("down"))
 	{
@@ -144,15 +147,15 @@ void TitleScene::Init()
 	m_SkyDome.SetPos(Vector3(0.0f, 0.0f, -5500.0f));
 	//ゆっくり回転させる
 	m_SkyDome.SetRotSpeed(0.002f);
-
+	//サイズ
 	m_SkyDome.SetScale(3.0f);
 
 	//タイトルでCharacterを描画
 	std::vector<CharacterInfo> infos =
 	{
 		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(300.0f,0.0f,1000.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(300.0f,0.0f,-600.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|UP",Vector3(0.0f,0.0f,0.0f)},
 	};
 	m_titleCharacter.resize(infos.size());
 	for (size_t i = 0; i < infos.size(); i++)
@@ -160,11 +163,20 @@ void TitleScene::Init()
 		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos);
 	}
 
-	//1個目のキャラクターに移動量を設定する
-	m_titleCharacter[kAlien].StartLinearMove(
-		Vector3(800.0f, 0.0f, -500.f),//最初の場所
-		Vector3(-800.0f, 0.0f, -500.0f),//目指す場所
-		5.0f);//速度
+	//エイリアンごとの往復移動を設定する
+	//増やしたいときはここに追加するだけ
+	m_alienMoveInfos =
+	{
+		//1体目
+		{Vector3(800.0f,0.0f,-500.0f),Vector3(-800.0f,0.0f,-500.0f),5.0f,0.0f,false},
+		//2体目
+		{Vector3(300.0f,-600.0f,-300.0f),Vector3(300.0f,100.0f,-300.0f),1.5f,DX_PI_F,true},
+	};
+	//初期移動
+	for (size_t i = 0; i < m_alienMoveInfos.size(); i++)
+	{
+		StartAlienMove(i);
+	}
 	
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
@@ -183,4 +195,17 @@ void TitleScene::Draw()
 {
 	//DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
 	(this->*m_draw)();
+}
+
+void TitleScene::StartAlienMove(size_t index)
+{
+	const auto& moveInfo = m_alienMoveInfos[index];
+	m_titleCharacter[kAlienStart + index].StartLinearMove(
+		moveInfo.start,
+		moveInfo.end,
+		moveInfo.speed,
+		moveInfo.angle,
+		!moveInfo.faceCamera,//faceCameraでないときだけ移動方向を向く
+		moveInfo.faceCamera ? std::optional<Vector3>(kCameraPos) : std::nullopt
+	);
 }
