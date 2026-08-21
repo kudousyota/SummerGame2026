@@ -10,6 +10,7 @@ void Model::PreloadAll()
 	m_playerBaseHandle = MV1LoadModel("Data/Player.mv1");
 	m_witchTimeHandBaseHandle = MV1LoadModel("Data/WitchTimeHand.mv1");
 	m_skyDomeBaseHandle = MV1LoadModel("Data/Sky_Night01.mv1");
+	m_clearedBaseHandle = MV1LoadModel("Data/Rizalt.mv1");
 }
 
 //ロードしたベースモデルを解放する
@@ -22,4 +23,5 @@ void Model::ReleseAll()
 	if (m_playerBaseHandle != -1) MV1DeleteModel(m_playerBaseHandle);
 	if (m_witchTimeHandBaseHandle != -1) MV1DeleteModel(m_witchTimeHandBaseHandle);
 	if (m_skyDomeBaseHandle != -1)MV1DeleteModel(m_skyDomeBaseHandle);
+	if (m_clearedBaseHandle != -1)MV1DeleteModel(m_clearedBaseHandle);
 }

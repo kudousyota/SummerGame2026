@@ -27,7 +27,7 @@ public:
 	int CreatPlayerModel() const { return MV1DuplicateModel(m_playerBaseHandle); }
 	int CreatWitchTimeHandModel() const { return MV1DuplicateModel(m_witchTimeHandBaseHandle); }
 	int CreatSkyDomeModel() const { return MV1DuplicateModel(m_skyDomeBaseHandle); }
-
+	int CreatClearedModel()const { return MV1DuplicateModel(m_clearedBaseHandle); }
 	// ベースモデルをすべて解放する
 	void ReleseAll();
 
@@ -38,6 +38,6 @@ private:
 	int m_playerBaseHandle = -1;
 	int m_witchTimeHandBaseHandle = -1;
 	int m_skyDomeBaseHandle = -1;
-
+	int m_clearedBaseHandle = -1;
 };
 

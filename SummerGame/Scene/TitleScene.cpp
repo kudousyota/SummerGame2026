@@ -71,6 +71,8 @@ void TitleScene::FadeOutUpdate(Input&)
 		//フェードアウト完了
 		m_finished = true;
 
+		SoundManager::Instance().StopBGM();
+
 		if (m_menuSelect == MenuSelect::Exit)
 		{
 			//ゲーム終了をApplicationに要求する
@@ -156,6 +158,7 @@ void TitleScene::Init()
 		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f)},
 		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f)},
 		{Model::Instance().CreatAlienModel(),"Alien|UP",Vector3(0.0f,0.0f,0.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f)},
 	};
 	m_titleCharacter.resize(infos.size());
 	for (size_t i = 0; i < infos.size(); i++)
@@ -168,9 +171,11 @@ void TitleScene::Init()
 	m_alienMoveInfos =
 	{
 		//1体目
-		{Vector3(800.0f,0.0f,-500.0f),Vector3(-800.0f,0.0f,-500.0f),5.0f,0.0f,false},
+		{Vector3(800.0f,0.0f,-250.0f),Vector3(-800.0f,0.0f,-250.0f),5.0f,0.0f,false},
 		//2体目
-		{Vector3(300.0f,-600.0f,-300.0f),Vector3(300.0f,100.0f,-300.0f),1.5f,DX_PI_F,true},
+		{Vector3(300.0f,-600.0f,-300.0f),Vector3(300.0f,300.0f,-300.0f),3.5f,DX_PI_F,true},
+		//3体目
+		{Vector3(800.0f,-200.0f,-300.0f),Vector3(-300.0f,300.0f,-300.0f),2.5f,0.0f,true},
 	};
 	//初期移動
 	for (size_t i = 0; i < m_alienMoveInfos.size(); i++)

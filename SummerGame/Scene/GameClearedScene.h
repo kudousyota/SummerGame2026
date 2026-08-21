@@ -16,39 +16,24 @@ public:
 
 	bool IsFinished() const { return m_finished; }
 private:
+
+	enum TitleCharacter
+	{
+		kPlayer,
+		kAlienStart,
+	};
+
 	//経過フレーム
 	int m_frame;
 	//フォント
 	int m_fontHandle;
-	//スコア表示の足されていく演出用
-	int m_displayScore;
-	int m_finalScore;
-	//アニメーションを用
-	float m_scoreAnimTime;
 	//シーン終了フラグ
 	bool m_finished;
-	//スカイドームのモデルハンドル
-	int m_skyHandle;
-	//リザルト用のプレイヤー
-	int m_playerHandle;
-	//リザルトプレイヤーの位置
-	Vector3 m_playerPos;
-	//アニメーション
-	float m_currentAnimCount;
-	//アニメーションのハンドル
-	int m_cureentAnimHandle;
-	//現在セットしているアニメーションのインデックス
-	int m_currentAnimIndex;
-	//敵のハンドル
-	int m_enemyHandle;
-	//敵の位置
-	Vector3 m_enemyPos;
-	//敵の角度
-	float m_enemyAngle;
-	//地面のハンドル
-	int m_groundHandle;
-	//地面の位置
-	Vector3 m_groundPos;
+	//ステージのハンドル
+	int m_modelHandle;
+	
+	Vector3 m_pos;
+
 	//エフェクトの位置
 	Vector3 m_effectPos;
 

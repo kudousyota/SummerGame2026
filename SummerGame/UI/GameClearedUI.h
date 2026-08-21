@@ -17,6 +17,7 @@ private:
 	int m_ResultUIHandle;
 	int m_TimerUIHandle;
 	int m_ScoreUIHandle;
+	int m_now;
 
 	float m_timerX;
 	float m_scoreX;

@@ -13,6 +13,8 @@
 #include "../UI/GameClearedUI.h"
 #include "../System/Score.h"
 #include "../Effect/EffectManager.h"
+#include "../System/Model.h"
+#include "../Character/CharacterViewer.h"
 //#include "../system/SoundManager.h"
 
 
@@ -24,22 +26,11 @@ namespace
 GameClearedScene::GameClearedScene(SceneController& controller) :
 	m_draw(0),
 	m_fontHandle(-1),
-	m_displayScore(0),
-	m_finalScore(0),
-	m_scoreAnimTime(0),
 	m_finished(false),
 	Scene(controller),
-	m_skyHandle(-1),
-	m_playerHandle(-1),
-	m_playerPos(Vector3(0.0f, 0.0f, 0.0f)),
-	m_currentAnimCount(0.0f),
-	m_cureentAnimHandle(-1),
-	m_currentAnimIndex(-1),
-	m_enemyHandle(-1),
-	m_enemyPos(Vector3(0.0f, 0.0f, 0.0f)),
-	m_enemyAngle(0.0f),
-	m_effectPos(Vector3(0,0,0)),
-	m_groundHandle(-1)
+	m_pos(Vector3(0.0f,0.0f,0.0f)),
+	m_effectPos(Vector3(0.0f,0.0f,0.0f)),
+	m_modelHandle(-1)
 {
 	m_update = &GameClearedScene::FadeInUpdate;
 	m_draw = &GameClearedScene::FadeDraw;
@@ -47,49 +38,17 @@ GameClearedScene::GameClearedScene(SceneController& controller) :
 }
 GameClearedScene::~GameClearedScene()
 {
-    // フォントやモデルハンドルが残っていれば解放する
-	if (m_fontHandle != -1)
-	{
-		DeleteFontToHandle(m_fontHandle);
-		m_fontHandle = -1;
-	}
-
-	if (m_skyHandle != -1)
-	{
-		MV1DeleteModel(m_skyHandle);
-		m_skyHandle = -1;
-	}
-
-	if (m_playerHandle != -1)
-	{
-		MV1DeleteModel(m_playerHandle);
-		m_playerHandle = -1;
-	}
-
-	if (m_enemyHandle != -1)
-	{
-		MV1DeleteModel(m_enemyHandle);
-		m_enemyHandle = -1;
-	}
-
-	if (m_groundHandle != -1)
-	{
-		MV1DeleteModel(m_groundHandle);
-		m_groundHandle = -1;
-	}
 }
 
 void GameClearedScene::Init()
 {
 	//残っているエフェクトの停止
 	EffectManager::Instns().StopAll();
+	//モデル
+	m_modelHandle = Model::Instance().CreatClearedModel();
 
-	////フォントの読み込み
-	m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
-
-	//最終スコアを取得
-	m_finalScore = Score::Instance().GetTotalScore();
-	
+	m_pos = Vector3(0.0f,0.0f,300.0f);
+	MV1SetPosition(m_modelHandle, m_pos);
 	//UI
 	m_pUiManager = std::make_unique<UIManager>();
 	//リザルトUI
@@ -99,6 +58,12 @@ void GameClearedScene::Init()
 
 	m_pUiManager->Init();
 
+    //カメラを初期化
+	////カメラをタイトル用に初期位置に戻す（注視点とカメラ位置が同じだと正しく描画されない）
+	////ステージ全体が見えるようにカメラを少し上・手前に配置する
+	//SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 200.0f, -800.0f), Vector3(0.0f, 100.0f, 0.0f));
+	//SetupCamera_Perspective(DX_PI_F / 3.0f);
+	//SetCameraNearFar(20.0f, 4500.0f);
 }
 
 void GameClearedScene::Update(Input& input)
@@ -152,29 +117,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 		return;
 
 	}
-	//スコアアップ演出
-	if (m_displayScore < m_finalScore)
-	{
-		m_scoreAnimTime++;
-		//徐々に近づける
-		int diff = m_finalScore - m_displayScore;
-		int step = diff / 10;
-		if (step < 1)
-		{
-			step = 1;
-		}
-
-		m_displayScore += step;
-
-		//行き過ぎないように補正
-		if (m_displayScore > m_finalScore)
-		{
-			m_displayScore = m_finalScore;
-		}
-	}
-
 	m_pUiManager->Update();
-
 }
 
 void GameClearedScene::FadeOutUpdate(Input&)
@@ -194,18 +137,10 @@ void GameClearedScene::NormalDraw()
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
 	const int black = GetColor(0, 0, 0);
-
+	MV1DrawModel(m_modelHandle);
 	//DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
 	m_pUiManager->Draw();
-	//点滅頻度
-	const int intervar = 650;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-	if (visible)
-	{
-		//操作説明表示
-		DrawStringToHandle(470, 580, "Press A to Title", white, m_fontHandle);
-	}
+
 }
 
 void GameClearedScene::FadeDraw()

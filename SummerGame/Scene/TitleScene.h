@@ -36,10 +36,10 @@ private:
 
 	struct AlienMoveInfo
 	{
-		Vector3 start;
-		Vector3 end;
-		float speed;
-		float angle;
+		Vector3 start;//開始位置
+		Vector3 end;//到達地点
+		float speed;//速度
+		float angle;//向き
 		bool faceCamera = false;//trueならカメラの方向を向く
 	};
 	MenuSelect m_menuSelect = MenuSelect::Start;
