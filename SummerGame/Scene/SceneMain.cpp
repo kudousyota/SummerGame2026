@@ -151,6 +151,15 @@ void SceneMain::FadeInUpdate(Input&)
 void SceneMain::NormalUpdate(Input& input)
 {
 
+	//‘¦À‚ÉƒQ[ƒ€ƒNƒŠƒA‚ÖˆÚ“®
+#ifdef _DEBUG
+	if (input.IsTriggered("pause"))
+	{
+		m_controller.ChangeScene(std::make_shared<GameClearedScene>(m_controller));
+		return;
+	}
+#endif
+
 	Input::Instance().Update();
 
 	Timer::Instance().Update();

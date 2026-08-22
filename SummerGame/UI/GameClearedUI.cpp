@@ -10,6 +10,7 @@ namespace
 	const float kScoreGoalX = 580.0f;
 	const float kResultGoalX = 620.0f;
 	const int kIntervar = 650;
+	constexpr int kfontBigsize = 48;
 }
 GameClearedUI::GameClearedUI():
 	m_ResultUIHandle(-1),
@@ -69,21 +70,25 @@ void GameClearedUI::Draw()
     //各項目ごとのスコアを表示
 	//変数名の重複を避けるため再代入で対応
 	std::string text;
-	//キル数を描画
-	text = "Kile:" + std::to_string(Score::Instance().GetEnemyScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 280, text, white, fontSize, black);
 	//タイムを描画
 	text = "Time:" + std::to_string(Score::Instance().GetTimeScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 310, text, white, fontSize, black);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 190, 240, text, white, fontSize, black);
+
 	//ウィッチタイム
 	text = "WitchTime:" + std::to_string(Score::Instance().GetWitchTimeScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 340, text, white, fontSize, black);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 170, 280, text, white, fontSize, black);
+
+	//キル数を描画
+	text = "Kile:" + std::to_string(Score::Instance().GetEnemyScore());
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 110, 440, text, white, fontSize, black);
+	
 	//ノーダメージ
 	text = "NoDamage:" + std::to_string(Score::Instance().GetWitchTimeScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 370, text, white, fontSize, black);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 95, 480, text, white, fontSize, black);
+	
 	//合計
 	text = "Totale:" + std::to_string(Score::Instance().GetTotalScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 400, text, white, fontSize, black);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 80, 520, text, white, fontSize, black);
 
 	//操作説明
 	text = "Press A to Title";
@@ -91,7 +96,7 @@ void GameClearedUI::Draw()
 	m_isVisible = (m_now / kIntervar) % 2;
 	if (m_isVisible)
 	{
-		FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 520, text, white, fontSize, black);
+		FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 620, text, white, kfontBigsize, black);
 	}
 	
 }
