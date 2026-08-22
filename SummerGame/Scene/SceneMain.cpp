@@ -1,6 +1,7 @@
 #include "SceneMain.h"
 #include "DxLib.h"
 #include "../System/Input.h"
+#include "../System/SoundManager.h"
 #include "../System/Timer.h"
 #include "../DataLoader/DataManager.h"
 #include "../System/Model.h"
@@ -96,6 +97,9 @@ void SceneMain::Init()
 
 	SetUseAlphaChannelGraphCreateFlag(true);
 
+	//BGM
+	SoundManager::Instance().PlayBGM("Game", true);
+
 }
 
 void SceneMain::Update(Input& input)
@@ -174,14 +178,10 @@ void SceneMain::NormalUpdate(Input& input)
 	//プレイヤーが死んだら
 	if (m_pPlayer->IsDead())
 	{
-#ifdef _DEBUG
-		
-#else
 		m_update = &SceneMain::GameOverFadeOutUpdate;
 		m_draw = &SceneMain::FadeDraw;
 		m_frame = 0;
 		return;
-#endif //_DEBUG
 	}
 	//敵のスポーンを管理するクラスに更新を任せる
 	m_enemySpawner.Update(m_enemyManager, static_cast<float>(m_frameCount), m_pPlayer->GetPosition());

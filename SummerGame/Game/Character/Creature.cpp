@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "../System/Timer.h"
 #include "../System/Model.h"
+#include "../System/SoundManager.h"
 
 namespace
 {
@@ -256,6 +257,8 @@ void Creature::Draw()
 void Creature::OnDead()
 {
 	TransitionTo(CreatureState::Dead);
+    //死亡時のSE
+    SoundManager::Instance().PlaySE("Dead");
 }
 
 void Creature::AttackUpdate()
@@ -279,7 +282,11 @@ void Creature::AttackUpdate()
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + Vector3(0.0f, 20.0f, 0.0f);
 	//攻撃判定を出す
-	CollisionManager::Instance().CheckAttackSphere(attack,m_attackPos);
+    auto hitList = CollisionManager::Instance().CheckAttackSphere(attack,m_attackPos);
+    if (!hitList.empty())
+    {
+        SoundManager::Instance().PlaySE("Hit");
+    }
 	m_isAttacking = true;
 	m_attackFrame = 30;
 }

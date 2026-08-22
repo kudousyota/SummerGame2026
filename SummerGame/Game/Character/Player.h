@@ -113,6 +113,8 @@ private:
 	int m_invincibleTime;
 	//ウィッチタイムかどうか
 	bool m_isWitchTime;
+	// 前フレームのウィッチタイム状態（ウィッチタイム終了検出用）
+	bool m_prevWitchTime;
 	
 	void TransitionTo(PlayerState nextState);
 	//ウィッチタイム

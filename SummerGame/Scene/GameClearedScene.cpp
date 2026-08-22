@@ -15,7 +15,7 @@
 #include "../Effect/EffectManager.h"
 #include "../System/Model.h"
 #include "../Character/CharacterViewer.h"
-//#include "../system/SoundManager.h"
+#include "../System/SoundManager.h"
 
 
 namespace 
@@ -49,6 +49,8 @@ void GameClearedScene::Init()
 
 	m_pos = Vector3(0.0f,0.0f,300.0f);
 	MV1SetPosition(m_modelHandle, m_pos);
+	SoundManager::Instance().PlayBGM("Cleare",true);
+
 	//UI
 	m_pUiManager = std::make_unique<UIManager>();
 	//リザルトUI
@@ -89,7 +91,7 @@ void GameClearedScene::FadeInUpdate(Input& input)
 		m_update = &GameClearedScene::FadeOutUpdate;
 		m_draw = &GameClearedScene::FadeDraw;
 		m_frame = 0;//フェードアウトの最初
-		//SoundManager::PlaySE("Ok");
+        SoundManager::Instance().PlaySE("Ok");
 		return;
 
 	}
@@ -113,7 +115,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 		m_update = &GameClearedScene::FadeOutUpdate;
 		m_draw = &GameClearedScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
-		//SoundManager::PlaySE("Ok");
+        SoundManager::Instance().PlaySE("Ok");
 		return;
 
 	}

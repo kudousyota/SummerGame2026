@@ -3,6 +3,7 @@
 #include "SceneMain.h"
 #include "TitleScene.h"
 #include "../Game.h"
+#include "../System/SoundManager.h"
 namespace
 {
 	constexpr int kFadeInterval = 60;
@@ -49,7 +50,7 @@ void GameOverScene::FadeInUpdate(Input& input)
 		m_update = &GameOverScene::FadeOutUpdate;
 		m_draw = &GameOverScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
-		//SoundManager::PlaySE("Ok");
+        SoundManager::Instance().PlaySE("Ok");
 		return;
 
 	}
@@ -74,7 +75,7 @@ void GameOverScene::NormalUpdate(Input& input)
 		m_update = &GameOverScene::FadeOutUpdate;
 		m_draw = &GameOverScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
-		//SoundManager::PlaySE("Ok");
+        SoundManager::Instance().PlaySE("Ok");
 		return;
 
 	}

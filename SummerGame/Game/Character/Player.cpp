@@ -163,6 +163,8 @@ Player::Player() :
 	m_pWitchTimeHand(std::make_unique<WitchTimeHand>()),
 	m_afterImageFrame(0)
 {
+	// 初期のウィッチタイム状態
+	m_prevWitchTime = false;
 	
 }
 
@@ -221,6 +223,20 @@ void Player::Update()
 	auto& input = Input::Instance();
 	//ウィッチタイム中かどうか
 	m_isWitchTime = Timer::Instance().IsEnemySlow();
+
+	// ウィッチタイム開始・終了の検出
+	if (m_isWitchTime && !m_prevWitchTime)
+	{
+		// ウィッチタイム開始時のSE
+		SoundManager::Instance().PlaySE("WitchTimeStart");
+	}
+	else if (!m_isWitchTime && m_prevWitchTime)
+	{
+		// ウィッチタイム終了時のSE
+		SoundManager::Instance().PlaySE("WitchTimeEnd");
+	}
+	// 状態を保存
+	m_prevWitchTime = m_isWitchTime;
 	//HPがゼロになったら
 	if (m_isDead)
 	{
@@ -774,7 +790,8 @@ void Player::ApplyDamage(int damage)
 		//直ぐに無敵を付与連続ヒット防止にもなる
 		m_invincibleTime = kInvincibleFrame;
 
-		SoundManager::Instance().PlaySE("Dodge");
+		// ジャスト回避成功の専用音
+		SoundManager::Instance().PlaySE("Just");
 
 		//ここでウィッチタイム状態に入る処理
 		m_isWitchTime = true;
@@ -793,6 +810,17 @@ void Player::ApplyDamage(int damage)
 	Score::Instance().OnNoDamage();
 
 	//エフェクトの再生
+
+	// 被ダメ時の音
+	if (damage >= 30)
+	{
+		SoundManager::Instance().PlaySE("StrongHit");
+	}
+	else
+	{
+		SoundManager::Instance().PlaySE("Hit");
+	}
+
 	EffectManager::Instns().PlayEffect(EffectType::Hit, m_pos + Vector3(0.0f,GetCollisionHeight(),0.0f));
 
 	//無敵時間を設定
@@ -806,6 +834,8 @@ void Player::ApplyDamage(int damage)
 		TransitionTo(PlayerState::Dead);
 		CollisionManager::Instance().Unregister(this);
 		//printfDx("PlayerDead!\n");
+		// 死亡時のSE
+		SoundManager::Instance().PlaySE("Dead");
 	}
 
 	//printfDx("Player HP = %d\n", m_hp);
@@ -1224,11 +1254,26 @@ Vector3 Player::GetCollisionPosition() const
 
 void Player::TryAttackHit()
 {
-	auto hitList = CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_attackPos);
+    AttackData attack = CreateAttackData();
+    auto hitList = CollisionManager::Instance().CheckAttackSphere(attack, m_attackPos);
 
-	if (!hitList.empty())
-	{
-		//一番最初に当たったキャラクターをロックオン対象にする
-		m_lockOnManager.OnAttackHit(hitList.front());
-	}
+    if (hitList.empty())
+    {
+        // ヒットしなかった（空振り）のSE
+        SoundManager::Instance().PlaySE("NoHit");
+        return;
+    }
+
+    //一番最初に当たったキャラクターをロックオン対象にする
+    m_lockOnManager.OnAttackHit(hitList.front());
+
+    //ダメージ量に応じてヒット音を変える
+    if (attack.GetDamage() >= kKickPower)
+    {
+        SoundManager::Instance().PlaySE("StrongHit");
+    }
+    else
+    {
+        SoundManager::Instance().PlaySE("Hit");
+    }
 }

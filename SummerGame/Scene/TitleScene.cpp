@@ -52,11 +52,12 @@ void TitleScene::NormalUpdate(Input& input)
 	if (input.IsTriggered("up") || input.IsTriggered("down"))
 	{
 		m_menuSelect = (m_menuSelect == MenuSelect::Start) ? MenuSelect::Exit : MenuSelect::Start;
+        SoundManager::Instance().PlaySE("Cursor");
 	}
 
 	if (input.IsTriggered("ok"))
 	{
-		//SoundManager::PlaySE("Ok");
+		SoundManager::Instance().PlaySE("Ok");
 		m_update = &TitleScene::FadeOutUpdate;
 		m_draw = &TitleScene::FadeDraw;
 		m_frame = 0;//フェードアウトの最初

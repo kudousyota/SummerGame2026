@@ -33,12 +33,25 @@ void SoundManager::Update()
 
 void SoundManager::Load()
 {
+	//bgm
 	m_bgmList["Title"] = LoadSoundMem("Data/Sound/Title.ogg");
-	m_bgmList["Result"] = LoadSoundMem("Data/Sound/Result.ogg");
-	m_seList["Ok"] = LoadSoundMem("Data/Sound/Ok.mp3");
+	m_bgmList["Game"] = LoadSoundMem("Data/Sound/Game.ogg");
+	m_bgmList["Cleare"] = LoadSoundMem("Data/Sound/Cleare.ogg");
+	m_bgmList["Gameover"] = LoadSoundMem("Data/Sound/Gameover.ogg");
+
+	//se
+	m_seList["Ok"] = LoadSoundMem("Data/Sound/Ok2.mp3");
+	m_seList["Cursor"] = LoadSoundMem("Data/Sound/Cursor.mp3");
 	m_seList["Dodge"] = LoadSoundMem("Data/Sound/Dodge.mp3");
 	m_seList["Just"] = LoadSoundMem("Data/Sound/Just.mp3");
+	m_seList["WitchTimeStart"] = LoadSoundMem("Data/Sound/WitchTimeStart.mp3");
+	m_seList["WitchTimeEnd"] = LoadSoundMem("Data/Sound/WitchTimeEnd.mp3");
 	m_seList["Hit"] = LoadSoundMem("Data/Sound/Hit.mp3");
+	m_seList["StrongHit"] = LoadSoundMem("Data/Sound/StrongHit.mp3");
+	m_seList["NoHit"] = LoadSoundMem("Data/Sound/NoHit.mp3");
+	m_seList["Dead"] = LoadSoundMem("Data/Sound/Dead.mp3");
+	m_seList["Breath"] = LoadSoundMem("Data/Sound/Breath.mp3");
+	m_seList["Shout"] = LoadSoundMem("Data/Sound/Shout.mp3");
 	m_seList["CountDown"] = LoadSoundMem("Data/Sound/CountDown.mp3");
 }
 
