@@ -10,7 +10,7 @@
 #include "../Effect/EffectManager.h"
 #include "../Effect/Effect.h"
 #include "EffekseerForDXLib.h"
-
+#include "../System/SoundManager.h"
 
 namespace
 {
@@ -29,7 +29,7 @@ namespace
 	constexpr float kBreathRadius = 80.0f;
 
 	//このフレーム数でブレスを発射する
-	constexpr float kBreathFrame = 20.0f;
+	constexpr float kBreathFrame = 45.0f;
 
 	//スコア
 	constexpr int kScore = 300;
@@ -370,7 +370,8 @@ void Alien::AttackUpdate()
 		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, CreateAttackData())));
 
 		m_breathEffectHandle = EffectManager::Instns().PlayEffect(EffectType::Breath,Vector3(headPos));
-	
+		SoundManager::Instance().PlaySE("Breath");
+
 		//発射位置と向きを正規化
 		m_pBreath->SetPos(Vector3(pos));
 		m_pBreath->SetForward(Vector3(forward));
@@ -382,16 +383,20 @@ void Alien::AttackUpdate()
 	{
 		m_pBreath->SetPos(Vector3(headPos));
 		m_pBreath->SetForward(Vector3(forward));
+		
 	}
+	SetPosPlayingEffekseer3DEffect(m_breathEffectHandle, headPos.x, headPos.y, headPos.z);
 
-	if (m_breathEffectHandle != -1)
-	{
-		//ブレスエフェクトの位置を頭のボーンに合わせる
-		SetPosPlayingEffekseer3DEffect(m_breathEffectHandle,headPos.x,headPos.y,headPos.z);
-		SetRotationPlayingEffekseer3DEffect(m_breathEffectHandle, 0.0f, m_angle, 0.0f);
-	}
-	
+	//頭ボーンの向きを使う(左右)
+	float effectYaw = atan2f(forward.x, forward.z) + DX_PI_F;
+
+	//上下の傾きも計算する
+	float horizontalLen = sqrtf(forward.x * forward.x + forward.z * forward.z);
+	float effectPitch = atan2f(-forward.y, horizontalLen);
+
+	SetRotationPlayingEffekseer3DEffect(m_breathEffectHandle, effectPitch, effectYaw, 0.0f);
 }
+
 
 Vector3 Alien::GetCollisionPosition() const
 {
