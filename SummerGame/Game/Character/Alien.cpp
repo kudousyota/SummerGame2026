@@ -14,6 +14,7 @@
 
 namespace
 {
+
 	const char* const kIdleAnimName = "Alien|Idle";
 	const char* const kMoveAnimName = "Alien|Move";
 	const char* const kStandUpAnimName = "Alien|StandUp";
@@ -77,6 +78,13 @@ void Alien::Init()
 	//視界
 	m_sightRange = 400.0f;
 	m_fov = 120.0f;
+	//サーチ
+	m_baseSightRange = m_sightRange;
+	m_searchSightMultiplier = 1.5f;	//キョロキョロ中は1.5倍見える
+	m_lookMaxTime = 180.0f;			//60fps換算で3秒
+	m_lookSwingSpeed = 0.05f;
+	m_lookSwingAngle = 60.0f * DX_PI_F / 180.0f; //左右60度ずつ振る
+	m_lookTimer = 0.0f;
 
 	m_modelHandle = Model::Instance().CreatAlienModel();
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
@@ -160,7 +168,7 @@ void Alien::Update()
 		{
 			//プレイヤーが最後にいた場所を記憶
 			m_lastSeePos = m_pPlayer->GetPosition();
-			TransitionTo(AlienState::Look);
+			TransitionTo(AlienState::Search);
 			break;
 		}
 		//プレイヤーまでのベクトル
@@ -253,8 +261,8 @@ void Alien::Update()
 			TransitionTo(AlienState::Idle);
 		}
 		break;
-	case AlienState::Look:
-
+	case AlienState::Search:
+	{
 		//プレイヤーを見つけたら追いかける
 		if (CanSeePlayer())
 		{
@@ -267,13 +275,39 @@ void Alien::Update()
 
 		if (dir.SqMagnitude() < 30.0f * 30.0f)
 		{
-			TransitionTo(AlienState::Idle);
+			TransitionTo(AlienState::LookAround);
 		}
 		else
 		{
 			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
 		}
+	}
+		break;
 
+	case AlienState::LookAround:
+		//プレイヤーを見つけたら
+		if (CanSeePlayer())
+		{
+			TransitionTo(AlienState::Move);
+			break;
+		}
+
+		m_lookTimer += m_timeScale;
+		{
+		//最後にプレイヤーがいた方向を索敵する
+		float baseAngle = atan2f(m_lastSeePos.x - m_pos.x, m_lastSeePos.z - m_pos.z);
+		float swing = sinf(m_lookTimer * m_lookSwingSpeed) * m_lookSwingAngle;
+		float angle = baseAngle + swing;
+
+		m_forward = Vector3(sinf(angle), 0.0f, cosf(angle));
+		m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+		}
+		//一定時間見つからなければ諦める
+		if (m_lookTimer >= m_lookMaxTime)
+		{
+			TransitionTo(AlienState::Idle);
+		}
+		break;
 	}
 	//モデル更新行列
 	UpdateModelMatrix();
@@ -417,9 +451,12 @@ void Alien::TransitionTo(AlienState nextState)
 	{
 	case AlienState::Idle:
 		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
+		//広げた視界を戻す
+		m_sightRange = m_baseSightRange;
 		break;
 	case AlienState::Move:
 		m_animation.ChangeAnim(kMoveAnimName, true, 0.5f);
+		m_sightRange = m_baseSightRange;
 		break;
 	case AlienState::Attack:
 		m_animation.ChangeAnim(kAttackAnimName, false, 0.5);
@@ -448,8 +485,15 @@ void Alien::TransitionTo(AlienState nextState)
 		//ヒットアニメーションがないので今は適当にほかのモーションを渡す
 		m_animation.ChangeAnim(kDownAnimName, false, 0.8f);
 		break;
-	case AlienState::Look:
+	case AlienState::Search:
+		//着くまではMoveのモーション
+		m_animation.ChangeAnim(kMoveAnimName, true, 0.5f);
+		break;
+	case AlienState::LookAround:
+		//到着後はLookのモーション
 		m_animation.ChangeAnim(kLookAnimName, true, 0.5f);
+		m_lookTimer = 0.0f;
+		m_sightRange = m_baseSightRange * m_searchSightMultiplier;
 		break;
 	case AlienState::Dead:
 		m_animation.ChangeAnim(kDeadAnimName, false, 0.5f);

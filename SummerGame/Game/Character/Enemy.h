@@ -42,6 +42,14 @@ protected:
     float m_closeRange;
     float m_fov;
 
+    //サーチ関連
+    float m_baseSightRange;		//通常時の索敵距離(戻す用)
+    float m_searchSightMultiplier;	//キョロキョロ中の索敵距離倍率
+    float m_lookTimer;				//キョロキョロ経過時間
+    float m_lookMaxTime;			//キョロキョロを続ける時間
+    float m_lookSwingSpeed;		//首振りの速さ
+    float m_lookSwingAngle;		//首振りの振れ幅(ラジアン)
+
     //タイムスケールの取得
     float m_timeScale;
 

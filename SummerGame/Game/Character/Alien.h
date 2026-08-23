@@ -31,6 +31,8 @@ private:
 		Up,
 		Hit,
 		Look,
+		Search,//記憶位置まで移動
+		LookAround,//到着後にキョロキョロする
 		Dead
 	};
 
