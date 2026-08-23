@@ -41,7 +41,7 @@ void GameClearedUI::Init()
 
 void GameClearedUI::Update()
 {
-    // ラープで UI を目標位置へ滑らかに移動させる
+    //ラープでUIを目標位置へ滑らかに移動させる
 	m_timerX += (kTimerGoalX - m_timerX) * 0.1f;
 	m_scoreX += (kScoreGoalX - m_scoreX) * 0.1f;
 	//ほぼ到着したらぴったり合わせる

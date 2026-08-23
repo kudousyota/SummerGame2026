@@ -18,6 +18,7 @@ Enemy::Enemy():
 	m_scale(0.0f,0.0f,0.0f),
 	m_timeScale(0.0f),
 	m_sightRange(0.0f),
+	m_closeRange(0.0f),
 	m_fov(0.0f),
 	m_score(0)
 {
@@ -40,6 +41,7 @@ void Enemy::Init()
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
 	m_sightRange = 500.0f;
+	m_closeRange = 150.0f;
 	m_fov = 90.0f;
 
 	CollisionManager::Instance().Register(this);
@@ -93,6 +95,12 @@ bool Enemy::CanSeePlayer()
 	dir.y = 0.0f;
 	float distSq = dir.SqMagnitude();
 
+	// 近すぎたら向きに関係なく気づく
+	if (distSq <= m_closeRange * m_closeRange)
+	{
+		return true;
+	}
+
 	//視認距離の外ならfalse
 	if (distSq > m_sightRange * m_sightRange)
 	{
@@ -110,6 +118,8 @@ void Enemy::DrawDebugSight() const
 {
 	//索敵範囲を黄色で描画
 	int color = GetColor(255, 255, 0);
+	//近接判定範囲を緑で描画
+	int closeColor = GetColor(0, 255, 0);
 
 	//視野角の半分(ラジアン)
 	float halfFov = m_fov * 0.5f * DX_PI_F / 180.0f;
@@ -152,21 +162,42 @@ void Enemy::DrawDebugSight() const
 	DrawLine3D(center, leftEdge, color);
 	DrawLine3D(center, rightEdge, color);
 
-	//プレイヤーが視野内にいるとき色を変える
+	//近接円を描画
+	VECTOR prevClosePoint = Vector3(
+		m_pos.x + m_closeRange * sinf(0.0f),
+		m_pos.y + 160.0f,
+		m_pos.z + m_closeRange * cosf(0.0f)
+	);
+	for (int i = 1; i <= segments; i++)
+	{
+		float angle = (DX_TWO_PI_F) * (float)i / segments;
+		VECTOR point = Vector3(
+			m_pos.x + m_closeRange * sinf(angle),
+			m_pos.y + 160.0f,
+			m_pos.z + m_closeRange * cosf(angle)
+		);
+		DrawLine3D(prevClosePoint, point, closeColor);
+		prevClosePoint = point;
+	}
+
+	//プレイヤーが視野内か近接円内にいるとき色を変える
 	Vector3 dir = (m_pPlayer->GetPosition() - m_pos);
 	float dist = dir.SqMagnitude();
+
+	bool isClose = dist <= m_closeRange * m_closeRange;
+	bool isInFov = false;
+
 	if (dist <= m_sightRange * m_sightRange)
 	{
-		//内積の計算
 		float dot = m_forward.Dot(dir.Normalize());
-		//視野角の境界になる内積の値
 		float halfFovCos = cosf(m_fov * 0.5f * DX_PI_F / 180.0f);
-		//視野の中ならプレイヤーまで赤い線を引く
-		if (dot >= halfFovCos)
-		{
-			// 発見中は赤で上書き
-			DrawLine3D(center, Vector3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 160.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
-		}
+		isInFov = (dot >= halfFovCos);
+	}
+
+	if (isClose || isInFov)
+	{
+		// 発見中は赤で上書き
+		DrawLine3D(center, Vector3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y + 160.0f, m_pPlayer->GetPosition().z), GetColor(255, 0, 0));
 	}
 }
 

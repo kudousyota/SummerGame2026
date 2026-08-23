@@ -38,6 +38,8 @@ protected:
     Vector3 m_scale;
     //見える距離
     float m_sightRange;
+    //近づいたら気づくように
+    float m_closeRange;
     float m_fov;
 
     //タイムスケールの取得
@@ -45,6 +47,8 @@ protected:
 
     //スコア
     int m_score;
+
+ 
 
     //モデルの行列//ここはほかのとこでプレイヤーとまとめる可能性あり
     void UpdateModelMatrix();
