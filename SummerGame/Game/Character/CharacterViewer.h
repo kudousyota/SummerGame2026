@@ -12,13 +12,14 @@ public:
 	CharacterViewer();
 	~CharacterViewer();
 
-	void Init(const int modelhandle, const std::string& animname,const Vector3&pos);
+	void Init(const int modelhandle, const std::string& animname,const Vector3&pos,const Vector3& scale);
 	void Update();
 	void Draw();
 
 	void ChangeAnimation(const std::string& name,bool loop = true);
 	void SetPosition(const Vector3& pos) { m_pos = pos; }
 	void SetRotation(float angley) { m_angleY = angley; }
+	void SetScale(const Vector3& scale) { m_scale = scale; }
 
 	//’¼ü“I‚È“®‚«‚ğ‚·‚é
 	void StartLinearMove(const Vector3& startPos,const Vector3& endPos,float speed,float angle,bool faceDirection = false,std::optional<Vector3>faceTarget = std::nullopt);
@@ -30,6 +31,7 @@ private:
 	float m_animSpeed;
 	float m_angleY;
 	Animation m_animation;
+	Vector3 m_scale;
 
 	//’¼ü“I‚ÈˆÚ“®—p
 	bool m_isMoving;

@@ -47,7 +47,7 @@ void GameClearedScene::Init()
 	//モデル
 	m_modelHandle = Model::Instance().CreatClearedModel();
 
-	m_pos = Vector3(0.0f,0.0f,300.0f);
+	m_pos = Vector3(1100.0f,0.0f,300.0f);
 	MV1SetPosition(m_modelHandle, m_pos);
 	SoundManager::Instance().PlayBGM("Cleare",true);
 
@@ -60,12 +60,24 @@ void GameClearedScene::Init()
 
 	m_pUiManager->Init();
 
+	//タイトルと同様にキャラクターを表示する
+	std::vector<CharacterInfo> infos =
+	{
+		{ Model::Instance().CreatPlayerModel(), "Player|Cleare", Vector3(250.0f, 130.0f, -500.0f),Vector3(1.0f,1.0f,1.0f)},
+		{ Model::Instance().CreateCreatureModel(),  "Enemy|CrearDead",   Vector3(250.0f, 0.0f, 0.0f),Vector3(3.0f,3.0f,3.0f )},
+	};
+	m_titleCharacter.resize(infos.size());
+	for (size_t i = 0; i < infos.size(); i++)
+	{
+		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos,infos[i].scale);
+	}
+
     //カメラを初期化
-	////カメラをタイトル用に初期位置に戻す（注視点とカメラ位置が同じだと正しく描画されない）
-	////ステージ全体が見えるようにカメラを少し上・手前に配置する
-	//SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 200.0f, -800.0f), Vector3(0.0f, 100.0f, 0.0f));
-	//SetupCamera_Perspective(DX_PI_F / 3.0f);
-	//SetCameraNearFar(20.0f, 4500.0f);
+	//カメラをタイトル用に初期位置に戻す
+	//ステージ全体が見えるようにカメラを少し上・手前に配置する
+	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 200.0f, -800.0f), Vector3(0.0f, 100.0f, 0.0f));
+	SetupCamera_Perspective(DX_PI_F / 3.0f);
+	SetCameraNearFar(20.0f, 4500.0f);
 }
 
 void GameClearedScene::Update(Input& input)
@@ -105,8 +117,6 @@ void GameClearedScene::FadeInUpdate(Input& input)
 	}
 }
 
-
-
 void GameClearedScene::NormalUpdate(Input& input)
 {
 
@@ -119,6 +129,12 @@ void GameClearedScene::NormalUpdate(Input& input)
 		return;
 
 	}
+    // キャラクターの更新
+	for (auto& character : m_titleCharacter)
+	{
+		character.Update();
+	}
+
 	m_pUiManager->Update();
 }
 
@@ -139,7 +155,12 @@ void GameClearedScene::NormalDraw()
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
 	const int black = GetColor(0, 0, 0);
-	MV1DrawModel(m_modelHandle);
+    MV1DrawModel(m_modelHandle);
+	// キャラクター描画
+	for (auto& character : m_titleCharacter)
+	{
+		character.Draw();
+	}
 	//DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
 	m_pUiManager->Draw();
 

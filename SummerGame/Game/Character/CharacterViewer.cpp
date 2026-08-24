@@ -10,7 +10,8 @@ CharacterViewer::CharacterViewer():
 	m_isMoveFinished(false),
 	m_moveStartPos({ 0.0f,0.0f,0.0f }),
 	m_moveEndPos({ 0.0f,0.0f,0.0f }),
-	m_moveSpeed(0.0f)
+	m_moveSpeed(0.0f),
+	m_scale({0.0f,0.0f,0.0f})
 {
 }
 
@@ -22,22 +23,28 @@ CharacterViewer::~CharacterViewer()
 	}
 }
 
-void CharacterViewer::Init(const int modelhandle, const std::string& animname, const Vector3& pos)
+void CharacterViewer::Init(const int modelhandle, const std::string& animname, const Vector3& pos,const Vector3& scale)
 {
 	m_modelHandle = modelhandle;
 	m_animation.Init(m_modelHandle, animname, true, 0.5f);
 	m_pos = pos;
+	m_scale = scale;
 }
 
 void CharacterViewer::Update()
 {
 	UpdateLinearMove();
 	m_animation.Update(1.0f);
+
+	MV1SetPosition(m_modelHandle, m_pos);
+	MV1SetScale(m_modelHandle, m_scale);
 }
 
 void CharacterViewer::Draw()
 { 
 	MV1SetPosition(m_modelHandle, m_pos);
+	//常にスケールを設定して描画時のサイズ変化を防ぐ
+	MV1SetScale(m_modelHandle, m_scale);
 	MV1SetRotationXYZ(m_modelHandle, Vector3(0.0f, m_angleY, 0.0f).ToDxLibVector());
 	MV1DrawModel(m_modelHandle);
 }

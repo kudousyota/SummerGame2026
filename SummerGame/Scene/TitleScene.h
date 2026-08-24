@@ -23,8 +23,8 @@ private:
 	//プレイヤーは0番目でそれ以降はエイリアンの物として使用する
 	enum TitleCharacter
 	{
-		kPlayer,
-		kAlienStart,
+		Player,
+		AlienStart,
 	};
 
 	struct CharacterInfo
@@ -32,6 +32,7 @@ private:
 		int modelHandle;
 		std::string animName;
 		Vector3 pos;
+		Vector3 scale;
 	};
 
 	struct AlienMoveInfo

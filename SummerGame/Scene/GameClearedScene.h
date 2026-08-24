@@ -3,6 +3,8 @@
 #include "../System/Vector3.h"
 #include <memory>
 //#include "../system/EffectManager.h"
+#include "CharacterViewer.h"
+#include <vector>
 
 class UIManager;
 class GameClearedScene :public Scene
@@ -17,12 +19,20 @@ public:
 	bool IsFinished() const { return m_finished; }
 private:
 
+	//プレイヤーは0番目でそれ以降はエイリアンの物として使用する
 	enum TitleCharacter
 	{
-		kPlayer,
-		kAlienStart,
+		Player,
+		Creature,
 	};
 
+	struct CharacterInfo
+	{
+		int modelHandle;
+		std::string animName;
+		Vector3 pos;
+		Vector3 scale;
+	};
 	//経過フレーム
 	int m_frame;
 	//フォント
@@ -58,6 +68,8 @@ private:
 	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
 
 	std::unique_ptr<UIManager> m_pUiManager;
+
+	std::vector<CharacterViewer>m_titleCharacter;
 
 	//EffectManager m_effectManger;
 };

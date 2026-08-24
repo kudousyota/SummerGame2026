@@ -39,7 +39,7 @@ void TitleScene::NormalUpdate(Input& input)
 	//エイリアンが端まで到達したら再スタート
 	for (size_t i = 0; i < m_alienMoveInfos.size(); i++)
 	{
-		size_t index = kAlienStart + i;
+		size_t index = AlienStart + i;
 
 		if (m_titleCharacter[index].IsMoveFinished())
 		{
@@ -156,15 +156,15 @@ void TitleScene::Init()
 	//タイトルでCharacterを描画
 	std::vector<CharacterInfo> infos =
 	{
-		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|UP",Vector3(0.0f,0.0f,0.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f)},
+		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f),Vector3(1.0f,1.0f,1.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|UP",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
 	};
 	m_titleCharacter.resize(infos.size());
 	for (size_t i = 0; i < infos.size(); i++)
 	{
-		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos);
+		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos,infos[i].scale);
 	}
 
 	//エイリアンごとの往復移動を設定する
@@ -206,7 +206,7 @@ void TitleScene::Draw()
 void TitleScene::StartAlienMove(size_t index)
 {
 	const auto& moveInfo = m_alienMoveInfos[index];
-	m_titleCharacter[kAlienStart + index].StartLinearMove(
+	m_titleCharacter[AlienStart + index].StartLinearMove(
 		moveInfo.start,
 		moveInfo.end,
 		moveInfo.speed,
