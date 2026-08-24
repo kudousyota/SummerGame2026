@@ -14,7 +14,7 @@ namespace
 	//カメラの高さ
 	constexpr float kCameraHeight = -250.0f;
 
-	//補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
+	//補間
 	constexpr float kCameraFollow = 0.15f;
 
 	constexpr float kStickDeadZone = 0.001f;
@@ -86,8 +86,6 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 	}
 	else
 	{
-
-
 		int xBuf = 0, yBuf = 0;
 
 		//右スティック入力取得
@@ -179,8 +177,6 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 
 		SetLightDirection(LightDir);
 
-		//SetGlobalAmbientLight(GetColorF(0.3f, 0.3f, 0.3f, 1.0f));  //全体を底上げ
-		
 }
 
 void Camera::Draw()

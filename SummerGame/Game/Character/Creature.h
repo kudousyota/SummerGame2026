@@ -50,4 +50,6 @@ private:
 
 	//ダメージを受けたらDamageステートへ
 	void OnDamaged() override;
+
+	float GetAttackRange()const override { return m_attackRange; }
 };

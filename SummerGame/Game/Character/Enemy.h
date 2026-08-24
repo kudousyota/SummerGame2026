@@ -19,6 +19,8 @@ public:
     float GetCollisionRadius() const override { return m_collisionRadius; }
     float GetCollisionHeight() const override { return m_collisionHeight; }
 
+    virtual float GetAttackRange()const  { return m_attackRange; }
+
     virtual AttackType GetAttackType() const = 0;
     virtual float GetAttackRadius()const = 0;
     virtual int GetScore()const = 0;
@@ -41,6 +43,7 @@ protected:
     //近づいたら気づくように
     float m_closeRange;
     float m_fov;
+    float m_attackRange;
 
     //サーチ関連
     float m_baseSightRange;		//通常時の索敵距離(戻す用)

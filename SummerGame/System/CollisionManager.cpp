@@ -11,6 +11,27 @@ namespace
 	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (DX_PI / 180.0f));
 }
 
+// 指定キャラクターと登録済みキャラクターすべてとの衝突を解決する
+void CollisionManager::ResolveCollisionsFor(Character* character)
+{
+    if (character == nullptr) return;
+
+    // 他のキャラクターとのみチェックする
+    for (auto other : m_pCharacters)
+    {
+        if (other == nullptr || other == character) continue;
+
+        // 重複処理を避けるためにポインタの順序で一方のみ処理する
+        if (other < character) continue;
+
+        // 衝突していたら解決
+        if (CheckCharacterCapsule(character, other))
+        {
+            ResolveCharacterCollision(character, other);
+        }
+    }
+}
+
 //シングルトンのCollisionManagerを取得
 CollisionManager& CollisionManager::Instance()
 {
@@ -299,55 +320,156 @@ bool CollisionManager::CheckCameraRay(const int stagehandle ,const Vector3& star
 	return false;
 }
 
-//bool CollisionManager::CheckCapsule()
-//{
-	////線分の中点
-	//VECTOR center = VScale(VAdd(m_capsulePos, m_heightcapsulePos), 0.5f);
-	////中点から線分の端へのベクトル
-	//VECTOR  aVec = VSub(m_heightcapsulePos, center);
-	////bVecを求める
-	//VECTOR bVec = VSub(m_spherePos, center);
-	////ｔを求めるために必要なこと
-	////1abのないせき
-	////２aの大きさ
-	////abの内積を求める
-	//float abDot = VDot(aVec, bVec);
-	////aの大きさを求める
-	//float aVecSize = VSize(aVec);
-	////tを求める
-	//float t = abDot / (aVecSize * aVecSize);
+void CollisionManager::ResolveCharacterCollision(Character* characterA, Character* characterB)
+{
+	//Aのカプセル軸
+	Vector3 aStart = characterA->GetCollisionPosition();
+	Vector3 aEnd = aStart + Vector3(0.0f, characterA->GetCollisionHeight(), 0.0f);
+	float radiusA = characterA->GetCollisionRadius();
 
-	//if (t < -1.0f)
-	//{
-	//	//tの下限
-	//	t = -1.0f;
-	//}
-	//if (t > 1.0f)
-	//{
-	//	//tの上限
-	//	t = 1.0f;
-	//}
-	////最小位置を与える座標
-	////中心点からaVecのt倍の位置
-	////t倍のaVecを求める
-	//VECTOR taVec = VScale(aVec, t);
-	////中心点からtaVecの位置
-	//VECTOR minPos = VAdd(center, taVec);
-	////球と線分の最小距離のベクトルを求める
-	//VECTOR sizeVec = VSub(m_spherePos, minPos);
-	////最小距離の大きさを求める
-	//float size = VSize(sizeVec);
-	////距離の二乗
-	//float fDistSqr = size * size;
-	////両当たり範囲長の合計
-	//float ar = kWidth + kWidth;
-	////当たったかどうかを判定
-	//bool isHit = fDistSqr <= ar * ar;
-	//if (isHit)
-	//{
-	//	color = 0xffff00;
-	//}
-	//DrawSphere3D(m_spherePos, kWidth, 4, GetColor(0, 255, 0), color, false);
-	//DrawCapsule3D(m_capsulePos, m_heightcapsulePos, kWidth, 5, color, color, false);
-//}
+	//Bのカプセル軸
+	Vector3 bStart = characterB->GetCollisionPosition();
+	Vector3 bEnd = bStart + Vector3(0.0f, characterB->GetCollisionHeight(), 0.0f);
+	float radiusB = characterB->GetCollisionRadius();
+
+	//2本の軸の最近接点を求める
+	Vector3 closestA, closestB;
+	ClosestPointSegmentSegment(aStart, aEnd, bStart, bEnd, closestA, closestB);
+
+	Vector3 direction = closestA - closestB;
+
+	//Y方向は無視してXZ平面のみで押し出す
+	direction.y = 0.0f;
+
+	float distanceSq = direction.SqMagnitude();
+
+	//ほぼ同じ位置なら押し出し方向は決めれない
+	if (distanceSq < 0.000001f)
+	{
+		//真上/真下に重なっている場合の保険として、任意方向にずらす
+		direction = Vector3(1.0f, 0.0f, 0.0f);
+		distanceSq = 1.0f;
+	}
+
+	float distance = sqrtf(distanceSq);
+	direction /= distance;
+
+	float combinedRadius = radiusA + radiusB;
+	float penetration = combinedRadius - distance;
+
+	if (penetration <= 0.0f)
+	{
+		return;
+	}
+
+	float push = penetration * 0.5f;
+
+	Vector3 posA = characterA->GetPosition();
+	Vector3 posB = characterB->GetPosition();
+
+	posA += direction * push;
+	posB -= direction * push;
+
+	characterA->SetPosition(posA);
+	characterB->SetPosition(posB);
+}
+//2本の線分
+void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vector3& q1, const Vector3& p2, const Vector3& q2, Vector3& outC1, Vector3& outC2)
+{
+	Vector3 d1 = q1 - p1; // カプセルAの軸ベクトル
+	Vector3 d2 = q2 - p2; // カプセルBの軸ベクトル
+	Vector3 r = p1 - p2;
+
+	float a = d1.Dot(d1); // 線分1の長さの2乗
+	float e = d2.Dot(d2); // 線分2の長さの2乗
+	float f = d2.Dot(r);
+
+	float s, t;
+
+	// 両方が点(長さ0)の場合
+	if (a <= 0.000001f && e <= 0.000001f)
+	{
+		outC1 = p1;
+		outC2 = p2;
+		return;
+	}
+
+	if (a <= 0.000001f)
+	{
+		// 線分1が点の場合
+		s = 0.0f;
+		t = f / e;
+		t = std::clamp(t, 0.0f, 1.0f);
+	}
+	else
+	{
+		float c = d1.Dot(r);
+		if (e <= 0.000001f)
+		{
+			// 線分2が点の場合
+			t = 0.0f;
+			s = std::clamp(-c / a, 0.0f, 1.0f);
+		}
+		else
+		{
+			float b = d1.Dot(d2);
+			float denom = a * e - b * b;
+
+			if (denom != 0.0f)
+			{
+				s = std::clamp((b * f - c * e) / denom, 0.0f, 1.0f);
+			}
+			else
+			{
+				s = 0.0f; // 平行な場合
+			}
+
+			t = (b * s + f) / e;
+
+			if (t < 0.0f)
+			{
+				t = 0.0f;
+				s = std::clamp(-c / a, 0.0f, 1.0f);
+			}
+			else if (t > 1.0f)
+			{
+				t = 1.0f;
+				s = std::clamp((b - c) / a, 0.0f, 1.0f);
+			}
+		}
+	}
+
+	outC1 = p1 + d1 * s;
+	outC2 = p2 + d2 * t;
+}
+
+bool CollisionManager::CheckCharacterCapsule(Character* characterA, Character* characterB)
+{
+	//AのカプセルAの軸を作る
+	Vector3 aStart = characterA->GetCollisionPosition();
+	Vector3 aEnd = aStart + Vector3(0.0f, characterA->GetCollisionHeight(), 0.0f);
+	float radiusA = characterA->GetCollisionRadius();
+
+	//Bのカプセルの軸を作る
+	Vector3 bStart = characterB->GetCollisionPosition();
+	Vector3 bEnd = bStart + Vector3(0.0f, characterB->GetCollisionHeight(), 0.0f);
+	float radiusB = characterB->GetCollisionRadius();
+
+	//ここで純粋な幾何計算関数に投げる
+	return CheckCapsule(aStart, aEnd, radiusA, bStart, bEnd, radiusB);
+}
+
+bool CollisionManager::CheckCapsule(const Vector3& aStart, const Vector3& aEnd, float radiusA,const Vector3& bStart, const Vector3& bEnd, float radiusB)
+{
+	//2本の線分同士の最短距離を求める
+	float distance = Segment_Segment_MinLength(aStart, aEnd, bStart, bEnd);
+
+	//両カプセルの半径を合計
+	float combinedRadiu = radiusA + radiusB;
+
+	//距離が半径の合計以下なら当たっている
+	bool isHit = distance <= combinedRadiu;
+
+	return isHit;
+}
 

@@ -21,6 +21,9 @@ namespace
 	//死んだ
 	const char* const kDeadAnimName = "Enemy|Dead";
 
+	//攻撃を開始する距離
+	constexpr float kAttackRange = 350.0f;
+	//攻撃の長さ
 	constexpr float kAttackRadius = 180.0f;
 	constexpr float kPumncRadius = 130.0f;
 	//ボスなのでスコアは多くする
@@ -65,6 +68,8 @@ void Creature::Init()
 
 	//ボスなのでスコアを多くする
 	m_score = kScore;
+
+	m_attackRange = 350.0f;
 
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 }
@@ -121,7 +126,6 @@ void Creature::Update()
 			break;
 		}
 		
-		
 	}
 		break;
 	case CreatureState::Walk:
@@ -139,8 +143,8 @@ void Creature::Update()
 		Vector3 dir = m_pPlayer->GetPosition() - m_pos;
 		float distsq = dir.SqMagnitude();
 
-		//攻撃範囲に入ったら攻撃
-		if (distsq <= kAttackRange * kAttackRange)
+        //攻撃範囲に入ったら攻撃
+        if (distsq <= GetAttackRange() * GetAttackRange())
 		{
 			//攻撃
 			if (m_attackCooldown <= 0)
@@ -277,8 +281,8 @@ void Creature::AttackUpdate()
 		radius = kAttackRadius;
 	}
 
-	//攻撃データを作成
-	AttackData attack(CharacterType::Enemy,m_currentState == CreatureState::Punch ? AttackType::Punch : AttackType::Attack,m_attackPower, kAttackRadius);
+    //攻撃データを作成
+    AttackData attack(CharacterType::Enemy, type, m_attackPower, radius);
 	//前側に表示高さは微調整
 	m_attackPos = m_pos + m_attackDir * 70.0f + Vector3(0.0f, 20.0f, 0.0f);
 	//攻撃判定を出す
@@ -377,6 +381,6 @@ AttackType Creature::GetAttackType() const
 
 float Creature::GetAttackRadius() const
 {
-	return 80.0f;
+    return kAttackRadius;
 }
 

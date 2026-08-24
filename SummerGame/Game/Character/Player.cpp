@@ -1227,6 +1227,27 @@ void Player::TurnToInputDirection(const Vector3& right, const Vector3& forward)
 
 void Player::UpdateAttackDirection(const Vector3& right, const Vector3& forward)
 {
+	//ロックオン中なら、入力に関わらずロックオン対象の方向を優先する
+	if (m_lockOnManager.IsLockOn())
+	{
+		const Vector3* targetPos = m_lockOnManager.GetLockOnPos();
+
+		if (targetPos != nullptr)
+		{
+			Vector3 toTarget = *targetPos - m_pos;
+			toTarget.y = 0.0f;
+
+			if (toTarget.SqMagnitude() > 0.0001f)
+			{
+				m_attackForward = toTarget.Normalize();
+				m_forward = m_attackForward;
+				m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
+				return;
+			}
+		}
+	}
+
+
 	float stickX = Input::Instance().GetStickLX();
 	float stickY = Input::Instance().GetStickLY();
 
@@ -1259,14 +1280,14 @@ void Player::TryAttackHit()
 
     if (hitList.empty())
     {
-        // ヒットしなかった（空振り）のSE
+        //ヒットしなかったSE
         SoundManager::Instance().PlaySE("NoHit");
         return;
     }
 
     //一番最初に当たったキャラクターをロックオン対象にする
     m_lockOnManager.OnAttackHit(hitList.front());
-
+	
     //ダメージ量に応じてヒット音を変える
     if (attack.GetDamage() >= kKickPower)
     {

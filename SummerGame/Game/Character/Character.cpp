@@ -70,8 +70,7 @@ void Character::Collision()
 	
 
 	// CollisionManagerに地面判定用の関数を呼び出す
-    if (m_velocity.y <= 0.0f &&
-        CollisionManager::Instance().CheckStageGround(this, stageHandle, groundY, outGroundNormal))
+    if (m_velocity.y <= 0.0f && CollisionManager::Instance().CheckStageGround(this, stageHandle, groundY, outGroundNormal))
     {
         //足元の座標を地面の高さに合わせる
         //地面との差が小さい場合は即座にスナップして浮遊感を消す
@@ -97,6 +96,9 @@ void Character::Collision()
 
 	//座標を押し出すように
 	CollisionManager::Instance().CheckStageWall(this, stageHandle);
+
+	// 登録済みの他キャラクターとのカプセル衝突を解決
+	CollisionManager::Instance().ResolveCollisionsFor(this);
 
 }
 

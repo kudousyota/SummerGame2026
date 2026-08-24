@@ -20,6 +20,7 @@ Enemy::Enemy():
 	m_sightRange(0.0f),
 	m_closeRange(0.0f),
 	m_fov(0.0f),
+	m_attackRange(0.0f),
 	m_score(0)
 {
 }
@@ -42,6 +43,7 @@ void Enemy::Init()
 
 	m_sightRange = 500.0f;
 	m_closeRange = 150.0f;
+	m_attackRange = 300.0f;
 	m_fov = 90.0f;
 
 	CollisionManager::Instance().Register(this);
