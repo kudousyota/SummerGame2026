@@ -27,7 +27,7 @@ GameOverScene::~GameOverScene()
 void GameOverScene::Init()
 {
 	//ÉtÉHÉìÉgÇÃì«Ç›çûÇ›
-	m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+	//m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 }
 
 void GameOverScene::Update(Input& input)

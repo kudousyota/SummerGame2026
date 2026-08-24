@@ -21,7 +21,8 @@ public:
 	bool CheckStageGround(Character* character, int stagehandle, float& outGroundY,Vector3& outGroundNormal);
 	//カメラとステージの判定
 	bool CheckCameraRay(int stagehandle,const Vector3& start, const Vector3& end, Vector3& hitpos);
-
+	//キャラクター同士の当たり判定
+	//bool CheckCapsule();
 private:
 	std::vector<Character*> m_pCharacters;
 

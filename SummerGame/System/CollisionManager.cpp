@@ -185,7 +185,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 		}
 		//ポリゴンに当たったか記録
 		//hitAny = true;
-		//ここでは「壁ポリゴンに当たったか」を一旦保留にする
+		//ここでは壁ポリゴンに当たったかを一旦保留にする
 
 		//一番めり込んだポリゴンを探すための変数
 		float maxDepth = -FLT_MAX;
@@ -298,4 +298,56 @@ bool CollisionManager::CheckCameraRay(const int stagehandle ,const Vector3& star
 	}
 	return false;
 }
+
+//bool CollisionManager::CheckCapsule()
+//{
+	////線分の中点
+	//VECTOR center = VScale(VAdd(m_capsulePos, m_heightcapsulePos), 0.5f);
+	////中点から線分の端へのベクトル
+	//VECTOR  aVec = VSub(m_heightcapsulePos, center);
+	////bVecを求める
+	//VECTOR bVec = VSub(m_spherePos, center);
+	////ｔを求めるために必要なこと
+	////1abのないせき
+	////２aの大きさ
+	////abの内積を求める
+	//float abDot = VDot(aVec, bVec);
+	////aの大きさを求める
+	//float aVecSize = VSize(aVec);
+	////tを求める
+	//float t = abDot / (aVecSize * aVecSize);
+
+	//if (t < -1.0f)
+	//{
+	//	//tの下限
+	//	t = -1.0f;
+	//}
+	//if (t > 1.0f)
+	//{
+	//	//tの上限
+	//	t = 1.0f;
+	//}
+	////最小位置を与える座標
+	////中心点からaVecのt倍の位置
+	////t倍のaVecを求める
+	//VECTOR taVec = VScale(aVec, t);
+	////中心点からtaVecの位置
+	//VECTOR minPos = VAdd(center, taVec);
+	////球と線分の最小距離のベクトルを求める
+	//VECTOR sizeVec = VSub(m_spherePos, minPos);
+	////最小距離の大きさを求める
+	//float size = VSize(sizeVec);
+	////距離の二乗
+	//float fDistSqr = size * size;
+	////両当たり範囲長の合計
+	//float ar = kWidth + kWidth;
+	////当たったかどうかを判定
+	//bool isHit = fDistSqr <= ar * ar;
+	//if (isHit)
+	//{
+	//	color = 0xffff00;
+	//}
+	//DrawSphere3D(m_spherePos, kWidth, 4, GetColor(0, 255, 0), color, false);
+	//DrawCapsule3D(m_capsulePos, m_heightcapsulePos, kWidth, 5, color, color, false);
+//}
 
