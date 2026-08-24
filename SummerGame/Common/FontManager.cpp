@@ -7,8 +7,8 @@ FontManager* FontManager::m_instance = nullptr;
 
 namespace
 {
-	const char* const kFontPath = "Data/Font/constanz.ttf";
-	const char* const kFontName = "Constantia";
+	const char* const kFontPath = "Data/Font/SourceHanSerifJP-ExtraLight.otf";
+	const char* const kFontName = "Œ¹ƒm–¾’© JP ExtraLight";
 
 	const int kFontSize[] =
 	{
