@@ -10,6 +10,7 @@ GameOverSceneUI::GameOverSceneUI() :
 
 GameOverSceneUI::~GameOverSceneUI()
 {
+	DeleteGraph(m_logoHandle);
 }
 
 void GameOverSceneUI::Init()
@@ -43,6 +44,6 @@ void GameOverSceneUI::Draw()
 	//const int goColor = GetColor(255, 80, 80);
 	//FontManager::Instance().DrawCenteredExtendText(Game::kScreenWidth / 2, 140, "Game Over", goColor, 80, black, 1.0f);
 	//ÉçÉSÇÃï`âÊ
-	DrawGraph(Game::kScreenWidth / 2, 140, m_logoHandle, true);
+	DrawRotaGraph(620, 360, 0.02f, 0, m_logoHandle, true);
 
 }

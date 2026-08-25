@@ -33,8 +33,6 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Init()
 {
-
-	//残っているエフェクトの停止
 	EffectManager::Instns().StopAll();
 
 	EffectManager::Instns().Init();
@@ -61,8 +59,8 @@ void GameOverScene::Init()
     //UIを作成して初期化
 	m_pUiManager = std::make_unique<UIManager>();
 	//リザルトUI
-	auto gameClearedUI = std::make_unique<GameOverSceneUI>();
-	m_pUiManager->Add(std::move(gameClearedUI));
+	auto gameOverUI = std::make_unique<GameOverSceneUI>();
+	m_pUiManager->Add(std::move(gameOverUI));
 
 	m_pUiManager->Init();
 
@@ -85,6 +83,7 @@ void GameOverScene::Draw()
 
 void GameOverScene::FadeInUpdate(Input& input)
 {
+	EffectManager::Instns().Update();
 	//フェードイン中でもエンター("ok")でフェードアウトを開始できるようにする
 	if (input.IsTriggered("ok"))
 	{
@@ -104,8 +103,6 @@ void GameOverScene::FadeInUpdate(Input& input)
 		return;
 	}
 }
-
-
 
 void GameOverScene::NormalUpdate(Input& input)
 {
