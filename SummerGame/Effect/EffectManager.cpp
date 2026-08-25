@@ -36,16 +36,7 @@ void EffectManager::Terminate()
 
 void EffectManager::Init()
 {
-    //既にロード済みなら一旦解放してから読み込み直す
-    for (int i = 0; i < static_cast<int>(EffectType::Max); ++i)
-    {
-        if (m_resourceHandles[i] != -1)
-        {
-            DeleteEffekseerEffect(m_resourceHandles[i]);
-            m_resourceHandles[i] = -1;
-        }
-    }
-
+   
     //被ダメエフェクトのリソース読み込みハンドルを所持する
 	m_resourceHandles[static_cast<int>(EffectType::Hit)] = LoadEffekseerEffect("Data/eff/Effect/Hit.efk");
     //ブレス攻撃のエフェクトのリソース読み込み
@@ -102,8 +93,22 @@ int  EffectManager::PlayEffect(EffectType type, const Vector3& pos)
     return handle;
 }
 
+void EffectManager::StopEffect(int handle)
+{
+    for (auto it = m_effects.begin(); it != m_effects.end(); ++it)
+    {
+        if ((*it)->GetPlayingHandle() == handle)
+        {
+            (*it)->Stop();
+            m_effects.erase(it);
+            return;
+        }
+    }
+}
+
 void EffectManager::StopAll()
 {
+
     for (auto& effect : m_effects)
     {
         if (effect)

@@ -129,7 +129,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 		return;
 
 	}
-    // キャラクターの更新
+    //キャラクターの更新
 	for (auto& character : m_CleareCharacter)
 	{
 		character.Update();
@@ -156,7 +156,7 @@ void GameClearedScene::NormalDraw()
 	const int Color = GetColor(224, 255, 255);
 	const int black = GetColor(0, 0, 0);
     MV1DrawModel(m_modelHandle);
-	// キャラクター描画
+	//キャラクター描画
 	for (auto& character : m_CleareCharacter)
 	{
 		character.Draw();

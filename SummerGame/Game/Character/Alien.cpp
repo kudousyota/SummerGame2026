@@ -54,13 +54,13 @@ Alien::~Alien()
 {
 	if (m_floatingEffectHandle != -1)
 	{
-		StopEffekseer3DEffect(m_floatingEffectHandle);
+		EffectManager::Instns().StopEffect(m_floatingEffectHandle);
 		m_floatingEffectHandle = -1;
 	}
 
 	if (m_breathEffectHandle != -1)
 	{
-		StopEffekseer3DEffect(m_breathEffectHandle);
+		EffectManager::Instns().StopEffect(m_breathEffectHandle);
 		m_breathEffectHandle = -1;
 	}
 
@@ -109,6 +109,7 @@ void Alien::Init()
 	m_headBone = MV1SearchFrame(m_modelHandle, kAttackRig);
 	//浮遊エフェクトの再生
 	m_floatingEffectHandle = EffectManager::Instns().PlayEffect(EffectType::Floating, m_pos);
+
 	//スコア
 	m_score = kScore;
 }
@@ -121,7 +122,7 @@ void Alien::Update()
 		//死亡アニメーションが終わったら消える
 		if (m_floatingEffectHandle != -1)
 		{
-			StopEffekseer3DEffect(m_floatingEffectHandle);
+			EffectManager::Instns().StopEffect(m_floatingEffectHandle);
 			m_floatingEffectHandle = -1;
 		}
 		return;
@@ -225,7 +226,7 @@ void Alien::Update()
 
 			if (m_breathEffectHandle != -1)
 			{
-				StopEffekseer3DEffect(m_breathEffectHandle);
+				EffectManager::Instns().StopEffect(m_breathEffectHandle);
 				m_breathEffectHandle = -1;
 			}
 			TransitionTo(AlienState::Idle);
@@ -267,7 +268,7 @@ void Alien::Update()
 
 		if (m_breathEffectHandle != -1)
 		{
-			StopEffekseer3DEffect(m_breathEffectHandle);
+			EffectManager::Instns().StopEffect(m_breathEffectHandle);
 			m_breathEffectHandle = -1;
 		}
 		
@@ -437,7 +438,7 @@ void Alien::AttackUpdate()
 	}
 	SetPosPlayingEffekseer3DEffect(m_breathEffectHandle, headPos.x, headPos.y, headPos.z);
 
-	//頭ボーンの向きを使う(左右)
+	//頭ボーンの向きを使う
 	float effectYaw = atan2f(forward.x, forward.z) + DX_PI_F;
 
 	//上下の傾きも計算する
@@ -543,13 +544,13 @@ void Alien::OnDead()
 
 	if (m_breathEffectHandle != -1)
 	{
-		StopEffekseer3DEffect(m_breathEffectHandle);
+		EffectManager::Instns().StopEffect(m_breathEffectHandle);
 		m_breathEffectHandle = -1;
 	}
 	// 浮遊エフェクトもここで止める
 	if (m_floatingEffectHandle != -1)
 	{
-		StopEffekseer3DEffect(m_floatingEffectHandle);
+		EffectManager::Instns().StopEffect(m_floatingEffectHandle);
 		m_floatingEffectHandle = -1;
 	}
 	TransitionTo(AlienState::Dead);

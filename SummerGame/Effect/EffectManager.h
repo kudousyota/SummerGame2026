@@ -28,7 +28,8 @@ public:
     void Terminate();
 	//指定した種類と座標でエフェクトを再生する関数を追加
 	int PlayEffect(EffectType type, const Vector3& pos);
-
+	//個別でエフェクトを停止する
+	void StopEffect(int handle);
 	//エフェクトを停止する
 	void StopAll();
 
