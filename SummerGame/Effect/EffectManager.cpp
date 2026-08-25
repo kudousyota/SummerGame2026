@@ -42,6 +42,8 @@ void EffectManager::Init()
     m_resourceHandles[static_cast<int>(EffectType::Breath)] = LoadEffekseerEffect("Data/eff/Effect/Breath.efk");
     //エイリアンの浮遊エフェクトの読み込み
     m_resourceHandles[static_cast<int>(EffectType::Floating)] = LoadEffekseerEffect("Data/eff/Effect/Floating.efk");
+    //ゲームオーバーの背景エフェクトの読み込む
+    m_resourceHandles[static_cast<int>(EffectType::Gameover)] = LoadEffekseerEffect("Data/eff/Effect/GameOver.efk");
 }
 
 void EffectManager::Update()

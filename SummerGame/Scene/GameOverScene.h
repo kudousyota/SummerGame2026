@@ -1,6 +1,9 @@
 #pragma once
 #include "Scene.h"
 #include "../System/Input.h"
+#include "../System/Vector3.h"
+
+class EffectManager;
 class GameOverScene :public Scene
 {
 public:
@@ -17,6 +20,9 @@ private:
 	int m_fontHandle;
 	//シーン終了フラグ
 	bool m_finished;
+
+	//エフェクトの場所
+	Vector3 m_effectPos;
 
 	//メンバ関数ポインタを使用して内部状態を書き換える
 	//update関数とdraw関数を、現在のTitleSceneの状態に合わせて
@@ -36,5 +42,6 @@ private:
 	void FadeDraw();	//フェードDraw
 	using DrawFunc_t = void(GameOverScene::*)();
 	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
+
 };
 

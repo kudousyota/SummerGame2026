@@ -125,8 +125,8 @@ void FontManager::DrawLeftText(int x, int y, std::string text, unsigned int colo
 	}
 
 	int textHeight = GetFontSizeToHandle(drawFont.handle);
-	// 左端揃えの文字列描画
-	DrawStringToHandle(x, y - textHeight / 2, text.c_str(), color, drawFont.handle);
+	//左端揃えの文字列描画
+	DrawStringToHandle(x, y - textHeight / 2, text.c_str(), color, drawFont.handle,edgeColor);
 }
 
 void FontManager::DrawCenteredExtendText(int x, int y, std::string text, unsigned int color, int size, unsigned int edgeColor, float extendRate)
@@ -180,9 +180,9 @@ void FontManager::DrawBottomRightAndQuakeText(int x, int y, std::string text, un
 
 	if (isShake)
 	{
-		// 現在のフレーム数を取得
+		//現在のフレーム数を取得
 		int frameCount = GetNowCount() / shakeSpeed / 5;
-		// 揺れの計算 (sinを使用して滑らかに左右に動く)
+		//揺れの計算(sinを使用して滑らかに左右に動く)
 		int shakeOffset = static_cast<int>(sin(frameCount) * shakeAmplitude / 6);
 
 		x += shakeOffset;

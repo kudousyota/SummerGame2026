@@ -12,6 +12,7 @@
 #include "../UI/UIManager.h"
 #include "../UI/HPUI.h"
 #include "../UI/WitchTimeNeedleUI.h"
+#include "../UI/ManualUI.h"
 #include "../Game.h"
 #include "../Effect/EffectManager.h"
 #include "../Game/WitchTimeHand.h"
@@ -90,6 +91,9 @@ void SceneMain::Init()
 	auto witchTimeUI = std::make_unique<WitchTimeNeedleUI>();
 	witchTimeUI->SetPlayerWitchTime(m_pPlayer);
 	m_pUiManager->Add(std::move(witchTimeUI));
+
+	auto manualUi = std::make_unique<ManualUI>();
+	m_pUiManager->Add(std::move(manualUi));
 
 	m_pUiManager->Init();
 

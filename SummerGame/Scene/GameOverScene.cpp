@@ -4,6 +4,7 @@
 #include "TitleScene.h"
 #include "../Game.h"
 #include "../System/SoundManager.h"
+#include "../Effect/EffectManager.h"
 namespace
 {
 	constexpr int kFadeInterval = 60;
@@ -13,7 +14,8 @@ namespace
 GameOverScene::GameOverScene(SceneController& controller):
 	Scene(controller),
 	m_finished(false),
-	m_fontHandle(-1)
+	m_fontHandle(-1),
+	m_effectPos({0.0f,0.0f,0.0f})
 {
 	m_update = &GameOverScene::FadeInUpdate;
 	m_draw = &GameOverScene::FadeDraw;
@@ -26,8 +28,7 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Init()
 {
-	//ÉtÉHÉìÉgÇÃì«Ç›çûÇ›
-	//m_fontHandle = CreateFontToHandle("Constantia", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+	EffectManager::Instns().Init();
 }
 
 void GameOverScene::Update(Input& input)
@@ -68,7 +69,7 @@ void GameOverScene::FadeInUpdate(Input& input)
 
 void GameOverScene::NormalUpdate(Input& input)
 {
-
+	EffectManager::Instns().Update();
 
 	if (input.IsTriggered("ok"))
 	{
@@ -79,7 +80,7 @@ void GameOverScene::NormalUpdate(Input& input)
 		return;
 
 	}
-
+	EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
 
 }
 
@@ -95,6 +96,8 @@ void GameOverScene::FadeOutUpdate(Input&)
 }
 void GameOverScene::NormalDraw()
 {
+
+	EffectManager::Instns().Draw();
 
 	const int white = GetColor(255, 255, 255);
 	const int Cyan = GetColor(0, 255, 255);

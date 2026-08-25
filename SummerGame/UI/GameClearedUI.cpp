@@ -65,11 +65,11 @@ void GameClearedUI::Draw()
 	const int white = GetColor(255, 255, 255);
 	const int black = GetColor(0, 0, 0);
 	//”’‚æ‚è
-	const int papul = GetColor(220, 200, 240);
+	//const int papul = GetColor(220, 200, 240);
 	//‡‚æ‚è
-	//const int papul = GetColor(200, 170, 230)
+	const int papul = GetColor(180, 100, 220);
 	//Â‚æ‚è
-	//const int papul = GetColor(190, 180, 240)
+	//const int papul = GetColor(190, 180, 240);
 
 	const int fontSize = 24;
 

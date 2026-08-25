@@ -10,6 +10,7 @@ enum class EffectType
 	Just,
 	Breath,
 	Floating,
+	Gameover,
 	Max
 };
 class Effect;

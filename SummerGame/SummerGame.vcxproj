@@ -146,6 +146,7 @@
     <ClCompile Include="Effect\EffectManager.cpp" />
     <ClCompile Include="Game\PlayerAfterImage.cpp" />
     <ClCompile Include="Game\SkyDome.cpp" />
+    <ClCompile Include="UI\ManualUI.cpp" />
     <ClCompile Include="System\SoundManager.cpp" />
     <ClCompile Include="System\Score.cpp" />
     <ClCompile Include="UI\GameClearedUI.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Effect\EffectManager.h" />
     <ClInclude Include="Game\PlayerAfterImage.h" />
     <ClInclude Include="Game\SkyDome.h" />
+    <ClInclude Include="UI\ManualUI.h" />
     <ClInclude Include="System\SoundManager.h" />
     <ClInclude Include="System\Score.h" />
     <ClInclude Include="UI\GameClearedUI.h" />
