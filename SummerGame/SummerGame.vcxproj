@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Common\FontManager.cpp" />
+    <ClCompile Include="UI\GameOverSceneUI.cpp" />
     <ClCompile Include="Game\Character\CharacterViewer.cpp" />
     <ClCompile Include="DataLoader\AttackData.cpp" />
     <ClCompile Include="Effect\Effect.cpp" />
@@ -187,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\FontManager.h" />
+    <ClInclude Include="UI\GameOverSceneUI.h" />
     <ClInclude Include="Game\Character\CharacterViewer.h" />
     <ClInclude Include="DataLoader\CharacterType.h" />
     <ClInclude Include="DataLoader\AttackData.h" />

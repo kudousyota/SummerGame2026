@@ -19,7 +19,7 @@ public:
 	bool IsFinished() const { return m_finished; }
 private:
 
-	//プレイヤーは0番目でそれ以降はエイリアンの物として使用する
+	
 	enum TitleCharacter
 	{
 		Player,
@@ -69,7 +69,7 @@ private:
 
 	std::unique_ptr<UIManager> m_pUiManager;
 
-	std::vector<CharacterViewer>m_titleCharacter;
+	std::vector<CharacterViewer>m_CleareCharacter;
 
 	//EffectManager m_effectManger;
 };

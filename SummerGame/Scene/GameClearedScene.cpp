@@ -66,10 +66,10 @@ void GameClearedScene::Init()
 		{ Model::Instance().CreatPlayerModel(), "Player|Cleare", Vector3(250.0f, 130.0f, -500.0f),Vector3(1.0f,1.0f,1.0f)},
 		{ Model::Instance().CreateCreatureModel(),  "Enemy|CrearDead",   Vector3(250.0f, 0.0f, 0.0f),Vector3(3.0f,3.0f,3.0f )},
 	};
-	m_titleCharacter.resize(infos.size());
+	m_CleareCharacter.resize(infos.size());
 	for (size_t i = 0; i < infos.size(); i++)
 	{
-		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos,infos[i].scale);
+		m_CleareCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos,infos[i].scale);
 	}
 
     //カメラを初期化
@@ -130,7 +130,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 
 	}
     // キャラクターの更新
-	for (auto& character : m_titleCharacter)
+	for (auto& character : m_CleareCharacter)
 	{
 		character.Update();
 	}
@@ -157,7 +157,7 @@ void GameClearedScene::NormalDraw()
 	const int black = GetColor(0, 0, 0);
     MV1DrawModel(m_modelHandle);
 	// キャラクター描画
-	for (auto& character : m_titleCharacter)
+	for (auto& character : m_CleareCharacter)
 	{
 		character.Draw();
 	}

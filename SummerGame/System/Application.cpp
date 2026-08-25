@@ -74,7 +74,9 @@ bool Application::Init()
 	FontManager::Instance().LoadFont();
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
 	//薄い青
-	SetBackgroundColor(100, 150, 255); 
+	//SetBackgroundColor(100, 150, 255);
+	//黒
+	SetBackgroundColor(0, 0, 0);
 
 	return true;
 }

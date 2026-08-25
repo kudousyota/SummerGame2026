@@ -5,12 +5,17 @@
 #include "../Game.h"
 #include "../System/SoundManager.h"
 #include "../Effect/EffectManager.h"
+#include "../System/Model.h"
+#include "../Common/FontManager.h"
+#include "../UI/GameOverSceneUI.h"
+#include "../UI/UIManager.h"
 namespace
 {
 	constexpr int kFadeInterval = 60;
 
 }
 
+// No-op patch to trigger file update
 GameOverScene::GameOverScene(SceneController& controller):
 	Scene(controller),
 	m_finished(false),
@@ -28,7 +33,39 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Init()
 {
+
+	//残っているエフェクトの停止
+	EffectManager::Instns().StopAll();
+
 	EffectManager::Instns().Init();
+	//タイトルと同様にキャラクターを表示する
+	std::vector<CharacterInfo> infos =
+	{
+		{ Model::Instance().CreatPlayerModel(), "Player|GameOverDead", Vector3(0.0f, 0.0f, -500.0f),Vector3(1.0f,1.0f,1.0f)},
+	};
+	m_GameOverCharacter.resize(infos.size());
+	for (size_t i = 0; i < infos.size(); i++)
+	{
+		m_GameOverCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos, infos[i].scale);
+	}
+
+    //エフェクトの再生位置はプレイヤーと合わせておく
+    if (!infos.empty())
+    {
+        m_effectPos = infos[0].pos;
+    }
+
+    //UIを作成して初期化
+	m_pUiManager = std::make_unique<UIManager>();
+	//リザルトUI
+	auto gameClearedUI = std::make_unique<GameOverSceneUI>();
+	m_pUiManager->Add(std::move(gameClearedUI));
+
+	m_pUiManager->Init();
+
+	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 100.0f, -700.0f), Vector3(0.0f, 100.0f, 0.0f));
+	SetupCamera_Perspective(DX_PI_F / 3.0f);
+	SetCameraNearFar(20.0f, 4500.0f);
 }
 
 void GameOverScene::Update(Input& input)
@@ -81,7 +118,13 @@ void GameOverScene::NormalUpdate(Input& input)
 
 	}
 	EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
+	//描画するキャラクターの更新
+	for (auto& charcter : m_GameOverCharacter)
+	{
+		charcter.Update();
+	}
 
+	m_pUiManager->Update();
 }
 
 void GameOverScene::FadeOutUpdate(Input&)
@@ -99,22 +142,13 @@ void GameOverScene::NormalDraw()
 
 	EffectManager::Instns().Draw();
 
-	const int white = GetColor(255, 255, 255);
-	const int Cyan = GetColor(0, 255, 255);
-	const int Color = GetColor(224, 255, 255);
-	const int black = GetColor(0, 0, 0);
-
-	DrawStringToHandle(550, 50, "GameOver", white, m_fontHandle);
-
-	//点滅頻度
-	const int intervar = 650;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-	if (visible)
+	//モデルの描画
+	for (auto& charcter : m_GameOverCharacter)
 	{
-		//操作説明表示
-		DrawStringToHandle(470, 580, "Press A to Retry", white, m_fontHandle);
+		charcter.Draw();
 	}
+	
+	m_pUiManager->Draw();
 }
 
 void GameOverScene::FadeDraw()

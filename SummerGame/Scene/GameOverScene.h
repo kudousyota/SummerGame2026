@@ -2,7 +2,11 @@
 #include "Scene.h"
 #include "../System/Input.h"
 #include "../System/Vector3.h"
+#include "CharacterViewer.h"
+#include <vector>
+#include <memory>
 
+class UIManager;
 class EffectManager;
 class GameOverScene :public Scene
 {
@@ -13,6 +17,20 @@ public:
 	void Update(Input& input)override;
 	void Draw()override;
 private:
+
+	enum TitleCharacter
+	{
+		Player,
+		Creature,
+	};
+
+	struct CharacterInfo
+	{
+		int modelHandle;
+		std::string animName;
+		Vector3 pos;
+		Vector3 scale;
+	};
 
 	//経過フレーム
 	int m_frame;
@@ -43,5 +61,8 @@ private:
 	using DrawFunc_t = void(GameOverScene::*)();
 	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
 
+	std::vector<CharacterViewer>m_GameOverCharacter;
+
+	std::unique_ptr<UIManager> m_pUiManager;
 };
 
