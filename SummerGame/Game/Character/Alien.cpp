@@ -52,7 +52,23 @@ Alien::Alien():
 
 Alien::~Alien()
 {
-	
+	if (m_floatingEffectHandle != -1)
+	{
+		StopEffekseer3DEffect(m_floatingEffectHandle);
+		m_floatingEffectHandle = -1;
+	}
+
+	if (m_breathEffectHandle != -1)
+	{
+		StopEffekseer3DEffect(m_breathEffectHandle);
+		m_breathEffectHandle = -1;
+	}
+
+	if (m_pBreath)
+	{
+		m_pBreath->Kill();
+		m_pBreath = nullptr;
+	}
 }
 
 void Alien::Init()
@@ -530,6 +546,11 @@ void Alien::OnDead()
 		StopEffekseer3DEffect(m_breathEffectHandle);
 		m_breathEffectHandle = -1;
 	}
-
+	// 浮遊エフェクトもここで止める
+	if (m_floatingEffectHandle != -1)
+	{
+		StopEffekseer3DEffect(m_floatingEffectHandle);
+		m_floatingEffectHandle = -1;
+	}
 	TransitionTo(AlienState::Dead);
 }

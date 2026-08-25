@@ -39,7 +39,7 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
-	
+	EffectManager::Instns().StopAll();
 }
 
 void SceneMain::Init()
@@ -204,11 +204,14 @@ void SceneMain::NormalUpdate(Input& input)
 
 void SceneMain::FadeOutUpdate(Input&)
 {
+	EffectManager::Instns().Update();
 	//ボスを倒すとゲームクリアシーンに行く
 	if (m_frame++ >= kFadeInterval)
 	{
 		//フェードアウト完了
 		m_finished = true;
+
+		EffectManager::Instns().StopAll();
 
 		//クリアタイムを確定してスコアを計算
 		Score::Instance().SetClearTime(static_cast<float>(m_frameCount) / 60.0f);//60f想定
@@ -221,9 +224,11 @@ void SceneMain::FadeOutUpdate(Input&)
 
 void SceneMain::GameOverFadeOutUpdate(Input&)
 {
+	EffectManager::Instns().Update();
 	//プレイヤーが死ぬとゲームオーバーシーンに行く
 	if (m_frame++ >= kFadeInterval)
 	{
+		EffectManager::Instns().StopAll();
 		//フェードアウト完了
 		m_finished = true;
 		m_controller.ChangeScene(std::make_shared<GameOverScene>(m_controller));

@@ -55,6 +55,9 @@ void GameOverScene::Init()
         m_effectPos = infos[0].pos;
     }
 
+	//背景エフェクトは1回だけ再生
+	EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
+
     //UIを作成して初期化
 	m_pUiManager = std::make_unique<UIManager>();
 	//リザルトUI
@@ -117,7 +120,7 @@ void GameOverScene::NormalUpdate(Input& input)
 		return;
 
 	}
-	EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
+	//EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
 	//描画するキャラクターの更新
 	for (auto& charcter : m_GameOverCharacter)
 	{
@@ -133,6 +136,7 @@ void GameOverScene::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
+		EffectManager::Instns().StopAll();
 		m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
 		return;
 	}
