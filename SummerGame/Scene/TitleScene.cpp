@@ -126,6 +126,8 @@ void TitleScene::Init()
 	m_SkyDome.SetRotSpeed(0.002f);
 	//サイズ
 	m_SkyDome.SetScale(3.0f);
+	//場所を確定させる
+	m_SkyDome.Update(Vector3(0.0f, 0.0f, -5500.0f));
 
 	//タイトルでCharacterを描画
 	std::vector<CharacterInfo> infos =

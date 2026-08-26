@@ -219,11 +219,6 @@ void Player::Init()
 
 void Player::Update()
 {
-	//ヒットストップ
-	if (Timer::Instance().IsHitStop())
-	{
-		return;
-	}
 	auto& input = Input::Instance();
 	//ウィッチタイム中かどうか
 	m_isWitchTime = Timer::Instance().IsEnemySlow();
