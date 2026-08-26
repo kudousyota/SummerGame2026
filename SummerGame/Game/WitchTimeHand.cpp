@@ -34,7 +34,6 @@ void WitchTimeHand::Init()
 	m_animation.Init(m_modelHandle, kPunchAnimName, false, 0.5f);
 	//モデルのスケールを設定する
 	MV1SetScale(m_modelHandle,Vector3(2.0f,2.0f,2.0f));
-
 }
 void WitchTimeHand::Update()
 {

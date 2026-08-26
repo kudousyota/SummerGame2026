@@ -116,7 +116,8 @@ void Alien::Init()
 
 void Alien::Update()
 {
-	
+	//タイムスケールの取得
+	m_timeScale = Timer::Instance().GetEnemyTimeScale();
 	//死んだとき
 	if (m_isDead)
 	{
@@ -128,22 +129,29 @@ void Alien::Update()
 		}
 		return;
 	}
-	//当たり判定
-	Character::Collision();
-	//タイムスケールの取得
-	m_timeScale = Timer::Instance().GetEnemyTimeScale();
-	//アニメーションの更新
-	m_animation.Update(m_timeScale);
 
 	if (m_currentState == AlienState::Dead)
 	{
+		//アニメーションの更新
+		m_animation.Update(m_timeScale);
+		//アニメーションが終わったら死んだことに
 		if (m_animation.GetAnimEndFlag())
 		{
-			//アニメーションが終わったら完全に死亡扱い
 			m_isDead = true;
+			//ここでも明示的に停止
+			if (m_floatingEffectHandle != -1)
+			{
+				EffectManager::Instns().StopEffect(m_floatingEffectHandle);
+				m_floatingEffectHandle = -1;
+			}
 		}
+		//早期リターン
 		return;
 	}
+	//当たり判定
+	Character::Collision();
+	//アニメーションの更新
+	m_animation.Update(m_timeScale);
 
 	//攻撃表示タイマー
 	if (m_attackFrame > 0)
@@ -157,7 +165,6 @@ void Alien::Update()
 	m_floatingEffectPos = m_pos;
 	if (m_floatingEffectHandle != -1)
 	{
-		//浮遊エフェクトの位置を更新
 		SetPosPlayingEffekseer3DEffect(m_floatingEffectHandle, m_floatingEffectPos.x, m_floatingEffectPos.y, m_floatingEffectPos.z);
 	}
 

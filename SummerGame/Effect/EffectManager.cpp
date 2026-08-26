@@ -95,6 +95,7 @@ int  EffectManager::PlayEffect(EffectType type, const Vector3& pos)
 
 void EffectManager::StopEffect(int handle)
 {
+    StopEffekseer3DEffect(handle);
     for (auto it = m_effects.begin(); it != m_effects.end(); ++it)
     {
         if ((*it)->GetPlayingHandle() == handle)
@@ -108,7 +109,7 @@ void EffectManager::StopEffect(int handle)
 
 void EffectManager::StopAll()
 {
-
+    
     for (auto& effect : m_effects)
     {
         if (effect)

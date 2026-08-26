@@ -23,7 +23,6 @@ void Effect::Stop()
 	if (m_playingHandle != -1)
 	{
 		StopEffekseer3DEffect(m_playingHandle);
-		UpdateEffekseer3D(m_playingHandle);
 		m_playingHandle = -1;
 	}
 }

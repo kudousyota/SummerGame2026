@@ -265,6 +265,7 @@ void SceneMain::NormalDraw()
 
 void SceneMain::FadeDraw()
 {
+	EffectManager::Instns().Update();
 	NormalDraw();
 
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);

@@ -20,7 +20,8 @@ GameOverScene::GameOverScene(SceneController& controller):
 	Scene(controller),
 	m_finished(false),
 	m_fontHandle(-1),
-	m_effectPos({0.0f,0.0f,0.0f})
+	m_effectPos({0.0f,0.0f,0.0f}),
+	m_effectHandle(-1)
 {
 	m_update = &GameOverScene::FadeInUpdate;
 	m_draw = &GameOverScene::FadeDraw;
@@ -53,9 +54,7 @@ void GameOverScene::Init()
     {
         m_effectPos = infos[0].pos;
     }
-
-	//背景エフェクトは1回だけ再生
-	EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
+	m_effectHandle = EffectManager::Instns().PlayEffect(EffectType::Gameover, m_effectPos);
 
     //UIを作成して初期化
 	m_pUiManager = std::make_unique<UIManager>();
@@ -65,6 +64,7 @@ void GameOverScene::Init()
 
 	m_pUiManager->Init();
 
+	
 	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 100.0f, -700.0f), Vector3(0.0f, 100.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
@@ -91,6 +91,7 @@ void GameOverScene::FadeInUpdate(Input& input)
 		m_update = &GameOverScene::FadeOutUpdate;
 		m_draw = &GameOverScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
+		
         SoundManager::Instance().PlaySE("Ok");
 		return;
 
@@ -134,7 +135,7 @@ void GameOverScene::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
-		EffectManager::Instns().StopAll();
+		EffectManager::Instns().StopEffect(m_effectHandle);
 		m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
 		return;
 	}

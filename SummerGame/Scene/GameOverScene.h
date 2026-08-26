@@ -41,6 +41,8 @@ private:
 
 	//エフェクトの場所
 	Vector3 m_effectPos;
+	//エフェクトのハンドル
+	int m_effectHandle;
 
 	//メンバ関数ポインタを使用して内部状態を書き換える
 	//update関数とdraw関数を、現在のTitleSceneの状態に合わせて
