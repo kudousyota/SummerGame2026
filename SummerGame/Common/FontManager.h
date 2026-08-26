@@ -49,10 +49,13 @@ public:
 	void LoadFont();
 
 	// 指定座標を中心とする文字列を描画
+	//const int kFontSize[] ={	8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88};
 	void DrawCenteredText(int x, int y, std::string text, unsigned int color, int size, unsigned int edgeColor);
 	// 指定座標を右下とする文字列を描画
+	//const int kFontSize[] ={	8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88};
 	void DrawBottomRightText(int x, int y, std::string text, unsigned int color, int size, unsigned int edgeColor);
 	// 指定座標を左端とする文字列を描画
+	//const int kFontSize[] ={	8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88};
 	void DrawLeftText(int x, int y, std::string text, unsigned int color, int size, unsigned int edgeColor);
 
 

@@ -8,7 +8,7 @@ public:
 	HPUI();
 	~HPUI();
 	void Init()override;
-	void Update()override;
+	void Update(Input& input)override;
 	void Draw()override;
 	//プレイヤーを受け取ってメンバ変数に保存
 	void SetPlayerHP(const std::shared_ptr<Player>& player) { m_pPlayer = player; }

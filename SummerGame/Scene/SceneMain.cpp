@@ -176,7 +176,7 @@ void SceneMain::NormalUpdate(Input& input)
 	//“G‚ÌXV‚ğ”C‚¹‚é
 	m_enemyManager.Update();
 
-	m_pUiManager->Update();
+	m_pUiManager->Update(input);
 
 	EffectManager::Instns().Update();
 	//ƒ{ƒX‚ğ“|‚µ‚½‚ç

@@ -39,7 +39,7 @@ void GameClearedUI::Init()
 	m_scoreX = -300; 
 }
 
-void GameClearedUI::Update()
+void GameClearedUI::Update(Input& input)
 {
     //ラープでUIを目標位置へ滑らかに移動させる
 	m_timerX += (kTimerGoalX - m_timerX) * 0.1f;

@@ -19,7 +19,7 @@ void WitchTimeNeedleUI::Init()
 	m_nidelHandle = LoadGraph("data/ui_niidle_flower.png");
 }
 
-void WitchTimeNeedleUI::Update()
+void WitchTimeNeedleUI::Update(Input& input)
 {
 
 	auto player = m_pPlayer.lock();

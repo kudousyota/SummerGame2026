@@ -17,12 +17,12 @@ void UIManager::Init()
 	}
 
 }
-void UIManager::Update()
+void UIManager::Update(Input& input)
 {
 	//“o˜^‚³‚ê‚½UI‚ÌUpdate‚ð‚Ü‚Æ‚ß‚ÄŒÄ‚Ô
 	for (auto& ui : m_pUiList)
 	{
-		ui->Update();
+		ui->Update(input);
 	}
 }
 void UIManager::Draw()

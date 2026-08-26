@@ -12,7 +12,7 @@ public:
 
 	void Add(std::unique_ptr<UIBase> ui);
 	void Init();
-	void Update();
+	void Update(Input& input);
 	void Draw();
 private:
 	//ŠÇ—‚µ‚Ä‚¢‚éUI

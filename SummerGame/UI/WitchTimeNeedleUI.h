@@ -8,7 +8,7 @@ public:
 	WitchTimeNeedleUI();
 	~WitchTimeNeedleUI();
 	void Init()override;
-	void Update()override;
+	void Update(Input& input)override;
 	void Draw()override;
 
 	//プレイヤーを受け取ってメンバ変数に保存

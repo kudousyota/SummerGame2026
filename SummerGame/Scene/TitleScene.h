@@ -5,6 +5,7 @@
 #include "CharacterViewer.h"
 #include "../Game/SkyDome.h"
 #include <vector>
+#include "../UI/TitleUI.h"
 
 class TitleScene: public Scene
 {
@@ -15,11 +16,7 @@ public:
 	void Draw();
 	bool IsFinished() const { return m_finished; }
 private:
-	enum class MenuSelect
-	{
-		Start,
-		Exit
-	};
+	
 	//プレイヤーは0番目でそれ以降はエイリアンの物として使用する
 	enum TitleCharacter
 	{
@@ -43,7 +40,7 @@ private:
 		float angle;//向き
 		bool faceCamera = false;//trueならカメラの方向を向く
 	};
-	MenuSelect m_menuSelect = MenuSelect::Start;
+	
 
 	//メンバ関数ポインタを使用して内部状態を書き換える
 	//update関数とdraw関数を、現在のTitleSceneの状態に合わせて
@@ -79,6 +76,8 @@ private:
 	Vector3 m_logoPos;
 
 	SkyDome m_SkyDome;
+
+	TitleUI m_titleUI;
 
 	std::vector<CharacterViewer>m_titleCharacter;
 	//エイリアンの移動場所の構造体

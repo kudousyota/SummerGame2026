@@ -135,7 +135,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 		character.Update();
 	}
 
-	m_pUiManager->Update();
+	m_pUiManager->Update(input);
 }
 
 void GameClearedScene::FadeOutUpdate(Input&)

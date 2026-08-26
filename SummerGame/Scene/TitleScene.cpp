@@ -46,22 +46,15 @@ void TitleScene::NormalUpdate(Input& input)
 			StartAlienMove(i);
 		}
 	}
-	
-	
-	//上下でカーソル移動
-	if (input.IsTriggered("up") || input.IsTriggered("down"))
-	{
-		m_menuSelect = (m_menuSelect == MenuSelect::Start) ? MenuSelect::Exit : MenuSelect::Start;
-        SoundManager::Instance().PlaySE("Cursor");
-	}
 
-	if (input.IsTriggered("ok"))
+	m_titleUI.Update(input);
+
+	if (m_titleUI.IsDecided())
 	{
-		SoundManager::Instance().PlaySE("Ok");
+		m_titleUI.ResetDecided();
 		m_update = &TitleScene::FadeOutUpdate;
 		m_draw = &TitleScene::FadeDraw;
-		m_frame = 0;//フェードアウトの最初
-		return;
+		m_frame = 0;
 	}
 }
 
@@ -74,9 +67,8 @@ void TitleScene::FadeOutUpdate(Input&)
 
 		SoundManager::Instance().StopBGM();
 
-		if (m_menuSelect == MenuSelect::Exit)
+		if (m_titleUI.GetMenuSelect() == TitleUI::MenuSelect::Exit)
 		{
-			//ゲーム終了をApplicationに要求する
 			Application::GetInstance().RequestExit();
 		}
 		else
@@ -95,19 +87,7 @@ void TitleScene::NormalDraw()
 		character.Draw();
 	}
 
-	const int white = GetColor(255, 255, 255);
-
-	DrawRotaGraph(660, 150, 0.5, 0.0, m_logoHandle, true);
-
-	const int intervar = 650;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-	
-	const int startColor = (m_menuSelect == MenuSelect::Start) ? GetColor(255, 255, 0) : white;
-	const int exitColor = (m_menuSelect == MenuSelect::Exit) ? GetColor(255, 255, 0) : white;
-
-	DrawStringToHandle(kUiPos, 560, "Start", startColor, m_fontHandle);
-	DrawStringToHandle(kUiPos, 610, "Exit", exitColor, m_fontHandle);
+	m_titleUI.Draw();
 }
 
 void TitleScene::FadeDraw()
@@ -123,9 +103,7 @@ void TitleScene::FadeDraw()
 
 TitleScene::TitleScene(SceneController& controller):
 	Scene(controller),
-	m_fontHandle(-1),
 	m_skyHandle(-1),
-	m_logoHandle(-1),
 	m_logoPos(Vector3(0.0f, 0.0f, 0.0f))
 {
 	Init();
@@ -137,14 +115,10 @@ TitleScene::TitleScene(SceneController& controller):
 
 void TitleScene::Init()
 {	
-	m_fontHandle = CreateFontToHandle("Constantia", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
-
-	m_logoHandle = LoadGraph("data/kudonetta.png");
-
-	m_logoPos = Vector3(130.0f, -270.0f, 0.0f);
-
 	//BGMの再生
 	SoundManager::Instance().PlayBGM("Title",true);
+
+	m_titleUI.Init();
 
 	m_SkyDome.Init();
 	m_SkyDome.SetPos(Vector3(0.0f, 0.0f, -5500.0f));

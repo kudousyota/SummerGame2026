@@ -6,7 +6,7 @@ public:
 	ManualUI();
 	~ManualUI();
 	void Init()override;
-	void Update()override;
+	void Update(Input& input)override;
 	void Draw()override;
 private:
 	//ƒnƒ“ƒhƒ‹

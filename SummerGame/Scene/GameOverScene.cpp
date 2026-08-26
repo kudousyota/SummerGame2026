@@ -124,7 +124,7 @@ void GameOverScene::NormalUpdate(Input& input)
 		charcter.Update();
 	}
 
-	m_pUiManager->Update();
+	m_pUiManager->Update(input);
 }
 
 void GameOverScene::FadeOutUpdate(Input&)

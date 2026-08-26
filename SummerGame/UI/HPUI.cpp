@@ -50,7 +50,7 @@ void HPUI::Init()
 	m_hplidHandle = LoadGraph("Data/HPlid.png");
 }
 
-void HPUI::Update()
+void HPUI::Update(Input& input)
 {
 	auto player = m_pPlayer.lock();
 	if (!player)

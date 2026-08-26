@@ -15,7 +15,7 @@ void ManualUI::Init()
 	m_manualHandle = LoadGraph("Data/Manual.png");
 }
 
-void ManualUI::Update()
+void ManualUI::Update(Input& input)
 {
 }
 
