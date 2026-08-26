@@ -53,6 +53,8 @@ public:
 	virtual void OnHit(const AttackData& attackdata);
 	//死
 	virtual bool IsDead()const { return false; }
+	//ヒットストップ
+	virtual void OnHitStop(int stopframe);
 
 protected:
 	//共通のデータや関数を入れる
@@ -72,6 +74,6 @@ protected:
 	float m_collisionHeight;
 	std::shared_ptr<Stage> m_pStage;
 	
-	
+	int m_hitStopFrame;
 };
 

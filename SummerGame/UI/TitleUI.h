@@ -12,9 +12,6 @@ public:
 	void Update(Input& input)override;
 	void Draw()override;
 
-
-	
-
 	enum class MenuSelect
 	{
 		Start,
@@ -27,10 +24,10 @@ public:
 	//決定フラグをリセット
 	void ResetDecided() { m_isDecided = false; }
 private:
-	int		   m_fontHandle;
-	int		   m_logoHandle;
-	Vector3	   m_logoPos;
-	bool	   m_isDecided;
+	int	m_fontHandle;
+	int	m_logoHandle;
+	Vector3	m_logoPos;
+	bool m_isDecided;
 	
 };
 

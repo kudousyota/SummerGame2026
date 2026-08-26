@@ -2,6 +2,8 @@
 #include "DxLib.h"
 #include "../Common/FontManager.h"
 #include "../Game.h"
+#include "../System/Input.h"
+#include "../System/SoundManager.h"
 
 namespace
 {
@@ -9,12 +11,16 @@ namespace
 	constexpr int kLowerY = 320;
 	//動く速さ
 	constexpr int kSpeed = 2;
+
+	constexpr int kVlinkIntercal = 650;
 }
 
 GameOverSceneUI::GameOverSceneUI() :
 	m_logoHandle(-1),
 	m_logoposX(0),
 	m_logoposY(0),
+	m_menuSelect(MenuSelect::Retle),
+	m_isDecided(false),
 	m_isUp(false)
 {
 }
@@ -54,6 +60,19 @@ void GameOverSceneUI::Update(Input& input)
 		m_logoposY = kLowerY;
 		m_isUp = false;
 	}
+
+	//上下でカーソル移動
+	if (input.IsTriggered("left") || input.IsTriggered("right"))
+	{
+		m_menuSelect = (m_menuSelect == MenuSelect::Retle) ? MenuSelect::Title : MenuSelect::Retle;
+		SoundManager::Instance().PlaySE("Cursor");
+	}
+
+	if (input.IsTriggered("ok"))
+	{
+		SoundManager::Instance().PlaySE("Ok");
+		m_isDecided = true;
+	}
 }
 
 void GameOverSceneUI::Draw()
@@ -67,10 +86,15 @@ void GameOverSceneUI::Draw()
 	const int intervar = 650;
 	int now = GetNowCount();
 	bool visible = (now / intervar) % 2;
-	if (visible)
+	if (m_menuSelect != MenuSelect::Retle || visible)
 	{
 		//操作説明表示
-		FontManager::Instance().DrawCenteredText(Game::kScreenWidth / 2, 580, "Press A to Retry", white, 32, black);
+		FontManager::Instance().DrawCenteredText(320, 580, "Retry", white, 56, black);
+	}
+	if (m_menuSelect != MenuSelect::Title || visible)
+	{
+		//操作説明表示
+		FontManager::Instance().DrawCenteredText(960, 580, "Title", white, 56, black);
 	}
 
 	////大きめのGameOver表示

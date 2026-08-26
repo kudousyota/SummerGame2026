@@ -116,6 +116,12 @@ void Alien::Init()
 
 void Alien::Update()
 {
+	m_hitStopFrame--;
+
+	if (m_hitStopFrame > 0)
+	{
+		return;
+	}
 	//死んだとき
 	if (m_isDead)
 	{
@@ -353,6 +359,8 @@ void Alien::Draw()
 
 void Alien::OnHit(const AttackData& attackdata)
 {
+	OnHitStop(50);
+
 	ApplyDamage(attackdata.GetDamage());
 
 	//死亡していたら、これ以上ステートを変更しない

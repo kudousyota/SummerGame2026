@@ -129,3 +129,9 @@ void Character::OnHit(const AttackData& attackdata)
 	//攻撃データ
 	ApplyDamage(attackdata.GetDamage());
 }
+
+void Character::OnHitStop(int stopframe)
+{
+	m_hitStopFrame = stopframe;
+}
+

@@ -16,7 +16,6 @@ namespace
 	constexpr int kHpGaugeX = 80;
 	constexpr int kHpGaugeY = 65;
 
-
 	//ŠW
 	constexpr int kHpLidLeft = 80;
 	constexpr int kHoLidRight = 280;
