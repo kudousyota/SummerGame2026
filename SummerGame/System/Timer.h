@@ -1,4 +1,5 @@
 #pragma once
+#include "../System/Vector3.h"
 class Timer
 {
 public:
@@ -18,6 +19,15 @@ public:
 
 	bool IsEnemySlow() const;
 
+	//ヒットストップをリクエストする
+	void RequestHitStop(int frame);
+	//今ヒットストップ中かどうか
+	bool IsHitStop()const { return m_hitStopFrame > 0; }
+	//カメラシェイクをリクエスト
+	void RequestShake(float power, int frame);
+	//今フレームのシェイクオフセットを取得する
+	Vector3 GetShakeOffset() const;
+
 private:
 	//コンストラクタとデストラクタをプライベートにして、シングルトンパターンを実装
 	Timer() = default;
@@ -35,8 +45,11 @@ private:
 
 	//ゲーム内の時間を図るための変数
 	int m_gameTime = 0;
-
 	
-	
+	int m_hitStopFrame = 0;
+	//カメラシェイク
+	float m_shakePower = 0.0f;
+	int m_shakeFrame = 0;
+	int m_shakeFrameMax = 0;
 };
 

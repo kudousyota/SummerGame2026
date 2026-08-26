@@ -29,6 +29,7 @@ GameOverScene::GameOverScene(SceneController& controller):
 
 GameOverScene::~GameOverScene()
 {
+	
 }
 
 void GameOverScene::Init()

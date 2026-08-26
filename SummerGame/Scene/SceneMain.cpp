@@ -30,7 +30,6 @@ Scene(controller),
 m_frameCount(0)
 
 {
-	Init();
 	m_update = &SceneMain::FadeInUpdate;
 	m_draw = &SceneMain::FadeDraw;
 	m_frame = kFadeInterval;
@@ -39,7 +38,7 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
-	
+
 }
 
 void SceneMain::Init()

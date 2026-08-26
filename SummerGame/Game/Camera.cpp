@@ -3,6 +3,7 @@
 #include "../System/CollisionManager.h"
 #include "../Game/Stage.h"
 #include "../System/Model.h"
+#include "../System/Timer.h" 
 
 namespace
 {
@@ -165,12 +166,17 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 		m_cameraPos = m_cameraPos + (idealCameraPos - m_cameraPos) * kCameraFollow;
 		m_cameraTarget = m_cameraTarget + (cameraTarget - m_cameraTarget) * kCameraFollow;
 
+		//カメラシェイク
+		Vector3 shakeOffset = Timer::Instance().GetShakeOffset();
+		Vector3 shakenCameraPos = m_cameraPos + shakeOffset;
+		Vector3 shakenCameraTarget = m_cameraTarget + shakeOffset;
+
 		//カメラ反映
-		SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(), m_cameraTarget.ToDxLibVector());
+		SetCameraPositionAndTarget_UpVecY(shakenCameraPos.ToDxLibVector(), shakenCameraTarget.ToDxLibVector());
 
 		//光
-		Vector3 camPos = m_cameraPos.ToDxLibVector();
-		Vector3 target = m_cameraTarget.ToDxLibVector();
+		Vector3 camPos = shakenCameraPos.ToDxLibVector();
+		Vector3 target = shakenCameraTarget.ToDxLibVector();
 
 		//カメラから注視点の方向
 		Vector3 LightDir = VNorm(VSub(target, camPos));

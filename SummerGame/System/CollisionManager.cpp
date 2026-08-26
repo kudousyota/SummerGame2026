@@ -3,12 +3,20 @@
 #include <algorithm>
 #include <vector>
 #include "../DataLoader/AttackData.h"
+#include "../System/Timer.h"
 
 namespace
 {
 	constexpr float kWalkableSlopeAngleDeg = 60.0f;
 	//歩ける坂道の角度//ラジアンに変換
 	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (DX_PI / 180.0f));
+
+	//ヒットストップフレーム
+	constexpr int kHitStopFrame = 8;
+	//カメラシェイクの強さ
+	constexpr float kShakePower = 15.0f;
+	//カメラシェイクのフレーム数
+	constexpr int kShakeFrame = 12;
 }
 
 // 指定キャラクターと登録済みキャラクターすべてとの衝突を解決する
@@ -121,6 +129,10 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 			//通常の被弾
 			character->OnHit(attackdata);
 			hitCharacters.push_back(character);
+
+			//ヒットストップ・カメラシェイク
+			Timer::Instance().RequestHitStop(kHitStopFrame);
+			Timer::Instance().RequestShake(kShakePower, kShakeFrame);
 		}
 	}
 	return hitCharacters;
@@ -173,6 +185,10 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 		if (distance <= hitRange)
 		{
 			character->OnHit(attackdata);
+
+			//ヒットストップ・カメラシェイク
+			Timer::Instance().RequestHitStop(kHitStopFrame);
+			Timer::Instance().RequestShake(kShakePower, kShakeFrame);
 		}
 	}
 	return hitCharacters;
@@ -376,17 +392,17 @@ void CollisionManager::ResolveCharacterCollision(Character* characterA, Characte
 //2本の線分
 void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vector3& q1, const Vector3& p2, const Vector3& q2, Vector3& outC1, Vector3& outC2)
 {
-	Vector3 d1 = q1 - p1; // カプセルAの軸ベクトル
-	Vector3 d2 = q2 - p2; // カプセルBの軸ベクトル
+	Vector3 d1 = q1 - p1; //カプセルAの軸ベクトル
+	Vector3 d2 = q2 - p2; //カプセルBの軸ベクトル
 	Vector3 r = p1 - p2;
 
-	float a = d1.Dot(d1); // 線分1の長さの2乗
-	float e = d2.Dot(d2); // 線分2の長さの2乗
+	float a = d1.Dot(d1); //線分1の長さの2乗
+	float e = d2.Dot(d2); //線分2の長さの2乗
 	float f = d2.Dot(r);
 
 	float s, t;
 
-	// 両方が点(長さ0)の場合
+	//両方が点(長さ0)の場合
 	if (a <= 0.000001f && e <= 0.000001f)
 	{
 		outC1 = p1;
@@ -396,7 +412,7 @@ void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vecto
 
 	if (a <= 0.000001f)
 	{
-		// 線分1が点の場合
+		//線分1が点の場合
 		s = 0.0f;
 		t = f / e;
 		t = std::clamp(t, 0.0f, 1.0f);
@@ -406,7 +422,7 @@ void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vecto
 		float c = d1.Dot(r);
 		if (e <= 0.000001f)
 		{
-			// 線分2が点の場合
+			//線分2が点の場合
 			t = 0.0f;
 			s = std::clamp(-c / a, 0.0f, 1.0f);
 		}
@@ -421,7 +437,7 @@ void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vecto
 			}
 			else
 			{
-				s = 0.0f; // 平行な場合
+				s = 0.0f; //平行な場合
 			}
 
 			t = (b * s + f) / e;

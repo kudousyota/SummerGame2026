@@ -34,7 +34,7 @@ namespace
 
 	//スコア
 	constexpr int kScore = 300;
-
+	
 }
 
 Alien::Alien():
@@ -116,12 +116,7 @@ void Alien::Init()
 
 void Alien::Update()
 {
-	m_hitStopFrame--;
-
-	if (m_hitStopFrame > 0)
-	{
-		return;
-	}
+	
 	//死んだとき
 	if (m_isDead)
 	{
@@ -359,7 +354,6 @@ void Alien::Draw()
 
 void Alien::OnHit(const AttackData& attackdata)
 {
-	OnHitStop(50);
 
 	ApplyDamage(attackdata.GetDamage());
 
@@ -555,7 +549,7 @@ void Alien::OnDead()
 		EffectManager::Instns().StopEffect(m_breathEffectHandle);
 		m_breathEffectHandle = -1;
 	}
-	// 浮遊エフェクトもここで止める
+	//浮遊エフェクトもここで止める
 	if (m_floatingEffectHandle != -1)
 	{
 		EffectManager::Instns().StopEffect(m_floatingEffectHandle);

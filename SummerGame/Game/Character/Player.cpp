@@ -219,23 +219,27 @@ void Player::Init()
 
 void Player::Update()
 {
-
+	//ヒットストップ
+	if (Timer::Instance().IsHitStop())
+	{
+		return;
+	}
 	auto& input = Input::Instance();
 	//ウィッチタイム中かどうか
 	m_isWitchTime = Timer::Instance().IsEnemySlow();
 
-	// ウィッチタイム開始・終了の検出
+	// ウィッチタイム開始終了の検知
 	if (m_isWitchTime && !m_prevWitchTime)
 	{
-		// ウィッチタイム開始時のSE
+		//ウィッチタイム開始時のSE
 		SoundManager::Instance().PlaySE("WitchTimeStart");
 	}
 	else if (!m_isWitchTime && m_prevWitchTime)
 	{
-		// ウィッチタイム終了時のSE
+		//ウィッチタイム終了時のSE
 		SoundManager::Instance().PlaySE("WitchTimeEnd");
 	}
-	// 状態を保存
+	//状態を保存
 	m_prevWitchTime = m_isWitchTime;
 	//HPがゼロになったら
 	if (m_isDead)

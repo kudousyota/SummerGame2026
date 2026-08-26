@@ -106,7 +106,7 @@ TitleScene::TitleScene(SceneController& controller):
 	m_skyHandle(-1),
 	m_logoPos(Vector3(0.0f, 0.0f, 0.0f))
 {
-	Init();
+
 	m_update = &TitleScene::FadeInUpdate;
 	m_draw = &TitleScene::FadeDraw;
 	m_frame = kFadeInterval;

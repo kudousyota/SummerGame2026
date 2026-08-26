@@ -81,6 +81,7 @@ void Creature::Update()
 	{
 		return;
 	}
+
 	//当たり判定の更新
 	Character::Collision();
 
@@ -363,6 +364,7 @@ void Creature::TransitionTo(CreatureState nextState)
 
 void Creature::OnHit(const AttackData& attackdata)
 {
+
 	ApplyDamage(attackdata.GetDamage());
 
 	//攻撃されたらプレイヤーの方を向く

@@ -91,6 +91,8 @@ void Angel::Update()
 		return;
 	}
 
+	
+
 	Character::Collision();
 
 	//タイムスケールの取得
@@ -310,6 +312,7 @@ void Angel::OnDead()
 
 void Angel::OnHit(const AttackData& attackdata)
 {
+
 	ApplyDamage(attackdata.GetDamage());
 
 	//攻撃されたらプレイヤーの方を向く
