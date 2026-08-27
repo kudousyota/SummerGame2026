@@ -108,7 +108,6 @@ void GameClearedScene::FadeInUpdate(Input& input)
 
 	}
 
-
 	if (m_frame-- <= 0)
 	{
 		m_update = &GameClearedScene::NormalUpdate;
@@ -124,7 +123,7 @@ void GameClearedScene::NormalUpdate(Input& input)
 	{
 		m_update = &GameClearedScene::FadeOutUpdate;
 		m_draw = &GameClearedScene::FadeDraw;
-		m_frame = 0;	//フェードアウトの最初
+		m_frame = 0;//フェードアウトの最初
         SoundManager::Instance().PlaySE("Ok");
 		return;
 

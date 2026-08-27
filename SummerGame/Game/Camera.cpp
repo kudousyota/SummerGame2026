@@ -142,7 +142,7 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 		//ウィッチタイム中はカメラを引く
 		if (Timer::Instance().IsEnemySlow())
 		{
-			//目標値(引いた状態)に近づける
+			//目標値に近づける
 			m_pullOffset += (kJustAvoidPullDistance - m_pullOffset) * kPullRecoverySpeed;
 		}
 		else
@@ -163,7 +163,6 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 		//引いたことを加味したカメラの距離
 		float currentDistace = kCameraDistance + m_pullOffset;
 
-
 		//カメラの位置
 		Vector3 offset;
 		offset.x = sinf(m_cameraAngleX) * cosf(m_cameraAngleY) * currentDistace;
@@ -172,7 +171,6 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 
 		//プレイヤーの後ろから見るようにするなら「-offset」
 		Vector3 idealCameraPos = cameraTarget - offset;
-
 
 		Vector3 hitpos;
 

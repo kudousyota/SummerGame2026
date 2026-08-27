@@ -48,13 +48,9 @@ public:
 	/// </summary>
 	void Draw();
 
-	
-
 private:
 	//現在スタックに積まれているシーン
 	//最後に積んだものだけがUpdateされる
 	std::list<std::shared_ptr<Scene>> m_scenes;
-
-
 };
 

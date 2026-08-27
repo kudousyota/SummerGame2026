@@ -41,7 +41,6 @@ namespace
 		160
 	};
 
-
 	constexpr float kAttackRadius = 180.0f;
 
 	constexpr int kScore = 500;

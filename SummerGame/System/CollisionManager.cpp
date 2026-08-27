@@ -12,27 +12,27 @@ namespace
 	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (DX_PI / 180.0f));
 
 	//ヒットストップフレーム
-	constexpr int kHitStopFrame = 8;
+	constexpr int kHitStopFrame = 10;
 	//カメラシェイクの強さ
-	constexpr float kShakePower = 15.0f;
+	constexpr float kShakePower = 17.0f;
 	//カメラシェイクのフレーム数
-	constexpr int kShakeFrame = 12;
+	constexpr int kShakeFrame = 15;
 }
 
-// 指定キャラクターと登録済みキャラクターすべてとの衝突を解決する
+//指定キャラクターと登録済みキャラクターすべてとの衝突を解決する
 void CollisionManager::ResolveCollisionsFor(Character* character)
 {
     if (character == nullptr) return;
 
-    // 他のキャラクターとのみチェックする
+    //他のキャラクターとのみチェックする
     for (auto other : m_pCharacters)
     {
         if (other == nullptr || other == character) continue;
 
-        // 重複処理を避けるためにポインタの順序で一方のみ処理する
+        //重複処理を避けるためにポインタの順序で一方のみ処理する
         if (other < character) continue;
 
-        // 衝突していたら解決
+        //衝突していたら解決
         if (CheckCharacterCapsule(character, other))
         {
             ResolveCharacterCollision(character, other);
@@ -80,7 +80,7 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 			continue;
 		}
 
-		// キャラクターのカプセル情報を取得
+		//キャラクターのカプセル情報を取得
 		float capsuleHeight = character->GetCollisionHeight();
 
 		//カプセルの線分(a -> b)
@@ -121,7 +121,7 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 		}
 
 		//ジャスト回避が不発、または受付時間外だった場合、通常の判定でチェック
-		float normalRadius = character->GetCollisionRadius(); //30.0f
+		float normalRadius = character->GetCollisionRadius();
 		float combinedNormal = attackdata.GetRadius() + normalRadius;
 
 		if (dist2 <= combinedNormal * combinedNormal)
@@ -143,7 +143,7 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 
 #ifdef _DEBUG
 	DrawCapsule3D(start.ToDxLibVector(), end.ToDxLibVector(), attackdata.GetRadius(), 4, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
-#endif //_DEBUG
+#endif//_DEBUG
 	std::vector<Character*> hitCharacters;
 
 	//登録済みの全キャラクターを探す
@@ -221,7 +221,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			break;
 		}
 		//ポリゴンに当たったか記録
-		//hitAny = true;
+		
 		//ここでは壁ポリゴンに当たったかを一旦保留にする
 
 		//一番めり込んだポリゴンを探すための変数
