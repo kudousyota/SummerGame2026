@@ -21,6 +21,10 @@ namespace
 	constexpr float kStickDeadZone = 0.001f;
 	constexpr float kCameraRotSpeedX = 0.8f;
 	constexpr float kCameraRotSpeedY = 0.6f;
+	//ジャスト回避の時にひくカメラの距離
+	constexpr float kJustAvoidPullDistance = 150.0f;
+	//引いたカメラが元に戻る速さ
+	constexpr float kPullRecoverySpeed = 0.3f;
 }
 
 Camera::Camera() :
@@ -28,7 +32,8 @@ Camera::Camera() :
 	m_cameraAngleY(0.0f),
 	m_cameraPos(Vector3(0.0f, 0.0f, 0.0f)),
 	m_cameraTarget(Vector3(0.0f, 0.0f, 0.0f)),
-	m_cameraTargetY(0.0f)
+	m_cameraTargetY(0.0f),
+	m_pullOffset(0.0f)
 {
 }
 
@@ -134,16 +139,36 @@ void Camera::Update(const Vector3& targetpos, const Vector3* lockonpos)
 		if (m_cameraAngleX > DX_PI_F)  m_cameraAngleX -= DX_TWO_PI_F;
 		if (m_cameraAngleX < -DX_PI_F) m_cameraAngleX += DX_TWO_PI_F;
 
+		//ウィッチタイム中はカメラを引く
+		if (Timer::Instance().IsEnemySlow())
+		{
+			//目標値(引いた状態)に近づける
+			m_pullOffset += (kJustAvoidPullDistance - m_pullOffset) * kPullRecoverySpeed;
+		}
+		else
+		{
+			//ウィッチタイムが終わったら徐々に戻す
+			m_pullOffset += (0.0f - m_pullOffset) * kPullRecoverySpeed;
+			if (fabsf(m_pullOffset) < 0.01f)
+			{
+				m_pullOffset = 0.0f;
+			}
+		}
+
 		//プレイヤー追従先
 		Vector3 cameraTarget = targetpos;
 		//注視点を下げる
 		cameraTarget.y += -180.0f;
 
+		//引いたことを加味したカメラの距離
+		float currentDistace = kCameraDistance + m_pullOffset;
+
+
 		//カメラの位置
 		Vector3 offset;
-		offset.x = sinf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
-		offset.y = sinf(m_cameraAngleY) * kCameraDistance;
-		offset.z = cosf(m_cameraAngleX) * cosf(m_cameraAngleY) * kCameraDistance;
+		offset.x = sinf(m_cameraAngleX) * cosf(m_cameraAngleY) * currentDistace;
+		offset.y = sinf(m_cameraAngleY) * currentDistace;
+		offset.z = cosf(m_cameraAngleX) * cosf(m_cameraAngleY) * currentDistace;
 
 		//プレイヤーの後ろから見るようにするなら「-offset」
 		Vector3 idealCameraPos = cameraTarget - offset;
@@ -220,5 +245,6 @@ Vector3 Camera::GetRight() const
 
 void Camera::CameraPull()
 {
-
+	//ジャスト回避にカメラを引く
+	m_pullOffset = kJustAvoidPullDistance;
 }

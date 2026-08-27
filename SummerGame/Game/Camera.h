@@ -21,7 +21,6 @@ public:
 	const Vector3& GetPos()const { return m_cameraPos; }
 
 
-
 private:
 	//プレイヤーへの参照を保持
 	std::shared_ptr<Stage> m_pStage;
@@ -37,5 +36,7 @@ private:
 	float m_cameraAngleY;
 
 	float m_cameraTargetY;
+	//ジャスト回避した時に引く量
+	float m_pullOffset;
 };
 

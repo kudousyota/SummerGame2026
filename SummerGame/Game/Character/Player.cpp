@@ -789,7 +789,8 @@ void Player::ApplyDamage(int damage)
 		
 		//直ぐに無敵を付与連続ヒット防止にもなる
 		m_invincibleTime = kInvincibleFrame;
-
+		//ジャスト回避したらカメラを引く
+		m_pCamera->CameraPull();
 		// ジャスト回避成功の専用音
 		SoundManager::Instance().PlaySE("Just");
 
@@ -809,7 +810,7 @@ void Player::ApplyDamage(int damage)
 	//ノーダメージの条件を外す
 	Score::Instance().OnNoDamage();
 
-	//エフェクトの再生
+	
 
 	// 被ダメ時の音
 	if (damage >= 30)
@@ -820,7 +821,7 @@ void Player::ApplyDamage(int damage)
 	{
 		SoundManager::Instance().PlaySE("Hit");
 	}
-
+	//エフェクトの再生
 	EffectManager::Instns().PlayEffect(EffectType::Hit, m_pos + Vector3(0.0f,GetCollisionHeight(),0.0f));
 
 	//無敵時間を設定
