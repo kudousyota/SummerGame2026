@@ -13,6 +13,8 @@ namespace
 	constexpr int kDamage = 100;
 	constexpr float kAttackRadius = 300.0f;
 	constexpr float kAttackFrame = 10.0f;
+	constexpr float kScale = 3.0f;
+	constexpr float kHandOffsetY = 150.0f;
 }
 
 WitchTimeHand::WitchTimeHand():
@@ -33,7 +35,7 @@ void WitchTimeHand::Init()
 	m_modelHandle = Model::Instance().CreatWitchTimeHandModel();
 	m_animation.Init(m_modelHandle, kPunchAnimName, false, 0.5f);
 	//モデルのスケールを設定する
-	MV1SetScale(m_modelHandle,Vector3(2.0f,2.0f,2.0f));
+	MV1SetScale(m_modelHandle,Vector3(kScale, kScale, kScale));
 }
 void WitchTimeHand::Update()
 {
@@ -52,6 +54,8 @@ void WitchTimeHand::Update()
 	m_angle = player->GetAngle();
 	//手の位置をプレイヤーに設定する
 	m_pos = player->GetPosition();
+	//少したかい位置にでたから下げる
+	m_pos.y -= kHandOffsetY;
 	
 	if(!m_hasAttacked &&m_animation.GetCurrentAnimTime() >= kAttackFrame)
 	{

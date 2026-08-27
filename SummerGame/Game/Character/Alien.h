@@ -25,6 +25,7 @@ private:
 	{
 		Idle,
 		Move,
+		AttackWarnig,
 		Attack,
 		Down,
 		StandUp,

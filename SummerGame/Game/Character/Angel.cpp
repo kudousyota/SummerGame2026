@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "../System/Timer.h"
 #include "../System/Model.h"
+#include "../Effect/EffectManager.h"
 
 namespace
 {
@@ -19,6 +20,8 @@ namespace
 	const char* const kDamageAnimName = "Angel|Hit";
 
 	const char* const kDeadAnimName = "Angel|Dead";
+	//目元のリグを取る
+	const char* const kEyegRig = "mixamorig:RightEye";
 
 	//constexpr int kDanicgAttackRadius = 180;
 
@@ -42,6 +45,11 @@ namespace
 	constexpr float kAttackRadius = 180.0f;
 
 	constexpr int kScore = 500;
+	//攻撃がくる猶予フレーム
+	constexpr float kHazardFrame = 30.0f;
+
+	//攻撃がくるエフェクトのオフセット
+	constexpr float kHazardOffsetY = 180.0f;
 }
 
 Angel::Angel():
@@ -82,6 +90,7 @@ void Angel::Init()
 	m_score = kScore;
 
 	m_animation.Init(m_modelHandle, kShoutAnimName, true, 0.5f);
+
 }
 
 void Angel::Update()
@@ -153,8 +162,18 @@ void Angel::Update()
 		{
 			if (m_attackCooldown <= 0)
 			{
+				//現在の位置にエフェクトを出す
+				m_hazardPos = m_pos;
+				//ちょっと高めにする
+				m_hazardPos.y += kHazardOffsetY;
+
 				FacePlayer();
-				TransitionTo(AngelState::DancingAttack);
+				EffectManager::Instns().PlayEffect(EffectType::Hazard, m_hazardPos);
+				//30f待つ
+				m_attackWarnigFrame = kHazardFrame;
+
+				TransitionTo(AngelState::AttackWarnig);
+
 			}
 		}
 		else
@@ -165,6 +184,16 @@ void Angel::Update()
 		
 	}
 		break;
+
+	case AngelState::AttackWarnig:
+
+		m_attackWarnigFrame -= m_timeScale;
+
+		if (m_attackWarnigFrame <= 0.0f)
+		{
+			TransitionTo(AngelState::DancingAttack);
+		}
+		break;
 	case AngelState::DancingAttack:
 		{
 		
@@ -172,9 +201,8 @@ void Angel::Update()
 		{
 			if (!m_dancingAttackHit[i] && animTime >= kAttackDamageFrame[i])
 			{
-				CollisionManager::Instance().CheckAttackSphere(
-					CreateAttackData(), m_pos);
-
+				CollisionManager::Instance().CheckAttackSphere(CreateAttackData(), m_pos);
+				EffectManager::Instns().PlayEffect(EffectType::Wind, m_pos);
 				m_dancingAttackHit[i] = true;
 			}
 		}

@@ -15,6 +15,9 @@ public:
 	Vector3 GetForward() const;
 	Vector3 GetRight() const;
 
+	//ウィッチタイムになったらカメラをひく
+	void CameraPull();
+
 	const Vector3& GetPos()const { return m_cameraPos; }
 
 

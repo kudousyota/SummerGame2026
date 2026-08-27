@@ -194,11 +194,12 @@ void Player::Init()
 	//m_speed = 33.0f;
 	m_speed = kSpeed;
 	//ステータス
-	/*m_maxHp = kMaxHp;
-	m_hp = kMaxHp;*/
+	m_maxHp = kMaxHp;
+	m_hp = kMaxHp;
 
-	m_maxHp = 10;
-	m_hp = 10;
+	//すぐ死ぬ用
+	/*m_maxHp = 10;
+	m_hp = 10;*/
 
 	m_jumpPower = kJumpPower;
 	//攻撃力

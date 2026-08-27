@@ -35,6 +35,12 @@ namespace
 	//スコア
 	constexpr int kScore = 300;
 	
+	//攻撃がくる猶予フレーム
+	constexpr float kHazardFrame = 30.0f;
+
+	//攻撃がくるエフェクトのオフセット
+	constexpr float kHazardOffsetY = 180.0f;
+
 }
 
 Alien::Alien():
@@ -63,7 +69,7 @@ Alien::~Alien()
 		EffectManager::Instns().StopEffect(m_breathEffectHandle);
 		m_breathEffectHandle = -1;
 	}
-
+	
 	if (m_pBreath)
 	{
 		m_pBreath->Kill();
@@ -207,9 +213,16 @@ void Alien::Update()
 			//攻撃
 			if (m_attackCooldown <= 0)
 			{
+				//現在の位置にエフェクトを出す
+				m_hazardPos = m_pos;
+				//ちょっと高めにする
+				m_hazardPos.y += kHazardOffsetY;
 				//プレイヤーの方向に向く
 				FacePlayer();
-				TransitionTo(AlienState::Attack);
+				EffectManager::Instns().PlayEffect(EffectType::Hazard, m_hazardPos);
+				//30f待つ
+				m_attackWarnigFrame = kHazardFrame;
+				TransitionTo(AlienState::AttackWarnig);
 			}
 		}
 		else
@@ -219,6 +232,16 @@ void Alien::Update()
 		}
 	}
 		break;
+	case AlienState::AttackWarnig:
+
+		m_attackWarnigFrame -= m_timeScale;
+
+		if (m_attackWarnigFrame <= 0.0f)
+		{
+			TransitionTo(AlienState::Attack);
+		}
+		break;
+
 	case AlienState::Attack:
 		//攻撃処理
 		AttackUpdate();

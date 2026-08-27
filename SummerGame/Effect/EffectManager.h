@@ -11,6 +11,8 @@ enum class EffectType
 	Breath,
 	Floating,
 	Gameover,
+	Hazard,
+	Wind,
 	Max
 };
 class Effect;

@@ -58,8 +58,13 @@ protected:
 
     //スコア
     int m_score;
+    //目元のリグ
+    int m_eyeRig;
+    //警告用のカウンター
+    float m_attackWarnigFrame;
 
- 
+    //攻撃の瞬間にだすエフェクトのポジション
+    Vector3 m_hazardPos;
 
     //モデルの行列//ここはほかのとこでプレイヤーとまとめる可能性あり
     void UpdateModelMatrix();

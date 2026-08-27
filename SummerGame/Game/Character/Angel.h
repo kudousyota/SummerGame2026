@@ -23,6 +23,7 @@ private:
 	{
 		Idle,
 		Run,
+		AttackWarnig,
 		DancingAttack,
 		Rotate,
 		Shout,
@@ -37,6 +38,7 @@ private:
 	AngelState m_prevState;
 
 	Vector3 m_lastSeePos;
+
 
 	bool m_dancingAttackHit[8];
 

@@ -6,7 +6,7 @@
 #include "../System/Timer.h"
 #include "../System/Model.h"
 #include "../System/SoundManager.h"
-
+#include "../Effect/EffectManager.h"
 namespace
 {
 	const char* const kIdleAnimName = "Enemy|Idle";
@@ -28,6 +28,11 @@ namespace
 	constexpr float kPumncRadius = 130.0f;
 	//ボスなのでスコアは多くする
 	constexpr int kScore = 1000;
+	//攻撃がくる猶予フレーム
+	constexpr float kHazardFrame = 30.0f;
+
+	//攻撃がくるエフェクトのオフセット
+	constexpr float kHazardOffsetY = 180.0f;
 }
 
 Creature::Creature():
@@ -152,15 +157,16 @@ void Creature::Update()
 			{
 				//プレイヤーの方向に向く
 				FacePlayer();
-				//70％で弱攻撃
-				if (GetRand(99) < 70)
-				{
-					TransitionTo(CreatureState::Punch);
-				}
-				else
-				{
-					TransitionTo(CreatureState::Attack);
-				}
+				//現在の位置にエフェクトを出す
+				m_hazardPos = m_pos;
+				//ちょっと高めにする
+				m_hazardPos.y += kHazardOffsetY;
+
+				FacePlayer();
+				EffectManager::Instns().PlayEffect(EffectType::Hazard, m_hazardPos);
+				//30f待つ
+				m_attackWarnigFrame = kHazardFrame;
+				TransitionTo(CreatureState::AttackWarnig);
 			}
 		}
 		else
@@ -170,7 +176,24 @@ void Creature::Update()
 		}
 	}
 		break;
+	case CreatureState::AttackWarnig:
 
+		m_attackWarnigFrame -= m_timeScale;
+		
+
+		if (m_attackWarnigFrame <= 0.0f)
+		{
+			//70％で弱攻撃
+			if (GetRand(99) < 70)
+			{
+				TransitionTo(CreatureState::Punch);
+			}
+			else
+			{
+				TransitionTo(CreatureState::Attack);
+			}
+		}
+		break;
 	case CreatureState::Attack:
 		//アニメーションの半分で攻撃判定を出す
 		if (!m_isAttack && m_animation.GetAnimRate() >= 0.5f)
@@ -373,6 +396,13 @@ void Creature::OnHit(const AttackData& attackdata)
 
 void Creature::OnDamaged()
 {
+	//特定のステートだったらひるまない
+	if (m_currentState == CreatureState::Attack || m_currentState == CreatureState::Punch || m_currentState == CreatureState::AttackWarnig)
+	{
+		return;
+	}
+
+
 	TransitionTo(CreatureState::Damage);
 }
 

@@ -58,10 +58,10 @@ private:
 	//Updateメンバ関数を代入
 	UpdateFunc_t m_update;
 
-	void NormalDraw();	//通常Draw
-	void FadeDraw();	//フェードDraw
+	void NormalDraw();//通常Draw
+	void FadeDraw();//フェードDraw
 	using DrawFunc_t = void(GameOverScene::*)();
-	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
+	DrawFunc_t m_draw;//Drawメンバ関数を代入できるメンバ関数ポインタ
 
 	std::vector<CharacterViewer>m_GameOverCharacter;
 

@@ -22,6 +22,7 @@ private:
 	{
 		Idle,
 		Walk,
+		AttackWarnig,
 		Attack,
 		Punch,
 		Damage,

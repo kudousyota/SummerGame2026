@@ -21,7 +21,9 @@ Enemy::Enemy():
 	m_closeRange(0.0f),
 	m_fov(0.0f),
 	m_attackRange(0.0f),
-	m_score(0)
+	m_score(0),
+	m_hazardPos(Vector3(0.0f,0.0f,0.0f)),
+	m_attackWarnigFrame(0.0f)
 {
 }
 
@@ -42,7 +44,7 @@ void Enemy::Init()
 	m_angle = atan2f(m_forward.x, m_forward.z) + DX_PI_F;
 
 	m_sightRange = 500.0f;
-	m_closeRange = 150.0f;
+	m_closeRange = 180.0f;
 	m_attackRange = 300.0f;
 	m_fov = 90.0f;
 

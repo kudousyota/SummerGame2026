@@ -45,6 +45,10 @@ void EffectManager::Init()
     m_resourceHandles[static_cast<int>(EffectType::Floating)] = LoadEffekseerEffect("Data/eff/Effect/Floating.efk");
     //ゲームオーバーの背景エフェクトの読み込む
     m_resourceHandles[static_cast<int>(EffectType::Gameover)] = LoadEffekseerEffect("Data/eff/Effect/GameOver.efk");
+    //攻撃の時に出る光
+    m_resourceHandles[static_cast<int>(EffectType::Hazard)] = LoadEffekseerEffect("Data/eff/Effect/Hazard.efk");
+    //エンジェルの攻撃エフェクト
+    m_resourceHandles[static_cast<int>(EffectType::Wind)] = LoadEffekseerEffect("Data/eff/Effect/Angel.efk");
 }
 
 void EffectManager::Update()

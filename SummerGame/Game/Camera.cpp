@@ -217,3 +217,8 @@ Vector3 Camera::GetRight() const
 
 	return right;
 }
+
+void Camera::CameraPull()
+{
+
+}

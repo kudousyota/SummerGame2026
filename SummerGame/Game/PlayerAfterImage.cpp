@@ -71,8 +71,7 @@ void PlayerAfterImage::Create(const Vector3& pos, float angle, const std::string
     }
 
     //アニメーション番号を取得
-    int animNo =
-        MV1GetAnimIndex(data.modelHandle,data.animName.c_str());
+    int animNo = MV1GetAnimIndex(data.modelHandle,data.animName.c_str());
 
     if (animNo == -1)
     {
@@ -119,9 +118,7 @@ void PlayerAfterImage::Update()
         //アニメーションをデタッチ
         if (it->animHandle != -1)
         {
-            MV1DetachAnim(
-                it->modelHandle,
-                it->animHandle);
+            MV1DetachAnim(it->modelHandle,it->animHandle);
 
             it->animHandle = -1;
         }
@@ -149,13 +146,11 @@ void PlayerAfterImage::Draw()
 
         MATRIX rot = MGetRotY(afterImage.angle);
 
-        MATRIX trans =
-            MGetTranslate(
-                afterImage.pos.ToDxLibVector());
+        MATRIX trans = MGetTranslate(afterImage.pos.ToDxLibVector());
 
-        MV1SetMatrix(
-            afterImage.modelHandle,
-            MMult(rot, trans));
+        MV1SetMatrix(afterImage.modelHandle,MMult(rot, trans));
+        //残像のα値を下げる
+        MV1SetOpacityRate(afterImage.modelHandle, 0.5f);
 
         MV1DrawModel(afterImage.modelHandle);
     }
