@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game;$(ProjectDir)Math</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -93,7 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game;$(ProjectDir)Math</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game;$(ProjectDir)Math</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../DxLib_h;$(ProjectDir)Game/Character;$(ProjectDir)System;$(ProjectDir)Effect;$(ProjectDir)DataLoader;$(ProjectDir)UI;$(ProjectDir)Game;$(ProjectDir)Math</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -181,7 +181,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Character\Player.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
-    <ClCompile Include="System\Vector3.cpp" />
+    <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="System\Timer.cpp" />
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="UI\WitchTimeNeedleUI.cpp" />
@@ -231,7 +231,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Character\Player.h" />
     <ClInclude Include="Scene\SceneMain.h" />
-    <ClInclude Include="System\Vector3.h" />
+    <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="System\Timer.h" />
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="UI\WitchTimeNeedleUI.h" />

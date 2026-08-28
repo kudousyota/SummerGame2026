@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 #include "../System/Animation.h"
 
 class Player;
@@ -35,6 +35,12 @@ private:
 	bool m_isActive;
 	//攻撃済みかどうかのフラグ
 	bool m_hasAttacked;
+	//フレームインデックス
+	int m_rigFrameIndex;
+	//エフェクトのハンドル
+	int m_effectHandle;
+	//エフェクトの場所
+	Vector3 m_effectPos;
 
 	void AttackUpdate();
 

@@ -49,6 +49,8 @@ void EffectManager::Init()
     m_resourceHandles[static_cast<int>(EffectType::Hazard)] = LoadEffekseerEffect("Data/eff/Effect/Hazard.efk");
     //エンジェルの攻撃エフェクト
     m_resourceHandles[static_cast<int>(EffectType::Wind)] = LoadEffekseerEffect("Data/eff/Effect/Angel.efk");
+    //腕の魔法陣
+    m_resourceHandles[static_cast<int>(EffectType::Maho)] = LoadEffekseerEffect("Data/eff/Effect/maho.efk");
 }
 
 void EffectManager::Update()

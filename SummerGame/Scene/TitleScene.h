@@ -1,6 +1,6 @@
 #pragma once
 #include "../System/Input.h"
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 #include "Scene.h"
 #include "CharacterViewer.h"
 #include "../Game/SkyDome.h"

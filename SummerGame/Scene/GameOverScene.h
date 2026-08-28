@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "../System/Input.h"
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 #include "CharacterViewer.h"
 #include <vector>
 #include <memory>

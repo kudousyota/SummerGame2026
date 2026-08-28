@@ -1,5 +1,5 @@
 #pragma once
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 #include <vector>
 #include <array>
 #include <memory>
@@ -13,6 +13,7 @@ enum class EffectType
 	Gameover,
 	Hazard,
 	Wind,
+	Maho,
 	Max
 };
 class Effect;

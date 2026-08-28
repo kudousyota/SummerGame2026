@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "../system/Vector3.h"
+#include "../Math/Vector3.h"
 class Stage;
 class Camera
 {

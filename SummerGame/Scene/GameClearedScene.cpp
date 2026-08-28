@@ -8,7 +8,7 @@
 #include "../Game.h"
 #include "../Game/Character/Player.h"
 #include "../Game/Camera.h"
-#include "../system/Vector3.h"
+#include "../Math/Vector3.h"
 #include "../UI/UIManager.h"
 #include "../UI/GameClearedUI.h"
 #include "../System/Score.h"

@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.h"
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 #include <memory>
 //#include "../system/EffectManager.h"
 #include "CharacterViewer.h"

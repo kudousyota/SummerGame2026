@@ -1,5 +1,5 @@
 #pragma once
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 #include <string>
 #include <vector>
 //ウィッチタイムを発動した際の残像を描画する

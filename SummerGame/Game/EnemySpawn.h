@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 
 class EnemyManager;
 class EnemySpawner

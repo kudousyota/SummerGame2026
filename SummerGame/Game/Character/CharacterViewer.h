@@ -1,6 +1,6 @@
 #pragma once
 #include <optional>
-#include "Vector3.h"
+#include "../Math/Vector3.h"
 #include <string>
 #include "../System/Animation.h"
 

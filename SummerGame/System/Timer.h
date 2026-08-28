@@ -1,5 +1,5 @@
 #pragma once
-#include "../System/Vector3.h"
+#include "../Math/Vector3.h"
 class Timer
 {
 public:
