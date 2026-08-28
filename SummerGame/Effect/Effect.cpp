@@ -2,6 +2,10 @@
 #include "EffekseerForDXLib.h"
 #include "../Game.h"
 
+namespace
+{
+	constexpr float kScale = 20.0f;
+}
 void Effect::Play(int resourceHandle, const Vector3& pos)
 {
 	/*m_pos = pos;
@@ -14,7 +18,7 @@ void Effect::Play(int resourceHandle, const Vector3& pos)
 	m_playingHandle = PlayEffekseer3DEffect(resourceHandle);
 	SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos.x, m_pos.y, m_pos.z);
 	//デバッグ用に極端に拡大
-	SetScalePlayingEffekseer3DEffect(m_playingHandle, 20.0f, 20.0f, 20.0f);
+	SetScalePlayingEffekseer3DEffect(m_playingHandle, kScale, kScale, kScale);
 }
 
 void Effect::Stop()

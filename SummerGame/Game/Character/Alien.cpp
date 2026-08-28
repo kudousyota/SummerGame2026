@@ -14,6 +14,9 @@
 
 namespace
 {
+	//========================================
+	// アニメーション
+	//========================================
 
 	const char* const kIdleAnimName = "Alien|Idle";
 	const char* const kMoveAnimName = "Alien|Move";
@@ -25,22 +28,123 @@ namespace
 	const char* const kLookAnimName = "Alien|Look";
 	const char* const kDeadAnimName = "Alien|Dead";
 
-	//ブレス攻撃するために口元付近のリグを取る
-	const char* const kAttackRig = "mixamorig1:Head";
-	constexpr float kBreathRadius = 80.0f;
+	//アニメーション速度
+	constexpr float kIdleAnimSpeed = 0.5f;
+	constexpr float kMoveAnimSpeed = 0.5f;
+	constexpr float kStandUpAnimSpeed = 0.5f;
+	constexpr float kUPAnimSpeed = 0.5f;
+	constexpr float kAttackAnimSpeed = 0.5f;
+	constexpr float kDownAnimSpeed = 0.5f;
+	constexpr float kHitAnimSpeed = 0.8f;
+	constexpr float kLookAnimSpeed = 0.5f;
+	constexpr float kDeadAnimSpeed = 0.5f;
 
-	//このフレーム数でブレスを発射する
-	constexpr float kBreathFrame = 45.0f;
+
+	//========================================
+	// 基本ステータス
+	//========================================
+
+	//HP
+	constexpr int kMaxHp = 400;
+
+	//攻撃力
+	constexpr int kAttackPower = 10;
 
 	//スコア
 	constexpr int kScore = 300;
-	
-	//攻撃がくる猶予フレーム
+
+	//========================================
+	// モデル
+	//========================================
+
+	constexpr float kModelScale = 1.0f;
+	constexpr float kModelDisplayOffsetY = 0.0f;
+
+
+	//========================================
+	// 当たり判定
+	//========================================
+	constexpr float kCollisionRadius = 50.0f;
+	constexpr float kCollisionHeight = 160.0f;
+
+	//========================================
+	// 視界
+	//========================================
+
+	constexpr float kSightRange = 400.0f;
+	constexpr float kFov = 120.0f;
+
+	//キョロキョロ中の視界倍率
+	constexpr float kSearchSightMultiplier = 1.5f;
+
+
+	//========================================
+	// 索敵
+	//========================================
+
+	//キョロキョロする最大時間
+	constexpr float kLookMaxTime = 180.0f;
+
+	//キョロキョロする速度
+	constexpr float kLookSwingSpeed = 0.05f;
+
+	//左右に振る角度
+	constexpr float kLookSwingAngle = 60.0f * DX_PI_F / 180.0f;
+
+	//最後に見た場所に到着したと判定する距離
+	constexpr float kSearchArrivalDistance = 30.0f;
+
+
+	//========================================
+	// 移動
+	//========================================
+
+	constexpr float kRotateSpeed = 0.15f;
+
+
+	//========================================
+	// 攻撃
+	//========================================
+
+	//攻撃範囲
+	constexpr float kAttackRange = 150.0f;
+
+	//攻撃クールタイム
+	constexpr float kAttackCooldown = 90.0f;
+
+	//攻撃予告時間
 	constexpr float kHazardFrame = 30.0f;
 
-	//攻撃がくるエフェクトのオフセット
+	//攻撃予告エフェクトの高さ
 	constexpr float kHazardOffsetY = 180.0f;
 
+
+	//========================================
+	// ブレス
+	//========================================
+
+	//ブレスを生成する頭ボーン
+	const char* const kAttackRig = "mixamorig1:Head";
+
+	//ブレスの攻撃判定半径
+	constexpr float kBreathRadius = 80.0f;
+
+	//ブレスを発射するアニメーションフレーム
+	constexpr float kBreathFrame = 45.0f;
+
+	//ブレス速度
+	constexpr float kBreathSpeed = 10.0f;
+
+
+	//========================================
+	// 上昇・落下
+	//========================================
+
+	//Down中の重力
+	constexpr float kDownGravity = 0.5f;
+
+	//Up中の上昇速度
+	constexpr float kUpVelocity = 0.3f;
 }
 
 Alien::Alien():
@@ -82,34 +186,37 @@ void Alien::Init()
 	//基底クラスの初期化
 	Enemy::Init();
 	//HP
-	m_hp = 400;
+	m_hp = kMaxHp;
 	//攻撃力
-	m_attackPower = 10;
+	m_attackPower = kAttackPower;
 	//現在のステート
 	m_currentState = AlienState::Idle;
 	m_prevState = AlienState::Idle;
 	//重力
 	m_gravity = 0.0f;
 	//モデルのスケール
-	m_scale = Vector3(1.0f, 1.0f, 1.0f);
+	m_scale = Vector3(kModelScale, kModelScale, kModelScale);
 
 	//当たり判定
-	m_collisionRadius = 50.0f;
-	m_collisionHeight = 160.0f;
+	m_collisionRadius = kCollisionRadius;
+	m_collisionHeight = kCollisionHeight;
 
 	//視界
-	m_sightRange = 400.0f;
-	m_fov = 120.0f;
+	m_sightRange = kSightRange;
+	m_fov = kFov;
 	//サーチ
 	m_baseSightRange = m_sightRange;
-	m_searchSightMultiplier = 1.5f;	//キョロキョロ中は1.5倍見える
-	m_lookMaxTime = 180.0f;			//60fps換算で3秒
-	m_lookSwingSpeed = 0.05f;
-	m_lookSwingAngle = 60.0f * DX_PI_F / 180.0f; //左右60度ずつ振る
+	//キョロキョロ中は1.5倍見える
+	m_searchSightMultiplier = kSearchSightMultiplier;
+	//60fps換算で3秒
+	m_lookMaxTime = kLookMaxTime;	
+	m_lookSwingSpeed = kLookSwingSpeed;
+	//左右60度ずつ振る
+	m_lookSwingAngle = kLookSwingAngle;
 	m_lookTimer = 0.0f;
 
 	m_modelHandle = Model::Instance().CreatAlienModel();
-	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
+	m_animation.Init(m_modelHandle, kIdleAnimName, true, kIdleAnimSpeed);
 
 	//モデルを読み込んでボーンを見つけてくる
 	m_headBone = MV1SearchFrame(m_modelHandle, kAttackRig);
@@ -228,7 +335,7 @@ void Alien::Update()
 		else
 		{
 			//プレイヤーの方向に少しづつ向きを合わせる
-			ChasePlayer(0.15f, m_timeScale);
+			ChasePlayer(kRotateSpeed, m_timeScale);
 		}
 	}
 		break;
@@ -327,7 +434,7 @@ void Alien::Update()
 		}
 		else
 		{
-			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
+			MoveTo(m_lastSeePos, kRotateSpeed, m_timeScale);
 		}
 	}
 		break;
@@ -450,7 +557,7 @@ void Alien::AttackUpdate()
 	//指定したフレーム数でブレスを生成
 	if (!m_isAttack && animFrame >= kBreathFrame)
 	{
-		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, 10.0f, CreateAttackData())));
+		m_pBreath = static_cast<Breath*>(ProjectileManager::Instance().Add(std::make_unique<Breath>(pos, forward, kBreathSpeed, CreateAttackData())));
 
 		m_breathEffectHandle = EffectManager::Instns().PlayEffect(EffectType::Breath,Vector3(headPos));
 		SoundManager::Instance().PlaySE("Breath");
@@ -499,53 +606,53 @@ void Alien::TransitionTo(AlienState nextState)
 	switch (m_currentState)
 	{
 	case AlienState::Idle:
-		m_animation.ChangeAnim(kIdleAnimName, true, 0.5f);
+		m_animation.ChangeAnim(kIdleAnimName, true, kIdleAnimSpeed);
 		//広げた視界を戻す
 		m_sightRange = m_baseSightRange;
 		break;
 	case AlienState::Move:
-		m_animation.ChangeAnim(kMoveAnimName, true, 0.5f);
+		m_animation.ChangeAnim(kMoveAnimName, true, kMoveAnimSpeed);
 		m_sightRange = m_baseSightRange;
 		break;
 	case AlienState::Attack:
-		m_animation.ChangeAnim(kAttackAnimName, false, 0.5);
+		m_animation.ChangeAnim(kAttackAnimName, false, kAttackAnimSpeed);
 		m_isAttack = false;
-		m_attackCooldown = 90;
+		m_attackCooldown = kAttackCooldown;
 		m_attackDir = m_forward;
 	
 		break;
 	case AlienState::Down:
-		m_animation.ChangeAnim(kDownAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kDownAnimName, false, kDownAnimSpeed);
 		//スカイキックを食らったら落ちる
-		m_gravity = 0.5f;
+		m_gravity = kDownGravity;
 		m_velocity.y = 0.0f;
 		break;
 	case AlienState::StandUp:
-		m_animation.ChangeAnim(kStandUpAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kStandUpAnimName, false, kStandUpAnimSpeed);
 		//立ち上がったら戻す
 		m_gravity = 0.0f;
 		m_velocity.y = 0.0f;
 		break;
 	case AlienState::Up:
-		m_animation.ChangeAnim(kUPAnimName, false, 0.5f);
-		m_velocity.y = 0.3f;
+		m_animation.ChangeAnim(kUPAnimName, false, kUPAnimSpeed);
+		m_velocity.y = kUpVelocity;
 		break;
 	case AlienState::Hit:
 		//ヒットアニメーションがないので今は適当にほかのモーションを渡す
-		m_animation.ChangeAnim(kDownAnimName, false, 0.8f);
+		m_animation.ChangeAnim(kDownAnimName, false, kHitAnimSpeed);
 		break;
 	case AlienState::Search:
 		//着くまではMoveのモーション
-		m_animation.ChangeAnim(kMoveAnimName, true, 0.5f);
+		m_animation.ChangeAnim(kMoveAnimName, true, kUPAnimSpeed);
 		break;
 	case AlienState::LookAround:
 		//到着後はLookのモーション
-		m_animation.ChangeAnim(kLookAnimName, true, 0.5f);
+		m_animation.ChangeAnim(kLookAnimName, true, kLookAnimSpeed);
 		m_lookTimer = 0.0f;
 		m_sightRange = m_baseSightRange * m_searchSightMultiplier;
 		break;
 	case AlienState::Dead:
-		m_animation.ChangeAnim(kDeadAnimName, false, 0.5f);
+		m_animation.ChangeAnim(kDeadAnimName, false, kDeadAnimSpeed);
 		break;
 	}
 }

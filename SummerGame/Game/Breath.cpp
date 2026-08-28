@@ -6,6 +6,7 @@
 namespace
 {
 	constexpr float kBreathRange = 200.0f;
+	constexpr float kScale = 0.5f;
 }
 
 Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const AttackData& attack):
@@ -16,7 +17,7 @@ Breath::Breath(const Vector3& pos, const Vector3& forward, float speed, const At
 	//エフェクト再生
 	m_effectHandle = PlayEffekseer3DEffect(EffectManager::Instns().GetResourceHandle(EffectType::Breath));
 	//エフェクトのサイズ調整
-	SetScalePlayingEffekseer3DEffect(m_effectHandle,0.5f, 0.5f, 0.5f);
+	SetScalePlayingEffekseer3DEffect(m_effectHandle, kScale, kScale, kScale);
 }
 
 void Breath::Update()
