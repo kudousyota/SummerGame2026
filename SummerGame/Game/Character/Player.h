@@ -74,14 +74,6 @@ private:
 	int m_jumpPower;
 	//HPの最大値
 	int m_maxHp;
-
-	//攻撃処理
-	void AttackUpdate();
-	//回避処理
-	//void DodgeUpdate();
-
-	Vector3 GetCollisionPosition() const override;
-
 	//アタック
 	bool m_isAttackHit;
 	//次に行けるか
@@ -116,28 +108,6 @@ private:
 	// 前フレームのウィッチタイム状態（ウィッチタイム終了検出用）
 	bool m_prevWitchTime;
 	
-	void TransitionTo(PlayerState nextState);
-	//ウィッチタイム
-	//void WitchTime();
-
-	AttackType GetAttackType()const;
-
-	AttackData CreateAttackData();
-
-	
-	//攻撃で進む処理
-	void MoveAttack(float distance);
-	//攻撃時に方向を変えるための関数
-	void TurnToInputDirection(const Vector3& right, const Vector3& forward);
-
-	//攻撃方向を取得する関数
-	void UpdateAttackDirection(const Vector3& right, const Vector3& forward);
-
-	//プレイヤーの当たり判定はカプセルで行う//キャラクターの半径を取得する関数
-	float GetCollisionRadius() const override { return 30.0f; }
-	//プレイヤーの当たり判定はカプセルで行う//キャラクターの高さを取得する関数
-	float GetCollisionHeight() const override { return 100.0f; }
-
 	//描画に使うモデルの垂直オフセット
 	float m_modelDisplayOffsetY;
 
@@ -157,6 +127,32 @@ private:
 	//残像を生成するフレーム
 	int m_afterImageFrame;
 
+	//攻撃処理
+	void AttackUpdate();
+
+
+	Vector3 GetCollisionPosition() const override;
+	void TransitionTo(PlayerState nextState);
+
+	AttackType GetAttackType()const;
+
+	AttackData CreateAttackData();
+
+	
+	//攻撃で進む処理
+	void MoveAttack(float distance);
+	//攻撃時に方向を変えるための関数
+	void TurnToInputDirection(const Vector3& right, const Vector3& forward);
+
+	//攻撃方向を取得する関数
+	void UpdateAttackDirection(const Vector3& right, const Vector3& forward);
+
+	//プレイヤーの当たり判定はカプセルで行う//キャラクターの半径を取得する関数
+	float GetCollisionRadius() const override { return 30.0f; }
+	//プレイヤーの当たり判定はカプセルで行う//キャラクターの高さを取得する関数
+	float GetCollisionHeight() const override { return 100.0f; }
+
+	
 	//CheckAttackSphereを呼び、当たったらロックオンにセットする共通処理
 	void TryAttackHit(); 
 };

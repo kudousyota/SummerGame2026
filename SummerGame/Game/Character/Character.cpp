@@ -132,6 +132,7 @@ void Character::OnHit(const AttackData& attackdata)
 
 void Character::OnHitStop(int stopframe)
 {
+	//ヒットストップ
 	m_hitStopFrame = stopframe;
 }
 

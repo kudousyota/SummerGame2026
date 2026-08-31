@@ -7,8 +7,10 @@
 
 namespace
 {
+	//歩行可能な最大傾斜角度
 	constexpr float kWalkableSlopeAngleDeg = 60.0f;
-	//歩ける坂道の角度//ラジアンに変換
+	//歩行可能な傾斜角度を判定するためのcos値
+	//法線のY成分と比較して、床・坂道と壁を判別する
 	const float kWalkableSlopeCos = cosf(kWalkableSlopeAngleDeg * (DX_PI / 180.0f));
 
 	//ヒットストップフレーム
@@ -19,6 +21,14 @@ namespace
 	constexpr int kShakeFrame = 15;
 }
 
+//シングルトンのCollisionManagerを取得
+CollisionManager& CollisionManager::Instance()
+{
+	static CollisionManager collisionManager;
+	return collisionManager;
+}
+
+
 //指定キャラクターと登録済みキャラクターすべてとの衝突を解決する
 void CollisionManager::ResolveCollisionsFor(Character* character)
 {
@@ -27,9 +37,10 @@ void CollisionManager::ResolveCollisionsFor(Character* character)
     //他のキャラクターとのみチェックする
     for (auto other : m_pCharacters)
     {
+		//自分自身との判定はしない
         if (other == nullptr || other == character) continue;
 
-        //重複処理を避けるためにポインタの順序で一方のみ処理する
+        //二回押し出しがおきから重複処理を避けるためにポインタの順序で一方のみ処理する
         if (other < character) continue;
 
         //衝突していたら解決
@@ -40,12 +51,6 @@ void CollisionManager::ResolveCollisionsFor(Character* character)
     }
 }
 
-//シングルトンのCollisionManagerを取得
-CollisionManager& CollisionManager::Instance()
-{
-	static CollisionManager collisionManager;
-	return collisionManager;
-}
 //当たり判定対象のキャラクターを登録
 void CollisionManager::Register(Character* character)
 {
@@ -89,8 +94,9 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 
 		Vector3 ab = b - a;
 		Vector3 ap = pos - a;
-
+		//線分の2乗
 		float abLen2 = ab.SqMagnitude();
+		//攻撃位置からカプセル軸上の最近接点を求めるための係数
 		float t = 0.0f;
 		if (abLen2 > 0.000001f)
 		{
@@ -99,13 +105,15 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 			if (t < 0.0f) t = 0.0f;
 			if (t > 1.0f) t = 1.0f;
 		}
-
+		//カプセル軸上の最近接点
 		Vector3 closest = a + ab * t;
+		//攻撃位置から最近接点までのベクトル
 		Vector3 diff = closest - pos;
+		//最近接点までの距離の2乗
 		float dist2 = diff.SqMagnitude();
 		//ジャスト回避
-		//受付中なら100、普段は30
 		float justDodgeRadius = character->GetJustDodgeRadius(); 
+		//攻撃判定とジャスト回避判定合わせた範囲
 		float combinedJust = attackdata.GetRadius() + justDodgeRadius;
 
 		if (dist2 <= combinedJust * combinedJust)
@@ -126,18 +134,20 @@ std::vector<Character*> CollisionManager::CheckAttackSphere(const AttackData& at
 
 		if (dist2 <= combinedNormal * combinedNormal)
 		{
-			//通常の被弾
+			//キャラクターに攻撃を受けたことを通知
 			character->OnHit(attackdata);
+			//ヒットしたキャラクターを記録
 			hitCharacters.push_back(character);
 
-			//ヒットストップ・カメラシェイク
+			//ヒットストップを発生させる
 			Timer::Instance().RequestHitStop(kHitStopFrame);
+			//カメラを発生させる
 			Timer::Instance().RequestShake(kShakePower, kShakeFrame);
 		}
 	}
 	return hitCharacters;
 }
-
+//線分と半径からなるカプセル型の攻撃判定を行う
 std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& attackdata, const Vector3& start, const Vector3& end)
 {
 
@@ -154,13 +164,14 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 		{
 			continue;
 		}
+		//相手キャラクターのカプセル情報を取得
 		float capsuleRadius = character->GetCollisionRadius();
 		float capsuleHeight = character->GetCollisionHeight();
 
 		Vector3 a = character->GetCollisionPosition();
 
 		Vector3 b = a + Vector3(0.0f, capsuleHeight, 0.0f);
-
+		//攻撃カプセルの軸と相手カプセルの軸との最短距離を求める
 		float distance = Segment_Segment_MinLength(start, end, a, b);
 
 		//ジャスト回避の半径を知る
@@ -175,11 +186,12 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 			{
 				//ジャスト回避成功
 				character->ApplyDamage(0);
+				//通常の攻撃判定はしない
 				continue;
 			}
 		}
 
-		//通常の当たり判定
+		//2つのカプセルの半径を合計した値が実際の当たり判定の距離になる
 		float hitRange = attackdata.GetRadius() + capsuleRadius;
 
 		if (distance <= hitRange)
@@ -193,7 +205,7 @@ std::vector<Character*> CollisionManager::CheckAttackCapsule(const AttackData& a
 	}
 	return hitCharacters;
 }
-
+//キャラクターとステージの壁との衝突を判定し、めり込んでいた場合は壁の外側へ押し出す
 bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 {
 	//プレイヤーのカプセル情報を取得
@@ -210,9 +222,10 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 	const int kMaxIteration = 4;
 	for (int iter = 0; iter < kMaxIteration; iter++)
 	{
+		//カプセルの始点と終点を作成
 		VECTOR start = Vector3(pos.x, pos.y + radius, pos.z);
 		VECTOR end = VAdd(start, Vector3(0.0f, height - radius * 2.0f, 0.0f));
-
+		//ステージとのカプセル衝突判定
 		auto hit = MV1CollCheck_Capsule(stagehandle, -1, start, end, radius);
 		//何もヒットしなければ,これ以上押し出す必要はない
 		if (hit.HitNum == 0)
@@ -221,9 +234,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 			break;
 		}
 		//ポリゴンに当たったか記録
-		
 		//ここでは壁ポリゴンに当たったかを一旦保留にする
-
 		//一番めり込んだポリゴンを探すための変数
 		float maxDepth = -FLT_MAX;
 		//一番深いポリゴンの法線を保持
@@ -266,7 +277,7 @@ bool CollisionManager::CheckStageWall(Character* character, int stagehandle)
 
 			//半径よりも平面に近ければめり込んでいる
 			float depth = radius - signedDist;
-
+			//最も深くめり込んでいるポリゴンを記録
 			if (depth > maxDepth)
 			{
 				maxDepth = depth;
@@ -320,12 +331,12 @@ bool CollisionManager::CheckStageGround(Character* character, int stagehandle, f
 	//地面が見つからなかったら
 	return false;
 
-
 }
-
+//始点から終点へレイを飛ばし、ステージに遮られた場合は衝突位置を返す
 bool CollisionManager::CheckCameraRay(const int stagehandle ,const Vector3& start, const Vector3& end, Vector3& hitpos)
 {
 	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(stagehandle,-1,start,end);
+	//ステージにヒットした場合
 	if (result.HitFlag)
 	{
 		hitpos.x = result.HitPosition.x;
@@ -336,6 +347,7 @@ bool CollisionManager::CheckCameraRay(const int stagehandle ,const Vector3& star
 	return false;
 }
 
+//重なっている2つのキャラクターを、それぞれ反対方向へ押し出して重なりを解消する
 void CollisionManager::ResolveCharacterCollision(Character* characterA, Character* characterB)
 {
 	//Aのカプセル軸
@@ -359,25 +371,26 @@ void CollisionManager::ResolveCharacterCollision(Character* characterA, Characte
 
 	float distanceSq = direction.SqMagnitude();
 
-	//ほぼ同じ位置なら押し出し方向は決めれない
+	//ほぼ同じ位置にいる場合は方向を求められないため、デフォルトの方向を使用する
 	if (distanceSq < 0.000001f)
 	{
 		//真上/真下に重なっている場合の保険として、任意方向にずらす
 		direction = Vector3(1.0f, 0.0f, 0.0f);
 		distanceSq = 1.0f;
 	}
-
+	//押し出し方向を正規化
 	float distance = sqrtf(distanceSq);
 	direction /= distance;
-
+	//２つのカプセルの半径を合計
 	float combinedRadius = radiusA + radiusB;
+	//カプセル同士が重なっている量
 	float penetration = combinedRadius - distance;
-
+	//重なっていなければ何もしない
 	if (penetration <= 0.0f)
 	{
 		return;
 	}
-
+	//2人を均等に押し出し
 	float push = penetration * 0.5f;
 
 	Vector3 posA = characterA->GetPosition();
@@ -392,12 +405,16 @@ void CollisionManager::ResolveCharacterCollision(Character* characterA, Characte
 //2本の線分
 void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vector3& q1, const Vector3& p2, const Vector3& q2, Vector3& outC1, Vector3& outC2)
 {
-	Vector3 d1 = q1 - p1; //カプセルAの軸ベクトル
-	Vector3 d2 = q2 - p2; //カプセルBの軸ベクトル
+	//カプセルAの軸ベクトル
+	Vector3 d1 = q1 - p1;
+	//カプセルBの軸ベクトル
+	Vector3 d2 = q2 - p2;
+	//線分１の始点から線分2の始点へのベクトル
 	Vector3 r = p1 - p2;
-
-	float a = d1.Dot(d1); //線分1の長さの2乗
-	float e = d2.Dot(d2); //線分2の長さの2乗
+	//線分1の長さの2乗
+	float a = d1.Dot(d1);
+	//線分2の長さの2乗
+	float e = d2.Dot(d2);
 	float f = d2.Dot(r);
 
 	float s, t;
@@ -414,7 +431,9 @@ void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vecto
 	{
 		//線分1が点の場合
 		s = 0.0f;
+		//線分2上の最近接位置を求める
 		t = f / e;
+		//線分の範囲内に制限
 		t = std::clamp(t, 0.0f, 1.0f);
 	}
 	else
@@ -424,24 +443,29 @@ void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vecto
 		{
 			//線分2が点の場合
 			t = 0.0f;
+			//線分1上の最近接位置を求める
 			s = std::clamp(-c / a, 0.0f, 1.0f);
 		}
 		else
 		{
 			float b = d1.Dot(d2);
+			//2本の線分の関係を表す分母
 			float denom = a * e - b * b;
 
 			if (denom != 0.0f)
 			{
+				//線分1側の最近接点を求める
 				s = std::clamp((b * f - c * e) / denom, 0.0f, 1.0f);
 			}
 			else
 			{
-				s = 0.0f; //平行な場合
+				//平行な場合
+				s = 0.0f; 
 			}
-
+			//線分2側の最近接点を求める
 			t = (b * s + f) / e;
-
+			//線分2の範囲外に出た場合は、
+			//線分1側の最近接点を再計算する
 			if (t < 0.0f)
 			{
 				t = 0.0f;
@@ -454,11 +478,11 @@ void CollisionManager::ClosestPointSegmentSegment(const Vector3& p1, const Vecto
 			}
 		}
 	}
-
+	//求めたパラメータから実際の最近接点を計算
 	outC1 = p1 + d1 * s;
 	outC2 = p2 + d2 * t;
 }
-
+//2つのキャラクターのカプセルが重なっているか判定する
 bool CollisionManager::CheckCharacterCapsule(Character* characterA, Character* characterB)
 {
 	//AのカプセルAの軸を作る
@@ -474,18 +498,18 @@ bool CollisionManager::CheckCharacterCapsule(Character* characterA, Character* c
 	//ここで純粋な幾何計算関数に投げる
 	return CheckCapsule(aStart, aEnd, radiusA, bStart, bEnd, radiusB);
 }
-
+//2つのカプセルが重なっているか判定する
+//カプセル同士の判定は、中心軸となる2本の線分の最短距離と
+//2つのカプセル半径の合計を比較して行う
 bool CollisionManager::CheckCapsule(const Vector3& aStart, const Vector3& aEnd, float radiusA,const Vector3& bStart, const Vector3& bEnd, float radiusB)
 {
 	//2本の線分同士の最短距離を求める
 	float distance = Segment_Segment_MinLength(aStart, aEnd, bStart, bEnd);
 
 	//両カプセルの半径を合計
-	float combinedRadiu = radiusA + radiusB;
+	float combinedRadius = radiusA + radiusB;
 
-	//距離が半径の合計以下なら当たっている
-	bool isHit = distance <= combinedRadiu;
-
-	return isHit;
+	// 線分間の距離が半径の合計以下ならカプセル同士が接触している
+	return distance <= combinedRadius;
 }
 

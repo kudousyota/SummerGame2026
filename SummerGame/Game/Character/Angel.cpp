@@ -9,26 +9,89 @@
 
 namespace
 {
+	//==================================================
+	// アニメーション
+	//==================================================
+
+	//登場時の叫び
 	const char* const kShoutAnimName = "Angel|Shout";
 
+	//走り
 	const char* const kRunAnimName = "Angel|Run";
 
+	//連続攻撃
 	const char* const kDancingAttackAnimName = "Angel|DancingAttack";
 
+	//プレイヤーを見失ったとき
 	const char* const kRotateAnimName = "Angel|Rotate";
 
+	//ダメージ
 	const char* const kDamageAnimName = "Angel|Hit";
 
+	//死亡
 	const char* const kDeadAnimName = "Angel|Dead";
-	//目元のリグを取る
+
+
+	//==================================================
+	// リグ
+	//==================================================
+
+	//目元のリグ
 	const char* const kEyegRig = "mixamorig:RightEye";
 
-	//constexpr int kDanicgAttackRadius = 180;
 
-	//ラッシュ攻撃回数
+	//==================================================
+	// ステータス
+	//==================================================
+
+	//最大HP
+	constexpr int kMaxHP = 500;
+
+	//攻撃力
+	constexpr int kAttackPower = 20;
+
+	//スコア
+	constexpr int kScore = 500;
+
+	//サイズ
+	constexpr float kScale = 1.0f;
+
+	//==================================================
+	// 移動・索敵
+	//==================================================
+
+	//プレイヤーを追跡するときの移動速度
+	constexpr float kChaseSpeed = 0.15f;
+
+	//最後にプレイヤーを確認した場所まで移動するときの速度
+	constexpr float kSearchMoveSpeed = 0.15f;
+
+	//最後に確認した場所に到着したと判定する距離
+	constexpr float kSearchArriveDistance = 30.0f;
+
+
+	//==================================================
+	// 当たり判定
+	//==================================================
+
+	//エンジェル本体の当たり判定半径
+	constexpr float kCollisionRadius = 50.0f;
+
+	//エンジェル本体の当たり判定高さ
+	constexpr float kCollisionHeight = 160.0f;
+
+	//攻撃判定の半径
+	constexpr float kAttackRadius = 180.0f;
+
+
+	//==================================================
+	// 攻撃
+	//==================================================
+
+	//ラッシュ攻撃の攻撃回数
 	constexpr int kDancingAttackCount = 8;
 
-	//ダメージを出すフレーム
+	//各攻撃の攻撃判定を発生させるアニメーションフレーム
 	constexpr int kAttackDamageFrame[kDancingAttackCount] =
 	{
 		20,
@@ -41,14 +104,28 @@ namespace
 		160
 	};
 
-	constexpr float kAttackRadius = 180.0f;
+	//攻撃後のクールタイム
+	constexpr float kAttackCooldown = 90.0f;
 
-	constexpr int kScore = 500;
-	//攻撃がくる猶予フレーム
+
+	//==================================================
+	// 攻撃予兆
+	//==================================================
+
+	//攻撃予兆を表示してから攻撃するまでの時間
 	constexpr float kHazardFrame = 30.0f;
 
-	//攻撃がくるエフェクトのオフセット
+	//攻撃予兆エフェクトのY座標オフセット
 	constexpr float kHazardOffsetY = 180.0f;
+
+
+	//==================================================
+	// デバッグ
+	//==================================================
+
+	//攻撃判定デバッグ表示の表示時間
+	constexpr float kAttackDebugDisplayFrame = 5.0f;
+
 }
 
 Angel::Angel():
@@ -71,18 +148,18 @@ void Angel::Init()
 	m_prevState = AngelState::Shout;
 
 	//ステータス
-	m_hp = 500;
-	m_attackPower = 20;
+	m_hp = kMaxHP;
+	m_attackPower = kAttackPower;
 
 	//視界
 	//m_sightRange = 400.0f;
 	//m_fov = 120.0f;
 	
 	//サイズ
-	m_scale = Vector3(1.0f, 1.0f, 1.0f);
+	m_scale = Vector3(kScale, kScale, kScale);
 	//当たり判定
-	m_collisionRadius = 50.0f;
-	m_collisionHeight = 160.0f;
+	m_collisionRadius = kCollisionRadius;
+	m_collisionHeight = kCollisionHeight;
 
 	m_modelHandle = Model::Instance().CreateAngelModel();
 
@@ -98,8 +175,6 @@ void Angel::Update()
 	{
 		return;
 	}
-
-	
 
 	Character::Collision();
 
@@ -178,7 +253,7 @@ void Angel::Update()
 		else
 		{
 			//追跡
-			ChasePlayer(0.15f, m_timeScale);
+			ChasePlayer(kChaseSpeed, m_timeScale);
 		}
 		
 	}
@@ -231,13 +306,13 @@ void Angel::Update()
 		Vector3 dir = m_lastSeePos - m_pos;
 		dir.y = 0.0f;
 
-		if (dir.SqMagnitude() < 30.0f * 30.0f)
+		if (dir.SqMagnitude() < kSearchArriveDistance * kSearchArriveDistance)
 		{
 			TransitionTo(AngelState::Idle);
 		}
 		else
 		{
-			MoveTo(m_lastSeePos, 0.15f, m_timeScale);
+			MoveTo(m_lastSeePos, kSearchMoveSpeed, m_timeScale);
 		}
 
 	}
@@ -264,7 +339,7 @@ void Angel::Draw()
 
 	for (int i = 0; i < kDancingAttackCount; i++)
 	{
-		if (animTime >= kAttackDamageFrame[i] &&animTime < kAttackDamageFrame[i] + 5)//表示するフレーム
+		if (animTime >= kAttackDamageFrame[i] &&animTime < kAttackDamageFrame[i] + kAttackDebugDisplayFrame)//表示するフレーム
 		{
 			drawAttack = true;
 			break;
@@ -303,7 +378,7 @@ void Angel::TransitionTo(AngelState nextState)
 		m_animation.ChangeAnim(kRunAnimName, true, 0.5f);
 		break;
 	case AngelState::DancingAttack:
-		m_attackCooldown = 90;
+		m_attackCooldown = kAttackCooldown;
 
 		//ラッシュの攻撃は複数回当たる可能性があるので、当たったかどうかを管理する配列をリセットする
 		for (int i = 0; i < kDancingAttackCount; i++)

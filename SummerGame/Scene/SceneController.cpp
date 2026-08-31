@@ -4,7 +4,7 @@
 
 void SceneController::ResetScene(std::shared_ptr<Scene> scene)
 {
-	// シーンを一つだけにしたいので、いったんシーンをすべてクリアします
+	//シーンを一つだけにしたいので、いったんシーンをすべてクリア
 	m_scenes.clear();
 	m_scenes.push_back(scene);
 }

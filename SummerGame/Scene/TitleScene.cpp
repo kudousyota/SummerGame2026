@@ -15,13 +15,92 @@ namespace
 }
 
 
+
+TitleScene::TitleScene(SceneController& controller):
+	Scene(controller),
+	m_skyHandle(-1),
+	m_logoPos(Vector3(0.0f, 0.0f, 0.0f))
+{
+
+	m_update = &TitleScene::FadeInUpdate;
+	m_draw = &TitleScene::FadeDraw;
+	m_frame = kFadeInterval;
+    m_finished = false;
+}
+
+void TitleScene::Init()
+{	
+	//BGMの再生
+	SoundManager::Instance().PlayBGM("Title",true);
+
+	m_titleUI.Init();
+
+	m_SkyDome.Init();
+	m_SkyDome.SetPos(Vector3(0.0f, 0.0f, -5500.0f));
+	//ゆっくり回転させる
+	m_SkyDome.SetRotSpeed(0.002f);
+	//サイズ
+	m_SkyDome.SetScale(3.0f);
+	//場所を確定させる
+	m_SkyDome.Update(Vector3(0.0f, 0.0f, -5500.0f));
+
+	//タイトルでCharacterを描画
+	std::vector<CharacterInfo> infos =
+	{
+		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f),Vector3(1.0f,1.0f,1.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|UP",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
+		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
+	};
+	m_titleCharacter.resize(infos.size());
+	for (size_t i = 0; i < infos.size(); i++)
+	{
+		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos,infos[i].scale);
+	}
+
+	//エイリアンごとの往復移動を設定する
+	//増やしたいときはここに追加するだけ
+	m_alienMoveInfos =
+	{
+		//1体目
+		{Vector3(800.0f,0.0f,-250.0f),Vector3(-800.0f,0.0f,-250.0f),5.0f,0.0f,false},
+		//2体目
+		{Vector3(300.0f,-600.0f,-300.0f),Vector3(300.0f,300.0f,-300.0f),3.5f,DX_PI_F,true},
+		//3体目
+		{Vector3(800.0f,-200.0f,-300.0f),Vector3(-300.0f,300.0f,-300.0f),2.5f,0.0f,true},
+	};
+	//初期移動
+	for (size_t i = 0; i < m_alienMoveInfos.size(); i++)
+	{
+		StartAlienMove(i);
+	}
+	
+	//カメラを初期化
+	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
+	//これでメインシーンから引き継いだカメラの位置がリセットされる
+	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 100.0f, -700.0f), Vector3(0.0f, 100.0f, 0.0f));
+	SetupCamera_Perspective(DX_PI_F / 3.0f);
+	SetCameraNearFar(20.0f, 4500.0f);
+}
+
+void TitleScene::Update(Input& input)
+{
+	(this->*m_update)(input);
+}
+
+void TitleScene::Draw()
+{
+	//DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
+	(this->*m_draw)();
+}
+
 void TitleScene::FadeInUpdate(Input&)
 {
-	if (m_frame -- <= 0)
+	if (m_frame-- <= 0)
 	{
 		m_update = &TitleScene::NormalUpdate;
-		m_draw	 = &TitleScene::NormalDraw;
-		m_frame  = 0;//念のためフレームを0にしておく
+		m_draw = &TitleScene::NormalDraw;
+		m_frame = 0;//念のためフレームを0にしておく
 		return;
 	}
 }
@@ -101,83 +180,6 @@ void TitleScene::FadeDraw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);//ブレンドしない
 }
 
-TitleScene::TitleScene(SceneController& controller):
-	Scene(controller),
-	m_skyHandle(-1),
-	m_logoPos(Vector3(0.0f, 0.0f, 0.0f))
-{
-
-	m_update = &TitleScene::FadeInUpdate;
-	m_draw = &TitleScene::FadeDraw;
-	m_frame = kFadeInterval;
-    m_finished = false;
-}
-
-void TitleScene::Init()
-{	
-	//BGMの再生
-	SoundManager::Instance().PlayBGM("Title",true);
-
-	m_titleUI.Init();
-
-	m_SkyDome.Init();
-	m_SkyDome.SetPos(Vector3(0.0f, 0.0f, -5500.0f));
-	//ゆっくり回転させる
-	m_SkyDome.SetRotSpeed(0.002f);
-	//サイズ
-	m_SkyDome.SetScale(3.0f);
-	//場所を確定させる
-	m_SkyDome.Update(Vector3(0.0f, 0.0f, -5500.0f));
-
-	//タイトルでCharacterを描画
-	std::vector<CharacterInfo> infos =
-	{
-		{Model::Instance().CreatPlayerModel(), "Player|Title", Vector3(0.0f, 0.0f, -500.0f),Vector3(1.0f,1.0f,1.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|UP",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
-		{Model::Instance().CreatAlienModel(),"Alien|Move",Vector3(0.0f,0.0f,0.0f),Vector3(1.0f,1.0f,1.0f)},
-	};
-	m_titleCharacter.resize(infos.size());
-	for (size_t i = 0; i < infos.size(); i++)
-	{
-		m_titleCharacter[i].Init(infos[i].modelHandle, infos[i].animName, infos[i].pos,infos[i].scale);
-	}
-
-	//エイリアンごとの往復移動を設定する
-	//増やしたいときはここに追加するだけ
-	m_alienMoveInfos =
-	{
-		//1体目
-		{Vector3(800.0f,0.0f,-250.0f),Vector3(-800.0f,0.0f,-250.0f),5.0f,0.0f,false},
-		//2体目
-		{Vector3(300.0f,-600.0f,-300.0f),Vector3(300.0f,300.0f,-300.0f),3.5f,DX_PI_F,true},
-		//3体目
-		{Vector3(800.0f,-200.0f,-300.0f),Vector3(-300.0f,300.0f,-300.0f),2.5f,0.0f,true},
-	};
-	//初期移動
-	for (size_t i = 0; i < m_alienMoveInfos.size(); i++)
-	{
-		StartAlienMove(i);
-	}
-	
-	//カメラを初期化
-	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
-	//これでメインシーンから引き継いだカメラの位置がリセットされる
-	SetCameraPositionAndTarget_UpVecY(Vector3(0.0f, 100.0f, -700.0f), Vector3(0.0f, 100.0f, 0.0f));
-	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(20.0f, 4500.0f);
-}
-
-void TitleScene::Update(Input& input)
-{
-	(this->*m_update)(input);
-}
-
-void TitleScene::Draw()
-{
-	//DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
-	(this->*m_draw)();
-}
 
 void TitleScene::StartAlienMove(size_t index)
 {

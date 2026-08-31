@@ -1248,7 +1248,6 @@ void Player::UpdateAttackDirection(const Vector3& right, const Vector3& forward)
 		}
 	}
 
-
 	float stickX = Input::Instance().GetStickLX();
 	float stickY = Input::Instance().GetStickLY();
 

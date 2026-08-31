@@ -15,7 +15,7 @@ namespace
 
 }
 
-// No-op patch to trigger file update
+
 GameOverScene::GameOverScene(SceneController& controller):
 	Scene(controller),
 	m_finished(false),
@@ -96,7 +96,6 @@ void GameOverScene::FadeInUpdate(Input& input)
 		return;
 
 	}
-
 
 	if (m_frame-- <= 0)
 	{

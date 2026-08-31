@@ -69,6 +69,5 @@ void WitchTimeNeedleUI::Draw()
 			//‰æ–Ê‚Ì^‚ñ’†‚É‰ñ“]‚·‚é‰æ‘œ‚ğ•`‰æ‚·‚é
 			DrawRectRotaGraph2(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0, 0, 256, 512, 128, 256, 1.5f, m_angle, m_nidelHandle, true, false);
 		}
-
 	}
 }
