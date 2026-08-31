@@ -86,7 +86,7 @@ void GameClearedUI::Draw()
 	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 170, 340, text, white, fontSize, papul);
 
 	//キル数を描画
-	text = "Kile:" + std::to_string(Score::Instance().GetEnemyScore());
+	text = "kill:" + std::to_string(Score::Instance().GetEnemyScore());
 	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 110, 560, text, white, fontSize, papul);
 	
 	//ノーダメージ
@@ -94,7 +94,7 @@ void GameClearedUI::Draw()
 	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 95, 620, text, white, fontSize, papul);
 	
 	//合計
-	text = "Totale:" + std::to_string(Score::Instance().GetTotalScore());
+	text = "Total:" + std::to_string(Score::Instance().GetTotalScore());
 	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 80, 680, text, white, fontSize, papul);
 
 	//操作説明
