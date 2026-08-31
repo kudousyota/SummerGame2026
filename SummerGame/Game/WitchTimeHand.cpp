@@ -116,11 +116,10 @@ void WitchTimeHand::Draw()
 	}
 	//モデルの描画
 	MV1DrawModel(m_modelHandle);
-#ifndef _DEBUG
+#ifdef _DEBUG
 	//デバッグ用に攻撃判定を描画する
 	DrawSphere3D(m_pos.ToDxLibVector(), kAttackRadius, 16, 0xff0000, 0xff0000, false);
-#endif // !_DEBUG
-
+#endif //_DEBUG
 	
 }
 
