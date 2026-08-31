@@ -23,6 +23,9 @@ private:
 	float m_timerX;
 	float m_scoreX;
 
+	int m_fontSize;
+	int m_bigFontSize;
+
 	//ƒvƒŒƒCƒ„[
 	std::weak_ptr<Player> m_pPlayer;
 };

@@ -240,10 +240,10 @@ void SceneMain::NormalDraw()
 	m_pStage->Draw();
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 
-	//ウィッチタイムだったら
+    //ウィッチタイムだったら
 	if (m_pPlayer->GetWitchTime())
 	{
-		DrawBox(0, 0, 1280, 720, GetColor(125, 0, 185), true);
+		DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, GetColor(125, 0, 185), true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 

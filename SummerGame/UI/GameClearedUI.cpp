@@ -6,11 +6,11 @@
 
 namespace
 {
-	const float kTimerGoalX = 500.0f;
-	const float kScoreGoalX = 580.0f;
+	const float kTimerGoalX = 700.0f;
+	const float kScoreGoalX = 790.0f;
 	const float kResultGoalX = 620.0f;
 	const int kIntervar = 650;
-	constexpr int kfontBigsize = 48;
+	constexpr int kfontBigsize = 80;
 }
 GameClearedUI::GameClearedUI():
 	m_ResultUIHandle(-1),
@@ -58,9 +58,9 @@ void GameClearedUI::Update(Input& input)
 
 void GameClearedUI::Draw()
 {
-	DrawRotaGraph(static_cast<int>(m_timerX), 100, 0.5f, 0, m_TimerUIHandle, true);
-	DrawRotaGraph(static_cast<int>(m_scoreX), 300, 0.5f, 0, m_ScoreUIHandle, true);
-	DrawRotaGraph(620, 360, 1.0f, 0, m_ResultUIHandle, true);
+	DrawRotaGraph(static_cast<int>(m_timerX), 100, 0.7f, 0, m_TimerUIHandle, true);
+	DrawRotaGraph(static_cast<int>(m_scoreX), 370, 0.7f, 0, m_ScoreUIHandle, true);
+	DrawRotaGraph(950, 550, 1.6f, 0, m_ResultUIHandle, true);
 
 	const int white = GetColor(255, 255, 255);
 	const int black = GetColor(0, 0, 0);
@@ -71,7 +71,7 @@ void GameClearedUI::Draw()
 	//青より
 	//const int papul = GetColor(190, 180, 240);
 
-	const int fontSize = 24;
+	const int fontSize = 48;
 
 	//スコアやタイムなどのテキスト描画を行う
     //各項目ごとのスコアを表示
@@ -79,23 +79,23 @@ void GameClearedUI::Draw()
 	std::string text;
 	//タイムを描画
 	text = "Time:" + std::to_string(Score::Instance().GetTimeScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 190, 240, text, white, fontSize, papul);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 190, 280, text, white, fontSize, papul);
 
 	//ウィッチタイム
 	text = "WitchTime:" + std::to_string(Score::Instance().GetWitchTimeScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 170, 280, text, white, fontSize, papul);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 170, 340, text, white, fontSize, papul);
 
 	//キル数を描画
 	text = "Kile:" + std::to_string(Score::Instance().GetEnemyScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 110, 440, text, white, fontSize, papul);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 110, 560, text, white, fontSize, papul);
 	
 	//ノーダメージ
 	text = "NoDamage:" + std::to_string(Score::Instance().GetWitchTimeScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 95, 480, text, white, fontSize, papul);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 95, 620, text, white, fontSize, papul);
 	
 	//合計
 	text = "Totale:" + std::to_string(Score::Instance().GetTotalScore());
-	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 80, 520, text, white, fontSize, papul);
+	FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 80, 680, text, white, fontSize, papul);
 
 	//操作説明
 	text = "Press A to Title";
@@ -103,7 +103,7 @@ void GameClearedUI::Draw()
 	m_isVisible = (m_now / kIntervar) % 2;
 	if (m_isVisible)
 	{
-		FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 620, text, white, kfontBigsize, papul);
+		FontManager::Instance().DrawLeftText(static_cast<int>(m_scoreX) - 60, 760, text, white, kfontBigsize, papul);
 	}
 	
 }

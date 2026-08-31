@@ -1,5 +1,6 @@
 #include "WitchTimeNeedleUI.h"
 #include "../Game/Character/Player.h"
+#include "../Game.h"
 
 WitchTimeNeedleUI::WitchTimeNeedleUI():
 	m_nidelHandle(-1),
@@ -66,7 +67,7 @@ void WitchTimeNeedleUI::Draw()
 		if (m_witchEffectFrame > 0)
 		{
 			//‰æ–Ê‚Ì^‚ñ’†‚É‰ñ“]‚·‚é‰æ‘œ‚ğ•`‰æ‚·‚é
-			DrawRectRotaGraph2(1280 / 2, 720 / 2, 0, 0, 256, 512, 128, 256, 1.5f, m_angle, m_nidelHandle, true, false);
+			DrawRectRotaGraph2(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0, 0, 256, 512, 128, 256, 1.5f, m_angle, m_nidelHandle, true, false);
 		}
 
 	}

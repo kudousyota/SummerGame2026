@@ -2,19 +2,22 @@
 #include <DxLib.h>
 #include "../System/Input.h"
 #include "../System/SoundManager.h"
+#include "../Game.h"
+#include "../Common/FontManager.h"
 
 namespace
 {
-	constexpr int kUiPosX = 590;
-	constexpr int kStartY = 560;
-	constexpr int kExitPosY = 610;
+    //基準解像度の横幅(旧): 1280
+	constexpr int kUiPosX = 600;
+	constexpr int kStartY = 780;
+	constexpr int kExitPosY = 830;
 	//点滅の間隔
-	constexpr int kBlinkInterval = 650;
+	constexpr int kBlinkInterval = 350;
 
 }
 
 TitleUI::TitleUI():
-	m_fontHandle(-1),
+	m_menuFontSize(40),
 	m_logoHandle(-1),
 	m_logoPos(Vector3(0.0f,0.0f,0.0f)),
 	m_menuSelect(MenuSelect::Start),
@@ -24,11 +27,29 @@ TitleUI::TitleUI():
 
 TitleUI::~TitleUI()
 {
+    
 }
 
 void TitleUI::Init()
 {
-	m_fontHandle = CreateFontToHandle("Constantia", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+    //基準サイズに合わせてメニュー文字の大きさを決定 (FontManager の用意したサイズに合わせる)
+	const float sx = static_cast<float>(Game::kScreenWidth) / 1280.0f;
+	int targetSize = static_cast<int>(40.0f * sx);
+	if (targetSize < 8) targetSize = 8;
+	//FontManager が用意しているサイズ一覧
+	const int availableSizes[] = {8,16,24,32,40,48,56,64,72,80,88};
+	int best = availableSizes[0];
+	int bestDiff = abs(availableSizes[0] - targetSize);
+	for (int s : availableSizes)
+	{
+		int d = abs(s - targetSize);
+		if (d < bestDiff)
+		{
+			best = s;
+			bestDiff = d;
+		}
+	}
+	m_menuFontSize = best;
 
 	m_logoHandle = LoadGraph("data/kudonetta.png");
 }
@@ -53,9 +74,12 @@ void TitleUI::Draw()
 {
 	const int white = GetColor(255, 255, 255);
 
-	DrawRotaGraph(660, 150, 0.5, 0.0, m_logoHandle, true);
+	//横方向のみ画面幅に合わせて調整、縦位置は固定
+	const float sx = static_cast<float>(Game::kScreenWidth) / 1280.0f;
+	const int logoX = static_cast<int>(660 * sx);
+	DrawRotaGraph(logoX, 200, 0.8f, 0.0, m_logoHandle, true);
 
-	const int intervar = 650;
+    const int intervar = kBlinkInterval;
 	int now = GetNowCount();
 	bool visible = (now / intervar) % 2;
 
@@ -63,12 +87,13 @@ void TitleUI::Draw()
 	const int exitColor = (m_menuSelect == MenuSelect::Exit) ? GetColor(255, 255, 0) : white;
 
 	//選択中の文字だけ点滅させる例
-	if (m_menuSelect != MenuSelect::Start || visible)
+    const int uiX = static_cast<int>(kUiPosX * sx);
+    if (m_menuSelect != MenuSelect::Start || visible)
 	{
-		DrawStringToHandle(kUiPosX, kStartY, "Start", startColor, m_fontHandle);
+		FontManager::Instance().DrawLeftText(uiX, kStartY, "Start", startColor, m_menuFontSize, GetColor(0,0,0));
 	}
 	if (m_menuSelect != MenuSelect::Exit || visible)
 	{
-		DrawStringToHandle(kUiPosX, kExitPosY, "Exit", exitColor, m_fontHandle);
+		FontManager::Instance().DrawLeftText(uiX, kExitPosY, "Exit", exitColor, m_menuFontSize, GetColor(0,0,0));
 	}
 }

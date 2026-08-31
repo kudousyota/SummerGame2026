@@ -1,6 +1,7 @@
 #include "HPUI.h"
 #include "DxLib.h"
 #include "../Game/Character/Player.h"
+#include "../Game.h"
 
 namespace
 {
@@ -10,7 +11,7 @@ namespace
 	//îwåi
 	constexpr int kHpBackX = 170;
 	constexpr int kHpBackY = 70;
-	constexpr float kHpBackScale = 0.5f;
+	constexpr float kHpBackScale = 1.0f;
 	
 	//ÉQÅ[ÉW
 	constexpr int kHpGaugeX = 80;

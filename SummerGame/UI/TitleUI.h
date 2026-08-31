@@ -24,7 +24,7 @@ public:
 	//決定フラグをリセット
 	void ResetDecided() { m_isDecided = false; }
 private:
-	int	m_fontHandle;
+	int	m_menuFontSize;
 	int	m_logoHandle;
 	Vector3	m_logoPos;
 	bool m_isDecided;

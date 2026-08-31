@@ -35,7 +35,7 @@ bool Application::Init()
 {
 
 	//ウィンドウモード設定
-	ChangeWindowMode(true);
+	ChangeWindowMode(false);
 	//タイトル変更
 	SetMainWindowText("kudonetta");
 	//画面のサイズ変更

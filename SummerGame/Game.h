@@ -4,7 +4,7 @@
 namespace Game
 {
 	//‰æ–Êî•ñ
-	constexpr int kScreenWidth = 1280;
-	constexpr int kScreenHeight = 720;
+	constexpr int kScreenWidth = 1920;
+	constexpr int kScreenHeight = 1080;
 	constexpr int kColorBitNum = 32;
 }
