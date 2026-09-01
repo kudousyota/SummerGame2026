@@ -198,8 +198,8 @@ void Player::Init()
 	m_hp = kMaxHp;
 
 	//すぐ死ぬ用
-	/*m_maxHp = 10;
-	m_hp = 10;*/
+	//m_maxHp = 10;
+	//m_hp = 10;
 
 	m_jumpPower = kJumpPower;
 	//攻撃力

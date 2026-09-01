@@ -37,7 +37,7 @@ bool Application::Init()
 	//ウィンドウモード設定
 	ChangeWindowMode(false);
 	//タイトル変更
-	SetMainWindowText("kudonetta");
+	SetMainWindowText("Kudonetta");
 	//画面のサイズ変更
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitNum);
 	//フォントの読み込み

@@ -101,6 +101,6 @@ void GameOverSceneUI::Draw()
 	//const int goColor = GetColor(255, 80, 80);
 	//FontManager::Instance().DrawCenteredExtendText(Game::kScreenWidth / 2, 140, "Game Over", goColor, 80, black, 1.0f);
 	//ÉçÉSÇÃï`âÊ
-	DrawRotaGraph(620, m_logoposY, 0.8f, 0, m_logoHandle, true);
+	DrawRotaGraph(Game::kScreenWidth / 2, m_logoposY, 0.8f, 0, m_logoHandle, true);
 
 }

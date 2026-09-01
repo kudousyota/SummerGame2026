@@ -75,12 +75,12 @@ void HPUI::Update(Input& input)
 
 void HPUI::Draw()
 {
-	//æ‚ÉHP‚Ì˜g‚ğ•`‰æ
-	DrawRotaGraph(kHpBackX, kHpBackY, kHpBackScale, kHpAngle, m_hpGaugeBackHandle, true);
-	//Œ»İ‚ÌHP‚ğ•`‰æ
-	DrawExtendGraph(kHpGaugeX, kHpGaugeY, kHpGaugeX + m_hpWidth, kHpGaugeY + kGaugeHeight, m_hpGaugeHandle, true);
-	//¶ŠW
-	DrawRotaGraph(kHpLidLeft, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
-	//‰EŠW
-	DrawRotaGraph(kHoLidRight, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
+	////æ‚ÉHP‚Ì˜g‚ğ•`‰æ
+	//DrawRotaGraph(kHpBackX, kHpBackY, kHpBackScale, kHpAngle, m_hpGaugeBackHandle, true);
+	////Œ»İ‚ÌHP‚ğ•`‰æ
+	//DrawExtendGraph(kHpGaugeX, kHpGaugeY, kHpGaugeX + m_hpWidth, kHpGaugeY + kGaugeHeight, m_hpGaugeHandle, true);
+	////¶ŠW
+	//DrawRotaGraph(kHpLidLeft, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
+	////‰EŠW
+	//DrawRotaGraph(kHoLidRight, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
 }

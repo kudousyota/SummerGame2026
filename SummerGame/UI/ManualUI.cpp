@@ -28,5 +28,5 @@ void ManualUI::Draw()
 	const int x = static_cast<int>(1100 * sx);
 	const int y = static_cast<int>(600 * sy);
 	const float scale = 0.7f * sx;
-	DrawRotaGraph(x, y, scale, 0, m_manualHandle, true);
+	//DrawRotaGraph(x, y, scale, 0, m_manualHandle, true);
 }
