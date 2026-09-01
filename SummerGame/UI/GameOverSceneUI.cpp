@@ -13,6 +13,11 @@ namespace
 	constexpr int kSpeed = 2;
 
 	constexpr int kVlinkIntercal = 650;
+
+	//êUÇÍïù
+	constexpr int kQuakeAmplitude = 20;
+	//óhÇÁÇ∑óÕ
+	constexpr int kQuakePower = 15;
 }
 
 GameOverSceneUI::GameOverSceneUI() :
@@ -77,24 +82,25 @@ void GameOverSceneUI::Update(Input& input)
 
 void GameOverSceneUI::Draw()
 {
-	const int white = GetColor(255, 255, 255);
-	const int Cyan = GetColor(0, 255, 255);
-	const int Color = GetColor(224, 255, 255);
-	const int black = GetColor(0, 0, 0);
-
-	//ì_ñ≈ïpìx
-	const int intervar = 650;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-	if (m_menuSelect != MenuSelect::Retle || visible)
+	
+	
+	if (m_menuSelect == MenuSelect::Retle)
 	{
 		//ëÄçÏê‡ñæï\é¶
-		FontManager::Instance().DrawCenteredText(320, 580, "Retry", white, 56, black);
+		FontManager::Instance().DrawBottomRightAndQuakeText(850, Game::kScreenHeight / 2, "Retry", 0xfff000, 88, 0xff0000,true, kQuakeAmplitude,kQuakePower);
 	}
-	if (m_menuSelect != MenuSelect::Title || visible)
+	else
+	{
+		FontManager::Instance().DrawBottomRightAndQuakeText(850, Game::kScreenHeight / 2, "Retry", 0xffffff, 88, 0xff0000);
+	}
+	if (m_menuSelect == MenuSelect::Title )
 	{
 		//ëÄçÏê‡ñæï\é¶
-		FontManager::Instance().DrawCenteredText(960, 580, "Title", white, 56, black);
+		FontManager::Instance().DrawBottomRightAndQuakeText(1360, Game::kScreenHeight / 2, "Title", 0xfff000, 88, 0xff0000,true, kQuakeAmplitude,kQuakePower);
+	}
+	else
+	{
+		FontManager::Instance().DrawBottomRightAndQuakeText(1360, Game::kScreenHeight / 2, "Title", 0xffffff, 88, 0xff0000);
 	}
 
 	////ëÂÇ´ÇﬂÇÃGameOverï\é¶

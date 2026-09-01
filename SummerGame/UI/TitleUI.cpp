@@ -7,13 +7,15 @@
 
 namespace
 {
-    //Šî€‰ğ‘œ“x‚Ì‰¡•(‹Œ): 1280
 	constexpr int kUiPosX = 600;
 	constexpr int kStartY = 780;
-	constexpr int kExitPosY = 830;
+	constexpr int kExitPosY = 860;
 	//“_–Å‚ÌŠÔŠu
 	constexpr int kBlinkInterval = 350;
-
+	//U‚ê•
+	constexpr int kQuakeAmplitude = 20;
+	//—h‚ç‚·—Í
+	constexpr int kQuakePower = 15;
 }
 
 TitleUI::TitleUI():
@@ -74,26 +76,28 @@ void TitleUI::Draw()
 {
 	const int white = GetColor(255, 255, 255);
 
-	//‰¡•ûŒü‚Ì‚İ‰æ–Ê•‚É‡‚í‚¹‚Ä’²®AcˆÊ’u‚ÍŒÅ’è
-	const float sx = static_cast<float>(Game::kScreenWidth) / 1280.0f;
-	const int logoX = static_cast<int>(660 * sx);
-	DrawRotaGraph(logoX, 200, 0.8f, 0.0, m_logoHandle, true);
-
-    const int intervar = kBlinkInterval;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-
 	const int startColor = (m_menuSelect == MenuSelect::Start) ? GetColor(255, 255, 0) : white;
 	const int exitColor = (m_menuSelect == MenuSelect::Exit) ? GetColor(255, 255, 0) : white;
+	//ƒƒS‚Ì•`‰æ
+	DrawRotaGraph(Game::kScreenWidth / 2, 200, 0.8f, 0.0, m_logoHandle, true);
 
-	//‘I‘ğ’†‚Ì•¶š‚¾‚¯“_–Å‚³‚¹‚é—á
-    const int uiX = static_cast<int>(kUiPosX * sx);
-    if (m_menuSelect != MenuSelect::Start || visible)
+	//‘I‚Î‚ê‚Ä‚¢‚é•û‚ğ—h‚ç‚·	
+	if (m_menuSelect == MenuSelect::Start)
 	{
-		FontManager::Instance().DrawLeftText(uiX, kStartY, "Start", startColor, m_menuFontSize, GetColor(0,0,0));
+		FontManager::Instance().DrawBottomRightAndQuakeText(1050, kStartY, "Start", 0xfff000, 88, 0xff0000, true, kQuakeAmplitude, kQuakePower);
 	}
-	if (m_menuSelect != MenuSelect::Exit || visible)
+	//‘I‚Î‚ê‚Ä‚¢‚È‚¢•û‚Í—h‚ç‚³‚È‚¢
+	else
 	{
-		FontManager::Instance().DrawLeftText(uiX, kExitPosY, "Exit", exitColor, m_menuFontSize, GetColor(0,0,0));
+		FontManager::Instance().DrawBottomRightAndQuakeText(1050, kStartY, "Start", 0xffffff, 88, 0xff0000, false);
+	}
+	if (m_menuSelect == MenuSelect::Exit)
+	{
+		FontManager::Instance().DrawBottomRightAndQuakeText(1050, kExitPosY, "Exit", 0xfff000, 88, 0xff0000, true, kQuakeAmplitude, kQuakePower);
+	}
+	//‘I‚Î‚ê‚Ä‚¢‚È‚¢•û‚Í—h‚ç‚³‚È‚¢
+	else
+	{
+		FontManager::Instance().DrawBottomRightAndQuakeText(1050, kExitPosY, "Exit", 0xffffff, 88, 0xff0000, false);
 	}
 }

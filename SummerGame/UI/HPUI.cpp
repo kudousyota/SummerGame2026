@@ -5,23 +5,23 @@
 
 namespace
 {
-	constexpr int kGaugeWidth = 200;
+	constexpr int kGaugeWidth = 360;
 	constexpr int kGaugeHeight = 20;
 	constexpr int kHpAngle = 0.0f;
 	//îwåi
-	constexpr int kHpBackX = 170;
-	constexpr int kHpBackY = 70;
-	constexpr float kHpBackScale = 1.0f;
+	constexpr int kHpBackX = 300;
+	constexpr int kHpBackY = 100;
+	constexpr float kHpBackScale = 0.8f;
 	
 	//ÉQÅ[ÉW
-	constexpr int kHpGaugeX = 80;
-	constexpr int kHpGaugeY = 65;
+	constexpr int kHpGaugeX = 110;
+	constexpr int kHpGaugeY = 100;
 
 	//äW
-	constexpr int kHpLidLeft = 80;
-	constexpr int kHoLidRight = 280;
-	constexpr int kHpLidY = 75;
-	constexpr float kHpLidScale = 0.8f;
+	constexpr int kHpLidLeft = 115;
+	constexpr int kHpLidRight = 475;
+	constexpr int kHpLidY = 110;
+	constexpr float kHpLidScale = 1.0f;
 
 }
 
@@ -75,12 +75,12 @@ void HPUI::Update(Input& input)
 
 void HPUI::Draw()
 {
-	////êÊÇ…HPÇÃògÇï`âÊ
-	//DrawRotaGraph(kHpBackX, kHpBackY, kHpBackScale, kHpAngle, m_hpGaugeBackHandle, true);
-	////åªç›ÇÃHPÇï`âÊ
-	//DrawExtendGraph(kHpGaugeX, kHpGaugeY, kHpGaugeX + m_hpWidth, kHpGaugeY + kGaugeHeight, m_hpGaugeHandle, true);
-	////ç∂äW
-	//DrawRotaGraph(kHpLidLeft, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
-	////âEäW
-	//DrawRotaGraph(kHoLidRight, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
+	//êÊÇ…HPÇÃògÇï`âÊ
+	DrawRotaGraph(kHpBackX, kHpBackY, kHpBackScale, kHpAngle, m_hpGaugeBackHandle, true);
+	//åªç›ÇÃHPÇï`âÊ
+	DrawExtendGraph(kHpGaugeX, kHpGaugeY, kHpGaugeX + m_hpWidth, kHpGaugeY + kGaugeHeight, m_hpGaugeHandle, true);
+	//ç∂äW
+	DrawRotaGraph(kHpLidLeft, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
+	//âEäW
+	DrawRotaGraph(kHpLidRight, kHpLidY, kHpLidScale, kHpAngle, m_hplidHandle, true);
 }

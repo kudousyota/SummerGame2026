@@ -187,9 +187,9 @@ void FontManager::DrawBottomRightAndQuakeText(int x, int y, std::string text, un
 
 		x += shakeOffset;
 
-		int sub = 0xff0000 - color;
-		float per = static_cast<float>(shakeAmplitude) / 30.0f;
-		color += static_cast<unsigned int>(sub * per);
+		//int sub = 0xff0000 - color;
+		/*float per = static_cast<float>(shakeAmplitude) / 30.0f;
+		color += static_cast<unsigned int>(sub * per);*/
 	}
 
 	int textWidth = GetDrawStringWidthToHandle(text.c_str(), static_cast<int>(text.length()), drawFont.handle);

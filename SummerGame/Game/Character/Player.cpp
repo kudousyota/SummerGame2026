@@ -109,7 +109,7 @@ namespace
 	constexpr float kSkyKickMove = 15.0f;
 	//落ちるスピード
 	constexpr float kSkyKickFallSpeed = -8.0f;
-	constexpr float kSkyKickRadius = 140.0f;
+	constexpr float kSkyKickRadius = 170.0f;
 	//攻撃の時に徐々に回転
 	constexpr float kRotateSpeed = 0.03f;
 	//通常移動時の向き補正速度
@@ -194,12 +194,12 @@ void Player::Init()
 	//m_speed = 33.0f;
 	m_speed = kSpeed;
 	//ステータス
-	m_maxHp = kMaxHp;
-	m_hp = kMaxHp;
+	//m_maxHp = kMaxHp;
+	//m_hp = kMaxHp;
 
 	//すぐ死ぬ用
-	//m_maxHp = 10;
-	//m_hp = 10;
+	m_maxHp = 10;
+	m_hp = 10;
 
 	m_jumpPower = kJumpPower;
 	//攻撃力

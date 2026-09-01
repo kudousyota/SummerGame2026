@@ -113,7 +113,7 @@ namespace
 	constexpr float kAttackCooldown = 90.0f;
 
 	//UŒ‚—\ŠÔ
-	constexpr float kHazardFrame = 30.0f;
+	constexpr float kHazardFrame = 15.0f;
 
 	//UŒ‚—\ƒGƒtƒFƒNƒg‚Ì‚‚³
 	constexpr float kHazardOffsetY = 180.0f;
