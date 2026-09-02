@@ -53,6 +53,7 @@ void SoundManager::Load()
 	m_seList["Breath"] = LoadSoundMem("Data/Sound/Breath.mp3");
 	m_seList["Shout"] = LoadSoundMem("Data/Sound/Shout.mp3");
 	m_seList["CountDown"] = LoadSoundMem("Data/Sound/CountDown.mp3");
+	m_seList["Landing"] = LoadSoundMem("Data/Sound/Landing.mp3");
 }
 
 void SoundManager::PlayBGM(const std::string& key, bool loop)

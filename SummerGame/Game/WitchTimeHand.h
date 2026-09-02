@@ -19,6 +19,9 @@ public:
 
 	//プレイヤーを知るための関数
 	void SetPlayer(const std::shared_ptr<Player>& player) { m_pPlayer = player; }
+	//手の向きをセットする関数
+	void SetAngle(float angle) { m_angle = angle; }
+
 	//位置を設定する関数
 	void SetPosition(const Vector3& pos) { m_pos = pos; }
 	//アクティブかどうかを外部から確認する関数

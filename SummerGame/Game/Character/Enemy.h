@@ -27,7 +27,7 @@ public:
     AttackData CreateAttackData()const;
 protected:
     //‹¤’Ê‚Ì’l
-    static constexpr float kAttackRange = 150.0f;
+   /*  constexpr float kAttackRange = 150.0f;*/
 
     int m_modelHandle;
     bool m_isDead;

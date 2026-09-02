@@ -107,13 +107,13 @@ namespace
 	//攻撃後のクールタイム
 	constexpr float kAttackCooldown = 90.0f;
 
-
+	constexpr float kAttackRange = 150.0f;
 	//==================================================
 	// 攻撃予兆
 	//==================================================
 
 	//攻撃予兆を表示してから攻撃するまでの時間
-	constexpr float kHazardFrame = 30.0f;
+	constexpr float kHazardFrame = 15.0f;
 
 	//攻撃予兆エフェクトのY座標オフセット
 	constexpr float kHazardOffsetY = 180.0f;

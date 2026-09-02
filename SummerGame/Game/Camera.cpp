@@ -19,8 +19,8 @@ namespace
 	constexpr float kCameraFollow = 0.15f;
 
 	constexpr float kStickDeadZone = 0.001f;
-	constexpr float kCameraRotSpeedX = 0.8f;
-	constexpr float kCameraRotSpeedY = 0.6f;
+	constexpr float kCameraRotSpeedX = 1.2f;
+	constexpr float kCameraRotSpeedY = 1.0f;
 	//ジャスト回避の時にひくカメラの距離
 	constexpr float kJustAvoidPullDistance = 150.0f;
 	//引いたカメラが元に戻る速さ

@@ -22,7 +22,7 @@ namespace
 	const char* const kDeadAnimName = "Enemy|Dead";
 
 	//攻撃を開始する距離
-	constexpr float kAttackRange = 350.0f;
+	constexpr float kAttackRange = 500.0f;
 	//攻撃の長さ
 	constexpr float kAttackRadius = 180.0f;
 	constexpr float kPumncRadius = 130.0f;
@@ -35,7 +35,7 @@ namespace
 	constexpr float kHazardOffsetY = 400.0f;
 
 	// 初期値定数
-	constexpr int kInitialHP = 900;
+	constexpr int kInitialHP = 1500;
 	constexpr int kInitialAttackPower = 20;
 	constexpr float kInitialCollisionRadius = 130.0f;
 	constexpr float kInitialCollisionHeight = 530.0f;
@@ -62,7 +62,7 @@ void Creature::Init()
 
 	//m_hp = 50;
 	//本物の体力
-	m_hp = 900;
+	m_hp = kInitialHP;
 
 	m_attackPower = 20;
 
@@ -83,15 +83,15 @@ void Creature::Init()
 	//ボスなのでスコアを多くする
 	m_score = kScore;
 
-	// 攻撃関連初期化
+	//攻撃関連初期化
 	m_attackRange = kAttackRange;
 	m_attackPower = kInitialAttackPower;
 
-	// 衝突関連
+	//衝突関連
 	m_collisionRadius = kInitialCollisionRadius;
 	m_collisionHeight = kInitialCollisionHeight;
 
-	// 体力
+	//体力
 	m_hp = kInitialHP;
 
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);

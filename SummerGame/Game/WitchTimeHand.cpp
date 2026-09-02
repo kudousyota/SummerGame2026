@@ -19,6 +19,8 @@ namespace
 	constexpr float kHandOffsetY = 150.0f;
 	//エフェクトを左にずらす
 	constexpr float kEffectSideOffset = 20.0f;
+	//後ろに下げる距離
+	constexpr float kHandBackOffset = -250.0f;
 }
 
 WitchTimeHand::WitchTimeHand():
@@ -68,6 +70,9 @@ void WitchTimeHand::Update()
 	m_pos = player->GetPosition();
 	//少したかい位置にでたから下げる
 	m_pos.y -= kHandOffsetY;
+	//少し後ろに出す
+	m_pos.x -= sinf(m_angle) * kHandBackOffset;
+	m_pos.z -= cosf(m_angle) * kHandBackOffset;
 
 	//モデルの回転・位置を先に設定してからリグ座標を取る
 	MV1SetRotationXYZ(m_modelHandle, Vector3(0.0f, m_angle, 0.0f).ToDxLibVector());

@@ -84,12 +84,12 @@ void TitleUI::Draw()
 	//‘I‚Î‚ê‚Ä‚¢‚é•û‚ð—h‚ç‚·	
 	if (m_menuSelect == MenuSelect::Start)
 	{
-		FontManager::Instance().DrawBottomRightAndQuakeText(1050, kStartY, "Start", 0xfff000, 88, 0xff0000, true, kQuakeAmplitude, kQuakePower);
+		FontManager::Instance().DrawBottomRightAndQuakeText(1060, kStartY, "Start", 0xfff000, 88, 0xff0000, true, kQuakeAmplitude, kQuakePower);
 	}
 	//‘I‚Î‚ê‚Ä‚¢‚È‚¢•û‚Í—h‚ç‚³‚È‚¢
 	else
 	{
-		FontManager::Instance().DrawBottomRightAndQuakeText(1050, kStartY, "Start", 0xffffff, 88, 0xff0000, false);
+		FontManager::Instance().DrawBottomRightAndQuakeText(1060, kStartY, "Start", 0xffffff, 88, 0xff0000, false);
 	}
 	if (m_menuSelect == MenuSelect::Exit)
 	{

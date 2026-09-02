@@ -163,7 +163,7 @@ Player::Player() :
 	m_pWitchTimeHand(std::make_unique<WitchTimeHand>()),
 	m_afterImageFrame(0)
 {
-	// 初期のウィッチタイム状態
+	//初期のウィッチタイム状態
 	m_prevWitchTime = false;
 	
 }
@@ -194,12 +194,12 @@ void Player::Init()
 	//m_speed = 33.0f;
 	m_speed = kSpeed;
 	//ステータス
-	//m_maxHp = kMaxHp;
-	//m_hp = kMaxHp;
+	m_maxHp = kMaxHp;
+	m_hp = kMaxHp;
 
 	//すぐ死ぬ用
-	m_maxHp = 10;
-	m_hp = 10;
+	//m_maxHp = 10;
+	//m_hp = 10;
 
 	m_jumpPower = kJumpPower;
 	//攻撃力
@@ -445,12 +445,9 @@ void Player::Update()
 		if (m_isGround)
 		{
 			//移動入力があるか
-			bool isMove =
-				input.IsPressed("up") ||
-				input.IsPressed("down") ||
-				input.IsPressed("left") ||
-				input.IsPressed("right");
-
+			bool isMove =input.IsPressed("up") ||input.IsPressed("down") ||input.IsPressed("left") ||input.IsPressed("right");
+			//着地SE
+			SoundManager::Instance().PlaySE("Landing");
 			// 移動優先
 			if (isMove)
 			{
@@ -475,13 +472,10 @@ void Player::Update()
 		if (m_isGround)
 		{
 			//移動入力があるか
-			bool isMove =
-				input.IsPressed("up") ||
-				input.IsPressed("down") ||
-				input.IsPressed("left") ||
-				input.IsPressed("right");
-
-			// 移動優先
+			bool isMove = input.IsPressed("up") || input.IsPressed("down") || input.IsPressed("left") || input.IsPressed("right");
+			//着地SE
+			SoundManager::Instance().PlaySE("Landing");
+			//移動優先
 			if (isMove)
 			{
 				TransitionTo(PlayerState::Run);
