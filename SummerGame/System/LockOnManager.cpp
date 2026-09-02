@@ -2,7 +2,7 @@
 #include "../Game/Character/Enemy.h"
 namespace
 {
-	static constexpr int kLockOnDurationFrame = 120;
+	constexpr int kLockOnDurationFrame = 100;
 }
 LockOnManager::LockOnManager():
 	m_timerFrame(0)
@@ -61,6 +61,6 @@ const Vector3* LockOnManager::GetLockOnPos()
     //Creatureなど大きめの敵の頭部付近をロックオンしたいので
     //当たり判定位置に高さのオフセットを加える
     m_cachadPos = m_pTarget->GetCollisionPosition();
-    m_cachadPos.y += m_pTarget->GetCollisionHeight() * 0.7f;
+    m_cachadPos.y += m_pTarget->GetCollisionHeight() * 0.9f;
 	return &m_cachadPos;
 }

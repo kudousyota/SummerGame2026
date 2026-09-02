@@ -29,10 +29,19 @@ namespace
 	//ボスなのでスコアは多くする
 	constexpr int kScore = 1000;
 	//攻撃がくる猶予フレーム
-	constexpr float kHazardFrame = 30.0f;
+	constexpr float kHazardFrame = 15.0f;
 
 	//攻撃がくるエフェクトのオフセット
-	constexpr float kHazardOffsetY = 180.0f;
+	constexpr float kHazardOffsetY = 400.0f;
+
+	// 初期値定数
+	constexpr int kInitialHP = 900;
+	constexpr int kInitialAttackPower = 20;
+	constexpr float kInitialCollisionRadius = 130.0f;
+	constexpr float kInitialCollisionHeight = 530.0f;
+	const Vector3 kInitialScale = Vector3(3.0f, 3.0f, 3.0f);
+	constexpr int kDefaultAttackCooldown = 90;
+	constexpr int kAttackFrameCount = 30;
 }
 
 Creature::Creature():
@@ -53,7 +62,7 @@ void Creature::Init()
 
 	//m_hp = 50;
 	//本物の体力
-	m_hp = 700;
+	m_hp = 900;
 
 	m_attackPower = 20;
 
@@ -68,13 +77,22 @@ void Creature::Init()
 	m_prevState = CreatureState::Idle;
 
 	//m_pos = Vector3(0.0f, 500.0f, 250.0f);
-	m_modelHandle = Model::Instance().CreateCreatureModel();
-	m_scale = Vector3(3.0f, 3.0f, 3.0f);
+    m_modelHandle = Model::Instance().CreateCreatureModel();
+	m_scale = kInitialScale;
 
 	//ボスなのでスコアを多くする
 	m_score = kScore;
 
-	m_attackRange = 350.0f;
+	// 攻撃関連初期化
+	m_attackRange = kAttackRange;
+	m_attackPower = kInitialAttackPower;
+
+	// 衝突関連
+	m_collisionRadius = kInitialCollisionRadius;
+	m_collisionHeight = kInitialCollisionHeight;
+
+	// 体力
+	m_hp = kInitialHP;
 
 	m_animation.Init(m_modelHandle, kIdleAnimName, true, 0.5f);
 }
@@ -164,7 +182,7 @@ void Creature::Update()
 
 				FacePlayer();
 				EffectManager::Instns().PlayEffect(EffectType::Hazard, m_hazardPos);
-				//30f待つ
+				//15f待つ
 				m_attackWarnigFrame = kHazardFrame;
 				TransitionTo(CreatureState::AttackWarnig);
 			}
@@ -356,8 +374,8 @@ void Creature::TransitionTo(CreatureState nextState)
 		m_animation.ChangeAnim(kAttackAnimName, false, 0.5f);
 		//攻撃ステートになったら更新する
 		m_isAttack = false;
-		//クールタイム設定
-		m_attackCooldown = 90;
+      //クールタイム設定
+		m_attackCooldown = kDefaultAttackCooldown;
 		//攻撃方向を保存
 		m_attackDir = m_forward;
 		break;
@@ -366,8 +384,8 @@ void Creature::TransitionTo(CreatureState nextState)
 		m_animation.ChangeAnim(kPunchAnimName, false, 0.3f);
 		//攻撃判定をリセット
 		m_isAttack = false;
-		//クールタイム設定
-		m_attackCooldown = 90;
+      //クールタイム設定
+		m_attackCooldown = kDefaultAttackCooldown;
 		//攻撃方向を保存
 		m_attackDir = m_forward;
 
