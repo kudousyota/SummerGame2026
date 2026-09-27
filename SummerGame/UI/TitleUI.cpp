@@ -34,7 +34,7 @@ TitleUI::~TitleUI()
 
 void TitleUI::Init()
 {
-    //基準サイズに合わせてメニュー文字の大きさを決定 (FontManager の用意したサイズに合わせる)
+    //基準サイズに合わせてメニュー文字の大きさを決定
 	const float sx = static_cast<float>(Game::kScreenWidth) / 1280.0f;
 	int targetSize = static_cast<int>(40.0f * sx);
 	if (targetSize < 8) targetSize = 8;

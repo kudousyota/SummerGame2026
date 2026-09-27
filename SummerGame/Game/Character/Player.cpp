@@ -448,7 +448,7 @@ void Player::Update()
 			bool isMove =input.IsPressed("up") ||input.IsPressed("down") ||input.IsPressed("left") ||input.IsPressed("right");
 			//着地SE
 			SoundManager::Instance().PlaySE("Landing");
-			// 移動優先
+			//移動優先
 			if (isMove)
 			{
 				TransitionTo(PlayerState::Run);

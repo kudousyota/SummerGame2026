@@ -14,7 +14,7 @@ void Model::PreloadAll()
 }
 
 //ロードしたベースモデルを解放する
-//アプリ終了時に呼び出す
+//ゲーム終了時に呼び出す
 void Model::ReleseAll()
 {
 	if (m_angelBaseHandle != -1) MV1DeleteModel(m_angelBaseHandle);
